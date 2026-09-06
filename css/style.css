@@ -75,3 +75,35 @@ footer{border-top:1px solid var(--line);padding:40px 0;color:var(--muted)}
  .grid-3,.grid-2{grid-template-columns:1fr}.roadmap{grid-template-columns:repeat(2,1fr)}
  .footer-grid{grid-template-columns:1fr}.section-head{display:block}
 }
+/* =====================================================
+   PEOPLE PAGE - PROFILE CARD ALIGNMENT FIX
+   ===================================================== */
+
+/* Keep all leadership profile cards aligned to the top */
+.person {
+  align-items: flex-start !important;
+}
+
+/* Make sure the profile content starts from the top */
+.person > div {
+  align-self: flex-start;
+}
+
+/* Keep the two leadership cards visually aligned */
+.grid.grid-2 > .person {
+  align-self: stretch;
+}
+
+/* Prevent long profiles from vertically centering shorter ones */
+.person h2,
+.person h3,
+.person p {
+  text-align: left;
+}
+
+/* Mobile layout */
+@media (max-width: 700px) {
+  .person {
+    align-items: flex-start !important;
+  }
+}
