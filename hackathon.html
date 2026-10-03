@@ -4,38 +4,59 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>AI Innovation Hackathon 2026 | Women in AI, Research, Innovation & Entrepreneurship Club</title>
+  <title>
+    AI Innovation Hackathon 2026 |
+    Women in AI, Research, Innovation & Entrepreneurship Club
+  </title>
 
   <meta
     name="description"
-    content="AI Innovation Hackathon 2026 — Online international hackathon by the Women in AI, Research, Innovation & Entrepreneurship Club."
+    content="AI Innovation Hackathon 2026 — an online international hackathon organized by the Women in AI, Research, Innovation & Entrepreneurship Club."
   >
 
   <link rel="stylesheet" href="css/style.css">
 
   <style>
-    /* ================================
+
+    /* =====================================================
        HACKATHON PAGE
-       ================================ */
+       ===================================================== */
 
     .hackathon-hero {
       padding: 110px 0 80px;
       text-align: center;
+
       background:
-        radial-gradient(circle at 20% 20%, rgba(145, 82, 255, 0.14), transparent 35%),
-        radial-gradient(circle at 80% 30%, rgba(145, 82, 255, 0.10), transparent 35%);
+        radial-gradient(
+          circle at 20% 20%,
+          rgba(145, 82, 255, 0.14),
+          transparent 35%
+        ),
+        radial-gradient(
+          circle at 80% 30%,
+          rgba(145, 82, 255, 0.10),
+          transparent 35%
+        );
     }
 
     .hackathon-hero h1 {
       max-width: 900px;
-      margin: 14px auto 20px;
+      margin: 16px auto 20px;
       font-size: clamp(2.4rem, 6vw, 4.5rem);
       line-height: 1.05;
     }
 
     .hackathon-hero .lead {
-      max-width: 760px;
+      max-width: 780px;
       margin: 0 auto 30px;
+    }
+
+    .hackathon-club-name {
+      max-width: 850px;
+      margin: 0 auto 18px;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
     }
 
     .hackathon-badge {
@@ -43,7 +64,7 @@
       padding: 8px 16px;
       border: 1px solid rgba(160, 100, 255, 0.35);
       border-radius: 999px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
@@ -51,10 +72,27 @@
     .hackathon-actions {
       display: flex;
       justify-content: center;
+      align-items: center;
       gap: 14px;
       flex-wrap: wrap;
       margin-top: 28px;
     }
+
+    /* =====================================================
+       FULL CLUB NAME IN NAVIGATION
+       ===================================================== */
+
+    .brand-name {
+      display: inline-block;
+      max-width: 370px;
+      line-height: 1.2;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    /* =====================================================
+       RESOURCE CARDS
+       ===================================================== */
 
     .resource-section {
       margin-top: 25px;
@@ -71,7 +109,9 @@
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 18px;
       background: rgba(255,255,255,0.025);
-      transition: transform 0.25s ease, border-color 0.25s ease;
+      transition:
+        transform 0.25s ease,
+        border-color 0.25s ease;
     }
 
     .resource-card:hover {
@@ -86,6 +126,10 @@
     .resource-card p {
       margin-bottom: 18px;
     }
+
+    /* =====================================================
+       INFORMATION
+       ===================================================== */
 
     .hackathon-info-grid {
       display: grid;
@@ -113,6 +157,10 @@
       font-size: 1.05rem;
     }
 
+    /* =====================================================
+       TWO STAGES
+       ===================================================== */
+
     .stage-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -139,6 +187,10 @@
       font-weight: 700;
     }
 
+    /* =====================================================
+       TIMELINE
+       ===================================================== */
+
     .timeline-list {
       position: relative;
       margin-top: 30px;
@@ -162,6 +214,10 @@
       opacity: 0.55;
       font-weight: 400;
     }
+
+    /* =====================================================
+       REQUIREMENTS
+       ===================================================== */
 
     .requirements-grid {
       display: grid;
@@ -189,10 +245,15 @@
       margin-bottom: 9px;
     }
 
+    /* =====================================================
+       HIGHLIGHT BOX
+       ===================================================== */
+
     .submission-highlight {
       padding: 34px;
       border-radius: 22px;
       border: 1px solid rgba(145, 82, 255, 0.25);
+
       background:
         linear-gradient(
           135deg,
@@ -200,6 +261,10 @@
           rgba(255,255,255,0.025)
         );
     }
+
+    /* =====================================================
+       REPOSITORY
+       ===================================================== */
 
     .repo-structure {
       margin-top: 18px;
@@ -217,6 +282,10 @@
       white-space: pre;
     }
 
+    /* =====================================================
+       JUDGING
+       ===================================================== */
+
     .criteria-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -229,6 +298,10 @@
       border: 1px solid rgba(255,255,255,0.08);
       background: rgba(255,255,255,0.025);
     }
+
+    /* =====================================================
+       ORGANIZERS
+       ===================================================== */
 
     .organizer-grid {
       display: grid;
@@ -248,6 +321,10 @@
       margin-bottom: 5px;
     }
 
+    /* =====================================================
+       NOTICE
+       ===================================================== */
+
     .notice {
       padding: 20px 22px;
       border-left: 3px solid rgba(145, 82, 255, 0.7);
@@ -256,7 +333,12 @@
       margin-top: 22px;
     }
 
+    /* =====================================================
+       MOBILE
+       ===================================================== */
+
     @media (max-width: 900px) {
+
       .hackathon-info-grid,
       .criteria-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -268,9 +350,15 @@
       .organizer-grid {
         grid-template-columns: 1fr;
       }
+
+      .brand-name {
+        max-width: 280px;
+        font-size: 0.82rem;
+      }
     }
 
     @media (max-width: 650px) {
+
       .hackathon-info-grid,
       .criteria-grid {
         grid-template-columns: 1fr;
@@ -284,50 +372,86 @@
       .hackathon-hero {
         padding: 80px 0 60px;
       }
+
+      .brand-name {
+        max-width: 220px;
+        font-size: 0.75rem;
+      }
     }
+
   </style>
 </head>
 
+
 <body>
 
-  <!-- ================================
+
+  <!-- =====================================================
        NAVIGATION
-       ================================ -->
+       ===================================================== -->
 
   <header class="nav">
+
     <div class="container nav-inner">
 
       <a class="brand" href="index.html">
-        <span>Women in AI</span>
+
+        <span class="brand-name">
+          Women in AI, Research, Innovation & Entrepreneurship Club
+        </span>
+
       </a>
 
-      <button class="menu" aria-label="Open navigation">
+
+      <button
+        class="menu"
+        aria-label="Open navigation"
+        type="button"
+      >
         ☰
       </button>
+
 
       <nav class="navlinks">
 
         <a href="index.html">Home</a>
+
         <a href="about.html">About</a>
+
         <a href="research.html">Research</a>
+
         <a href="teams.html">Teams</a>
+
         <a href="projects.html">Projects</a>
+
         <a href="publications.html">Publications</a>
+
         <a href="people.html">People</a>
+
         <a href="events.html">Events</a>
-        <a href="join.html" class="btn primary">Join Us</a>
+
+        <a href="join.html" class="btn primary">
+          Join Us
+        </a>
 
       </nav>
 
     </div>
+
   </header>
 
 
-  <!-- ================================
-       HERO
-       ================================ -->
+
+  <!-- =====================================================
+       MAIN
+       ===================================================== -->
 
   <main>
+
+
+    <!-- ===================================================
+         HERO
+         =================================================== -->
 
     <section class="hackathon-hero">
 
@@ -337,15 +461,23 @@
           AI Innovation Hackathon 2026
         </div>
 
+
+        <p class="hackathon-club-name">
+          Women in AI, Research, Innovation & Entrepreneurship Club
+        </p>
+
+
         <h1>
           Build. Innovate. Solve.
         </h1>
 
+
         <p class="lead">
-          An online international AI hackathon focused on innovation,
-          creativity, problem-solving and the practical application of
-          Artificial Intelligence and related technologies.
+          An online international hackathon focused on innovation,
+          creativity, problem-solving and the practical application
+          of Artificial Intelligence and related technologies.
         </p>
+
 
         <div class="hackathon-actions">
 
@@ -358,6 +490,7 @@
             Register Now
           </a>
 
+
           <a
             href="assets/docs/AI_Innovation_Hackathon_2026_Rules_and_Regulations_FULL_NAME.docx"
             class="btn"
@@ -365,6 +498,7 @@
           >
             Rules & Regulations
           </a>
+
 
           <a
             href="assets/docs/AI_Innovation_Hackathon_2026_Submission_Format.docx"
@@ -381,41 +515,83 @@
     </section>
 
 
-    <!-- ================================
+
+    <!-- ===================================================
          EVENT OVERVIEW
-         ================================ -->
+         =================================================== -->
 
     <section class="section">
 
       <div class="container">
 
         <div class="section-head">
+
           <div>
-            <span class="eyebrow">Overview</span>
-            <h2>AI Innovation Hackathon 2026</h2>
+
+            <span class="eyebrow">
+              Overview
+            </span>
+
+            <h2>
+              AI Innovation Hackathon 2026
+            </h2>
+
           </div>
+
         </div>
+
 
         <div class="hackathon-info-grid">
 
           <div class="info-box">
-            <span>Event Date</span>
-            <strong>20 October 2026</strong>
+
+            <span>
+              Event Date
+            </span>
+
+            <strong>
+              20 October 2026
+            </strong>
+
           </div>
 
-          <div class="info-box">
-            <span>Mode</span>
-            <strong>Online</strong>
-          </div>
 
           <div class="info-box">
-            <span>Participation</span>
-            <strong>Open Internationally</strong>
+
+            <span>
+              Mode
+            </span>
+
+            <strong>
+              Online
+            </strong>
+
           </div>
 
+
           <div class="info-box">
-            <span>Registration Fee</span>
-            <strong>Free</strong>
+
+            <span>
+              Participation
+            </span>
+
+            <strong>
+              Open Internationally
+            </strong>
+
+          </div>
+
+
+          <div class="info-box">
+
+            <span>
+              Registration Fee
+            </span>
+
+            <strong>
+              Free
+            </strong>
+
           </div>
 
         </div>
@@ -425,55 +601,82 @@
     </section>
 
 
-    <!-- ================================
-         TWO STAGE FORMAT
-         ================================ -->
+
+    <!-- ===================================================
+         TWO-STAGE FORMAT
+         =================================================== -->
 
     <section class="section alt">
 
       <div class="container">
 
         <div class="section-head">
+
           <div>
-            <span class="eyebrow">Hackathon Structure</span>
-            <h2>Two-Stage Format</h2>
+
+            <span class="eyebrow">
+              Hackathon Structure
+            </span>
+
+            <h2>
+              Two-Stage Format
+            </h2>
+
           </div>
+
         </div>
+
 
         <div class="stage-grid">
 
+
           <article class="stage-card">
 
-            <div class="stage-number">01</div>
+            <div class="stage-number">
+              01
+            </div>
 
-            <h3>Idea Submission & Screening</h3>
+
+            <h3>
+              Idea Submission & Screening
+            </h3>
+
 
             <p>
-              Participants review the published problem statements and
-              submit or pitch their proposed solution ideas.
+              Participants review the published problem statements
+              and submit or pitch their proposed solution ideas.
             </p>
 
+
             <p>
-              Only teams selected through the screening stage proceed
-              to the Main Hackathon / Final Development Round.
+              Only teams selected through the screening stage
+              proceed to the Main Hackathon / Final Development Round.
             </p>
 
           </article>
 
 
+
           <article class="stage-card">
 
-            <div class="stage-number">02</div>
+            <div class="stage-number">
+              02
+            </div>
 
-            <h3>Main Hackathon</h3>
+
+            <h3>
+              Main Hackathon
+            </h3>
+
 
             <p>
               Selected teams advance to the final round and develop
-              their proposed solutions during the designated hackathon
-              development period on 20 October 2026.
+              their proposed solutions during the designated
+              hackathon development period on 20 October 2026.
             </p>
 
           </article>
+
 
         </div>
 
@@ -482,134 +685,209 @@
     </section>
 
 
-    <!-- ================================
+
+    <!-- ===================================================
          TIMELINE
-         ================================ -->
+         =================================================== -->
 
     <section class="section">
 
       <div class="container">
 
         <div class="section-head">
+
           <div>
-            <span class="eyebrow">Schedule</span>
-            <h2>Hackathon Timeline</h2>
+
+            <span class="eyebrow">
+              Schedule
+            </span>
+
+            <h2>
+              Hackathon Timeline
+            </h2>
+
           </div>
+
         </div>
+
 
         <div class="timeline-list">
 
+
           <div class="timeline-item">
+
             <div class="timeline-date">
               18 October 2026
             </div>
 
             <div>
-              <h3>Problem Statements Published</h3>
+
+              <h3>
+                Problem Statements Published
+              </h3>
+
               <p>
                 Participants can study the problem statements,
-                understand the requirements and prepare their initial
-                solution concept.
+                understand the requirements and prepare their
+                initial solution concept.
               </p>
+
             </div>
+
           </div>
 
 
+
           <div class="timeline-item">
+
             <div class="timeline-date">
               19 October 2026
             </div>
 
             <div>
-              <h3>Idea Submission / Pitch & Screening</h3>
+
+              <h3>
+                Idea Submission / Pitch & Screening
+              </h3>
+
               <p>
                 Participants submit or pitch their proposed solution
                 based on one published problem statement.
               </p>
+
             </div>
+
           </div>
 
 
+
           <div class="timeline-item">
+
             <div class="timeline-date">
               19 October 2026
             </div>
 
             <div>
-              <h3>Shortlisted Teams Announced</h3>
+
+              <h3>
+                Shortlisted Teams Announced
+              </h3>
+
               <p>
                 Selected teams proceed to the Main Hackathon /
                 Final Development Round.
               </p>
+
             </div>
+
           </div>
 
 
+
           <div class="timeline-item">
+
             <div class="timeline-date">
               20 October 2026
             </div>
 
             <div>
-              <h3>Main Hackathon & Development</h3>
+
+              <h3>
+                Main Hackathon & Development
+              </h3>
+
               <p>
-                Selected teams develop their proposed solutions during
-                the designated hackathon development period.
+                Selected teams develop their proposed solutions
+                during the designated hackathon development period.
               </p>
+
             </div>
+
           </div>
 
 
+
           <div class="timeline-item">
+
             <div class="timeline-date">
               20 October 2026
             </div>
 
             <div>
-              <h3>Final Submission</h3>
+
+              <h3>
+                Final Submission
+              </h3>
+
               <p>
-                Final-round teams submit their completed project through
-                the official submission process.
+                Final-round teams submit their completed project
+                through the official submission process.
               </p>
+
             </div>
+
           </div>
 
 
+
           <div class="timeline-item">
+
             <div class="timeline-date">
               20 October 2026
             </div>
 
             <div>
-              <h3>Demo / Pitch & Judging</h3>
+
+              <h3>
+                Demo / Pitch & Judging
+              </h3>
+
               <p>
-                Final-round teams may be required to demonstrate and
-                pitch their completed solutions to the judges.
+                Final-round teams may be required to demonstrate
+                and pitch their completed solutions to the judges.
               </p>
+
             </div>
+
           </div>
 
 
+
           <div class="timeline-item">
+
             <div class="timeline-date">
               20 October 2026
             </div>
 
             <div>
-              <h3>Results & Closing</h3>
+
+              <h3>
+                Results & Closing
+              </h3>
+
               <p>
-                Final results and closing activities will be conducted
-                through the official event schedule.
+                Final results and closing activities will be
+                conducted through the official event schedule.
               </p>
+
             </div>
+
           </div>
+
 
         </div>
 
+
         <div class="notice">
-          <strong>Important:</strong>
-          Exact timings for each stage will be communicated through the
-          official hackathon website and communication channels.
+
+          <strong>
+            Important:
+          </strong>
+
+          Exact timings for each stage will be communicated
+          through the official hackathon website and
+          communication channels.
+
         </div>
 
       </div>
@@ -617,43 +895,79 @@
     </section>
 
 
-    <!-- ================================
+
+    <!-- ===================================================
          PROBLEM STATEMENTS
-         ================================ -->
+         =================================================== -->
 
     <section class="section alt">
 
       <div class="container">
 
         <div class="section-head">
+
           <div>
-            <span class="eyebrow">Challenges</span>
-            <h2>Problem Statements</h2>
+
+            <span class="eyebrow">
+              Challenges
+            </span>
+
+            <h2>
+              Problem Statements
+            </h2>
+
           </div>
+
         </div>
+
 
         <div class="submission-highlight">
 
-          <h3>Problem Statement Release</h3>
+          <h3>
+            Problem Statement Release
+          </h3>
+
 
           <p>
-            The official problem statements will be published on the
-            Women in AI, Research, Innovation & Entrepreneurship Club's
-            official website on <strong>18 October 2026</strong>.
+            The official problem statements will be published
+            on the official website of the
+            Women in AI, Research, Innovation & Entrepreneurship Club
+            on <strong>18 October 2026</strong>.
           </p>
 
+
           <ul class="clean-list">
-            <li>Study the problem statements.</li>
-            <li>Understand the requirements.</li>
-            <li>Identify the challenge you wish to address.</li>
-            <li>Develop an initial solution concept.</li>
-            <li>Prepare your idea / proposal.</li>
+
+            <li>
+              Study the problem statements.
+            </li>
+
+            <li>
+              Understand the requirements.
+            </li>
+
+            <li>
+              Identify the challenge you wish to address.
+            </li>
+
+            <li>
+              Develop an initial solution concept.
+            </li>
+
+            <li>
+              Prepare your idea / proposal.
+            </li>
+
           </ul>
 
+
           <div class="notice">
-            Participants may think about and plan their proposed approach
-            during this period. However, the main hackathon development
-            phase begins only after teams are selected for the final round.
+
+            Participants may think about and plan their proposed
+            approach during this period. However, the main
+            hackathon development phase begins only after teams
+            are selected for the final round.
+
           </div>
 
         </div>
@@ -663,62 +977,133 @@
     </section>
 
 
-    <!-- ================================
-         STAGE 1 SUBMISSION
-         ================================ -->
+
+    <!-- ===================================================
+         STAGE 1
+         =================================================== -->
 
     <section class="section">
 
       <div class="container">
 
         <div class="section-head">
+
           <div>
-            <span class="eyebrow">Stage 1</span>
-            <h2>Idea Submission & Screening</h2>
+
+            <span class="eyebrow">
+              Stage 1
+            </span>
+
+            <h2>
+              Idea Submission & Screening
+            </h2>
+
           </div>
+
         </div>
+
 
         <div class="requirements-grid">
 
+
           <div class="requirement-card">
 
-            <h3>Required Idea Information</h3>
+            <h3>
+              Required Idea Information
+            </h3>
+
 
             <ul class="clean-list">
-              <li>Team name</li>
-              <li>Team members</li>
-              <li>Selected problem statement</li>
-              <li>Problem understanding</li>
-              <li>Proposed solution</li>
-              <li>Innovation / novelty</li>
-              <li>Proposed technology / AI approach</li>
-              <li>Expected impact</li>
-              <li>Brief implementation plan</li>
+
+              <li>
+                Team name
+              </li>
+
+              <li>
+                Team members
+              </li>
+
+              <li>
+                Selected problem statement
+              </li>
+
+              <li>
+                Problem understanding
+              </li>
+
+              <li>
+                Proposed solution
+              </li>
+
+              <li>
+                Innovation / novelty
+              </li>
+
+              <li>
+                Proposed technology / AI approach
+              </li>
+
+              <li>
+                Expected impact
+              </li>
+
+              <li>
+                Brief implementation plan
+              </li>
+
             </ul>
 
           </div>
 
 
+
           <div class="requirement-card">
 
-            <h3>Screening & Selection</h3>
+            <h3>
+              Screening & Selection
+            </h3>
+
 
             <ul class="clean-list">
-              <li>Understanding of the problem</li>
-              <li>Relevance of the proposed solution</li>
-              <li>Innovation</li>
-              <li>Feasibility</li>
-              <li>Appropriate use of AI / technology</li>
-              <li>Potential impact</li>
-              <li>Clarity of the proposed approach</li>
+
+              <li>
+                Understanding of the problem
+              </li>
+
+              <li>
+                Relevance of the proposed solution
+              </li>
+
+              <li>
+                Innovation
+              </li>
+
+              <li>
+                Feasibility
+              </li>
+
+              <li>
+                Appropriate use of AI / technology
+              </li>
+
+              <li>
+                Potential impact
+              </li>
+
+              <li>
+                Clarity of the proposed approach
+              </li>
+
             </ul>
 
+
             <p>
-              Only selected teams will proceed to the Main Hackathon /
-              Final Development Round.
+              Only selected teams will proceed to the Main
+              Hackathon / Final Development Round.
             </p>
 
           </div>
+
 
         </div>
 
@@ -727,55 +1112,98 @@
     </section>
 
 
-    <!-- ================================
+
+    <!-- ===================================================
          TEAM FORMATION
-         ================================ -->
+         =================================================== -->
 
     <section class="section alt">
 
       <div class="container">
 
         <div class="section-head">
+
           <div>
-            <span class="eyebrow">Participation</span>
-            <h2>Team Formation</h2>
+
+            <span class="eyebrow">
+              Participation
+            </span>
+
+            <h2>
+              Team Formation
+            </h2>
+
           </div>
+
         </div>
+
 
         <div class="requirements-grid">
 
+
           <div class="requirement-card">
 
-            <h3>Team Rules</h3>
+            <h3>
+              Team Rules
+            </h3>
+
 
             <ul class="clean-list">
-              <li>Participants may participate individually or in teams.</li>
-              <li>Maximum team size: 4 participants.</li>
-              <li>Each team must designate one Team Leader.</li>
-              <li>The Team Leader is the primary point of contact with the organizing team.</li>
-              <li>Each participant may participate in only one competing team.</li>
-              <li>Team members must be declared during registration / idea submission.</li>
+
+              <li>
+                Participants may participate individually or in teams.
+              </li>
+
+              <li>
+                Maximum team size: 4 participants.
+              </li>
+
+              <li>
+                Each team must designate one Team Leader.
+              </li>
+
+              <li>
+                The Team Leader will be the primary point of
+                contact with the organizing team.
+              </li>
+
+              <li>
+                Each participant may participate in only one
+                competing team.
+              </li>
+
+              <li>
+                Team members must be declared during registration
+                / idea submission.
+              </li>
+
             </ul>
 
           </div>
 
 
+
           <div class="requirement-card">
 
-            <h3>Team Responsibility</h3>
+            <h3>
+              Team Responsibility
+            </h3>
+
 
             <p>
               Teams are responsible for ensuring that their team
-              information is accurate and consistent across registration,
-              idea submission and final submission.
+              information is accurate and consistent across
+              registration, idea submission and final submission.
             </p>
 
+
             <p>
-              Participants should ensure that their contributions and
-              project information are represented accurately.
+              Participants should ensure that their contributions
+              and project information are represented accurately.
             </p>
 
           </div>
+
 
         </div>
 
@@ -784,50 +1212,107 @@
     </section>
 
 
-    <!-- ================================
+
+    <!-- ===================================================
          DEVELOPMENT RULES
-         ================================ -->
+         =================================================== -->
 
     <section class="section">
 
       <div class="container">
 
         <div class="section-head">
+
           <div>
-            <span class="eyebrow">Development</span>
-            <h2>Development Rules</h2>
+
+            <span class="eyebrow">
+              Development
+            </span>
+
+            <h2>
+              Development Rules
+            </h2>
+
           </div>
+
         </div>
+
 
         <div class="requirements-grid">
 
+
           <div class="requirement-card">
 
-            <h3>Originality & Pre-existing Work</h3>
+            <h3>
+              Originality & Pre-existing Work
+            </h3>
+
 
             <ul class="clean-list">
-              <li>Submitted work must represent the team's own work.</li>
-              <li>Plagiarism, copied solutions and misrepresentation are not permitted.</li>
-              <li>Entirely pre-built projects should not be submitted as newly developed hackathon work.</li>
-              <li>Open-source libraries, frameworks, APIs, public datasets and pretrained models may be used where legally permitted.</li>
-              <li>Significant pre-existing components should be disclosed where requested.</li>
+
+              <li>
+                Submitted work must represent the team's own work.
+              </li>
+
+              <li>
+                Plagiarism, copied solutions and misrepresentation
+                are not permitted.
+              </li>
+
+              <li>
+                Entirely pre-built projects should not be submitted
+                as newly developed hackathon work.
+              </li>
+
+              <li>
+                Open-source libraries, frameworks, APIs, public
+                datasets and pretrained models may be used where
+                legally permitted.
+              </li>
+
+              <li>
+                Significant pre-existing components should be
+                disclosed where requested.
+              </li>
+
             </ul>
 
           </div>
 
 
+
           <div class="requirement-card">
 
-            <h3>AI-Assisted Development</h3>
+            <h3>
+              AI-Assisted Development
+            </h3>
+
 
             <ul class="clean-list">
-              <li>AI-assisted development tools are permitted as described in the official rules.</li>
-              <li>Teams remain responsible for their submitted work.</li>
-              <li>Significant use of AI tools should be disclosed where requested.</li>
-              <li>Participants must comply with the terms of the AI tools they use.</li>
+
+              <li>
+                AI-assisted development tools are permitted as
+                described in the official rules.
+              </li>
+
+              <li>
+                Teams remain responsible for their submitted work.
+              </li>
+
+              <li>
+                Significant use of AI tools should be disclosed
+                where requested.
+              </li>
+
+              <li>
+                Participants must comply with the terms of the
+                AI tools they use.
+              </li>
+
             </ul>
 
           </div>
+
 
         </div>
 
@@ -836,58 +1321,120 @@
     </section>
 
 
-    <!-- ================================
+
+    <!-- ===================================================
          GITHUB
-         ================================ -->
+         =================================================== -->
 
     <section class="section alt">
 
       <div class="container">
 
         <div class="section-head">
+
           <div>
-            <span class="eyebrow">Code Submission</span>
-            <h2>GitHub Repository Requirements</h2>
+
+            <span class="eyebrow">
+              Code Submission
+            </span>
+
+            <h2>
+              GitHub Repository Requirements
+            </h2>
+
           </div>
+
         </div>
+
 
         <div class="submission-highlight">
 
           <p>
-            Each final-round team must maintain its project in a GitHub
-            repository. The repository must be accessible to the judges.
+            Each final-round team must maintain its project in
+            a GitHub repository. The repository must be
+            accessible to the judges.
           </p>
+
 
           <div class="requirements-grid">
 
-            <div>
-              <ul class="clean-list">
-                <li>Source code</li>
-                <li>README.md</li>
-                <li>Requirements / dependencies</li>
-                <li>Installation instructions</li>
-                <li>Usage instructions</li>
-                <li>Documentation</li>
-              </ul>
-            </div>
 
             <div>
+
               <ul class="clean-list">
-                <li>Dataset information</li>
-                <li>Model information</li>
-                <li>Screenshots</li>
-                <li>Demo information</li>
-                <li>Credits / attributions</li>
+
+                <li>
+                  Source code
+                </li>
+
+                <li>
+                  README.md
+                </li>
+
+                <li>
+                  Requirements / dependencies
+                </li>
+
+                <li>
+                  Installation instructions
+                </li>
+
+                <li>
+                  Usage instructions
+                </li>
+
+                <li>
+                  Documentation
+                </li>
+
               </ul>
+
             </div>
+
+
+
+            <div>
+
+              <ul class="clean-list">
+
+                <li>
+                  Dataset information
+                </li>
+
+                <li>
+                  Model information
+                </li>
+
+                <li>
+                  Screenshots
+                </li>
+
+                <li>
+                  Demo information
+                </li>
+
+                <li>
+                  Credits / attributions
+                </li>
+
+              </ul>
+
+            </div>
+
 
           </div>
 
+
           <div class="notice">
-            <strong>Security:</strong>
-            Do not upload passwords, API keys, access tokens, private
-            credentials, confidential documents or sensitive personal
-            information to a public repository.
+
+            <strong>
+              Security:
+            </strong>
+
+            Do not upload passwords, API keys, access tokens,
+            private credentials, confidential documents or
+            sensitive personal information to a public repository.
+
           </div>
 
         </div>
@@ -897,55 +1444,89 @@
     </section>
 
 
-    <!-- ================================
+
+    <!-- ===================================================
          README
-         ================================ -->
+         =================================================== -->
 
     <section class="section">
 
       <div class="container">
 
         <div class="section-head">
+
           <div>
-            <span class="eyebrow">Documentation</span>
-            <h2>README.md Requirements</h2>
+
+            <span class="eyebrow">
+              Documentation
+            </span>
+
+            <h2>
+              README.md Requirements
+            </h2>
+
           </div>
+
         </div>
+
 
         <div class="requirements-grid">
 
+
           <div class="requirement-card">
 
             <ul class="clean-list">
+
               <li>Team name</li>
+
               <li>Team members</li>
+
               <li>Selected problem statement</li>
+
               <li>Problem description</li>
+
               <li>Proposed solution</li>
+
               <li>Key features</li>
+
               <li>Technology stack</li>
+
               <li>Methodology</li>
+
               <li>Architecture / workflow</li>
+
             </ul>
 
           </div>
+
 
 
           <div class="requirement-card">
 
             <ul class="clean-list">
+
               <li>Installation instructions</li>
+
               <li>Usage instructions</li>
+
               <li>Dataset information</li>
+
               <li>Models used</li>
+
               <li>Results</li>
+
               <li>Screenshots / demo</li>
+
               <li>Limitations</li>
+
               <li>Future scope</li>
+
               <li>External resources / attributions</li>
+
             </ul>
 
           </div>
+
 
         </div>
 
@@ -970,51 +1551,107 @@
     </section>
 
 
-    <!-- ================================
+
+    <!-- ===================================================
          FINAL SUBMISSION
-         ================================ -->
+         =================================================== -->
 
     <section class="section alt">
 
       <div class="container">
 
         <div class="section-head">
+
           <div>
-            <span class="eyebrow">Stage 2</span>
-            <h2>Final Project Submission</h2>
+
+            <span class="eyebrow">
+              Stage 2
+            </span>
+
+            <h2>
+              Final Project Submission
+            </h2>
+
           </div>
+
         </div>
+
 
         <div class="submission-highlight">
 
-          <h3>What You Need to Submit</h3>
+          <h3>
+            What You Need to Submit
+          </h3>
+
 
           <ul class="clean-list">
-            <li>GitHub repository URL</li>
-            <li>Team details</li>
-            <li>Selected problem statement</li>
-            <li>Project description</li>
-            <li>Demo link / video, where applicable</li>
-            <li>Required documentation</li>
-            <li>Other information requested by the organizers</li>
+
+            <li>
+              GitHub repository URL
+            </li>
+
+            <li>
+              Team details
+            </li>
+
+            <li>
+              Selected problem statement
+            </li>
+
+            <li>
+              Project description
+            </li>
+
+            <li>
+              Demo link / video, where applicable
+            </li>
+
+            <li>
+              Required documentation
+            </li>
+
+            <li>
+              Other information requested by the organizers
+            </li>
+
           </ul>
 
+
           <div class="notice">
-            <strong>Important:</strong>
-            The GitHub repository and the official submission form together
-            constitute the final submission.
+
+            <strong>
+              Important:
+            </strong>
+
+            The GitHub repository and the official submission
+            form together constitute the final submission.
+
           </div>
 
-          <div class="hackathon-actions" style="justify-content:flex-start;">
 
-            <!-- Add the official project submission form here once published -->
+          <div
+            class="hackathon-actions"
+            style="justify-content:flex-start;"
+          >
+
+            <!--
+              The official final project submission form
+              will be added here once published.
+            -->
+
             <a
               href="#"
               class="btn"
-              onclick="alert('The official project-submission form will be linked here once published by the organizers.'); return false;"
+              onclick="
+                alert(
+                  'The official project-submission form will be linked here once published by the organizers.'
+                );
+                return false;
+              "
             >
               Final Project Submission
             </a>
+
 
             <a
               href="assets/docs/AI_Innovation_Hackathon_2026_Submission_Format.docx"
@@ -1031,9 +1668,12 @@
 
         <div class="notice">
 
-          <strong>Final Submission Deadline:</strong>
-          The final submission deadline will be announced as part of the
-          official 20 October 2026 hackathon schedule.
+          <strong>
+            Final Submission Deadline:
+          </strong>
+
+          The final submission deadline will be announced as
+          part of the official 20 October 2026 hackathon schedule.
 
         </div>
 
@@ -1042,49 +1682,101 @@
     </section>
 
 
-    <!-- ================================
-         FINAL CHECKLIST
-         ================================ -->
+
+    <!-- ===================================================
+         CHECKLIST
+         =================================================== -->
 
     <section class="section">
 
       <div class="container">
 
         <div class="section-head">
+
           <div>
-            <span class="eyebrow">Before You Submit</span>
-            <h2>Final Submission Checklist</h2>
+
+            <span class="eyebrow">
+              Before You Submit
+            </span>
+
+            <h2>
+              Final Submission Checklist
+            </h2>
+
           </div>
+
         </div>
+
 
         <div class="requirements-grid">
 
+
           <div class="requirement-card">
 
             <ul class="clean-list">
-              <li>Correct team details</li>
-              <li>Correct selected problem statement</li>
-              <li>Source code uploaded</li>
-              <li>README completed</li>
-              <li>Requirements / dependencies included</li>
-              <li>Dataset and model information provided</li>
+
+              <li>
+                Correct team details
+              </li>
+
+              <li>
+                Correct selected problem statement
+              </li>
+
+              <li>
+                Source code uploaded
+              </li>
+
+              <li>
+                README completed
+              </li>
+
+              <li>
+                Requirements / dependencies included
+              </li>
+
+              <li>
+                Dataset and model information provided
+              </li>
+
             </ul>
 
           </div>
 
 
+
           <div class="requirement-card">
 
             <ul class="clean-list">
-              <li>External resources acknowledged</li>
-              <li>Demo prepared, where applicable</li>
-              <li>GitHub repository accessible to judges</li>
-              <li>No passwords, API keys or sensitive credentials uploaded</li>
-              <li>Official submission form completed</li>
-              <li>Final submission completed before the announced deadline</li>
+
+              <li>
+                External resources acknowledged
+              </li>
+
+              <li>
+                Demo prepared, where applicable
+              </li>
+
+              <li>
+                GitHub repository accessible to judges
+              </li>
+
+              <li>
+                No passwords, API keys or sensitive credentials uploaded
+              </li>
+
+              <li>
+                Official submission form completed
+              </li>
+
+              <li>
+                Final submission completed before the announced deadline
+              </li>
+
             </ul>
 
           </div>
+
 
         </div>
 
@@ -1093,47 +1785,93 @@
     </section>
 
 
-    <!-- ================================
+
+    <!-- ===================================================
          DEMO & PITCH
-         ================================ -->
+         =================================================== -->
 
     <section class="section alt">
 
       <div class="container">
 
         <div class="section-head">
+
           <div>
-            <span class="eyebrow">Presentation</span>
-            <h2>Project Demonstration & Final Pitch</h2>
+
+            <span class="eyebrow">
+              Presentation
+            </span>
+
+            <h2>
+              Project Demonstration & Final Pitch
+            </h2>
+
           </div>
+
         </div>
+
 
         <div class="submission-highlight">
 
           <p>
-            Final-round teams may be required to demonstrate and pitch
-            their completed solutions to the judges.
+            Final-round teams may be required to demonstrate
+            and pitch their completed solutions to the judges.
           </p>
+
 
           <div class="requirements-grid">
 
-            <div class="requirement-card">
-              <ul class="clean-list">
-                <li>The problem</li>
-                <li>The proposed solution</li>
-                <li>How the solution works</li>
-                <li>Technology / AI techniques used</li>
-              </ul>
-            </div>
 
             <div class="requirement-card">
+
               <ul class="clean-list">
-                <li>Key features</li>
-                <li>Results</li>
-                <li>Impact / use case</li>
-                <li>Future scope</li>
+
+                <li>
+                  The problem
+                </li>
+
+                <li>
+                  The proposed solution
+                </li>
+
+                <li>
+                  How the solution works
+                </li>
+
+                <li>
+                  Technology / AI techniques used
+                </li>
+
               </ul>
+
             </div>
+
+
+
+            <div class="requirement-card">
+
+              <ul class="clean-list">
+
+                <li>
+                  Key features
+                </li>
+
+                <li>
+                  Results
+                </li>
+
+                <li>
+                  Impact / use case
+                </li>
+
+                <li>
+                  Future scope
+                </li>
+
+              </ul>
+
+            </div>
+
 
           </div>
 
@@ -1144,68 +1882,147 @@
     </section>
 
 
-    <!-- ================================
-         JUDGING
-         ================================ -->
+
+    <!-- ===================================================
+         JUDGING CRITERIA
+         =================================================== -->
 
     <section class="section">
 
       <div class="container">
 
         <div class="section-head">
+
           <div>
-            <span class="eyebrow">Evaluation</span>
-            <h2>Judging Criteria</h2>
+
+            <span class="eyebrow">
+              Evaluation
+            </span>
+
+            <h2>
+              Judging Criteria
+            </h2>
+
           </div>
+
         </div>
+
 
         <div class="criteria-grid">
 
-          <div class="criteria-card">
-            <h3>Problem Understanding</h3>
-            <p>How clearly the team understands the assigned challenge.</p>
-          </div>
 
           <div class="criteria-card">
-            <h3>Innovation</h3>
-            <p>Originality and creativity of the solution.</p>
+
+            <h3>
+              Problem Understanding
+            </h3>
+
+            <p>
+              How clearly the team understands the assigned challenge.
+            </p>
+
           </div>
 
-          <div class="criteria-card">
-            <h3>Technical Implementation</h3>
-            <p>Quality and appropriateness of the implementation.</p>
-          </div>
 
           <div class="criteria-card">
-            <h3>Use of AI</h3>
-            <p>Meaningful and appropriate use of AI/ML or related technologies.</p>
+
+            <h3>
+              Innovation
+            </h3>
+
+            <p>
+              Originality and creativity of the solution.
+            </p>
+
           </div>
 
-          <div class="criteria-card">
-            <h3>Functionality</h3>
-            <p>How effectively the proposed solution works.</p>
-          </div>
 
           <div class="criteria-card">
-            <h3>Practicality & Impact</h3>
-            <p>Potential real-world usefulness and impact.</p>
+
+            <h3>
+              Technical Implementation
+            </h3>
+
+            <p>
+              Quality and appropriateness of the implementation.
+            </p>
+
           </div>
 
-          <div class="criteria-card">
-            <h3>Scalability</h3>
-            <p>Potential for further development or deployment.</p>
-          </div>
 
           <div class="criteria-card">
-            <h3>Presentation</h3>
-            <p>Clarity of documentation, demonstration and final pitch.</p>
+
+            <h3>
+              Use of AI
+            </h3>
+
+            <p>
+              Meaningful and appropriate use of AI/ML or related technologies.
+            </p>
+
           </div>
+
+
+          <div class="criteria-card">
+
+            <h3>
+              Functionality
+            </h3>
+
+            <p>
+              How effectively the proposed solution works.
+            </p>
+
+          </div>
+
+
+          <div class="criteria-card">
+
+            <h3>
+              Practicality & Impact
+            </h3>
+
+            <p>
+              Potential real-world usefulness and impact.
+            </p>
+
+          </div>
+
+
+          <div class="criteria-card">
+
+            <h3>
+              Scalability
+            </h3>
+
+            <p>
+              Potential for further development or deployment.
+            </p>
+
+          </div>
+
+
+          <div class="criteria-card">
+
+            <h3>
+              Presentation
+            </h3>
+
+            <p>
+              Clarity of documentation, demonstration and final pitch.
+            </p>
+
+          </div>
+
 
         </div>
 
+
         <div class="notice">
-          The final judging criteria and weightage may be communicated
-          separately by the organizers.
+
+          The final judging criteria and weightage may be
+          communicated separately by the organizers.
+
         </div>
 
       </div>
@@ -1213,49 +2030,93 @@
     </section>
 
 
-    <!-- ================================
+
+    <!-- ===================================================
          JUDGING PROCESS
-         ================================ -->
+         =================================================== -->
 
     <section class="section alt">
 
       <div class="container">
 
         <div class="section-head">
+
           <div>
-            <span class="eyebrow">Evaluation Process</span>
-            <h2>How Projects Are Reviewed</h2>
+
+            <span class="eyebrow">
+              Evaluation Process
+            </span>
+
+            <h2>
+              How Projects Are Reviewed
+            </h2>
+
           </div>
+
         </div>
+
 
         <div class="requirements-grid">
 
-          <div class="requirement-card">
-
-            <ul class="clean-list">
-              <li>Review GitHub repositories</li>
-              <li>Examine source code</li>
-              <li>Review documentation</li>
-              <li>Test the submitted project where feasible</li>
-            </ul>
-
-          </div>
 
           <div class="requirement-card">
 
             <ul class="clean-list">
-              <li>Watch demonstrations</li>
-              <li>Listen to the final pitch</li>
-              <li>Ask questions</li>
-              <li>Request clarification</li>
+
+              <li>
+                Review GitHub repositories
+              </li>
+
+              <li>
+                Examine source code
+              </li>
+
+              <li>
+                Review documentation
+              </li>
+
+              <li>
+                Test the submitted project where feasible
+              </li>
+
             </ul>
 
           </div>
+
+
+
+          <div class="requirement-card">
+
+            <ul class="clean-list">
+
+              <li>
+                Watch demonstrations
+              </li>
+
+              <li>
+                Listen to the final pitch
+              </li>
+
+              <li>
+                Ask questions
+              </li>
+
+              <li>
+                Request clarification
+              </li>
+
+            </ul>
+
+          </div>
+
 
         </div>
 
+
         <div class="notice">
+
           Participants should remain available during the judging period.
+
         </div>
 
       </div>
@@ -1263,67 +2124,151 @@
     </section>
 
 
-    <!-- ================================
-         ORGANIZERS
-         ================================ -->
+
+    <!-- ===================================================
+         ORGANIZING TEAM
+         =================================================== -->
 
     <section class="section">
 
       <div class="container">
 
         <div class="section-head">
+
           <div>
-            <span class="eyebrow">Organizing Team</span>
-            <h2>AI Innovation Hackathon 2026</h2>
+
+            <span class="eyebrow">
+              Organizing Team
+            </span>
+
+            <h2>
+              AI Innovation Hackathon 2026
+            </h2>
+
           </div>
+
         </div>
+
 
         <div class="organizer-grid">
 
-          <div class="organizer-card">
-            <strong>Dr. Ayesha Heena</strong>
-            <span>Lead Organizer / Founder & Faculty Coordinator</span>
-          </div>
 
           <div class="organizer-card">
-            <strong>Mohsina Banu</strong>
-            <span>Event Director</span>
+
+            <strong>
+              Dr. Ayesha Heena
+            </strong>
+
+            <span>
+              Lead Organizer / Founder & Faculty Coordinator
+            </span>
+
           </div>
 
-          <div class="organizer-card">
-            <strong>Bushra Hamdani</strong>
-            <span>Vice President</span>
-          </div>
 
           <div class="organizer-card">
-            <strong>Prof. Dr. Inam Ullah Khan</strong>
-            <span>Chief Academic & Research Advisor</span>
+
+            <strong>
+              Mohsina Banu
+            </strong>
+
+            <span>
+              Event Director
+            </span>
+
           </div>
 
-          <div class="organizer-card">
-            <strong>Nawal Asim</strong>
-            <span>Team Lead</span>
-          </div>
 
           <div class="organizer-card">
-            <strong>Nimra Wajid</strong>
-            <span>Team Lead</span>
+
+            <strong>
+              Bushra Hamdani
+            </strong>
+
+            <span>
+              Vice President
+            </span>
+
           </div>
 
-          <div class="organizer-card">
-            <strong>Mohammadi Irram Sadaf</strong>
-            <span>Team Lead</span>
-          </div>
 
           <div class="organizer-card">
-            <strong>Zainab Zaheen</strong>
-            <span>Team Lead</span>
+
+            <strong>
+              Prof. Dr. Inam Ullah Khan
+            </strong>
+
+            <span>
+              Chief Academic & Research Advisor
+            </span>
+
           </div>
 
+
           <div class="organizer-card">
-            <strong>Laraib Ehsan</strong>
-            <span>Team Lead</span>
+
+            <strong>
+              Nawal Asim
+            </strong>
+
+            <span>
+              Team Lead
+            </span>
+
           </div>
+
+
+          <div class="organizer-card">
+
+            <strong>
+              Nimra Wajid
+            </strong>
+
+            <span>
+              Team Lead
+            </span>
+
+          </div>
+
+
+          <div class="organizer-card">
+
+            <strong>
+              Mohammadi Irram Sadaf
+            </strong>
+
+            <span>
+              Team Lead
+            </span>
+
+          </div>
+
+
+          <div class="organizer-card">
+
+            <strong>
+              Zainab Zaheen
+            </strong>
+
+            <span>
+              Team Lead
+            </span>
+
+          </div>
+
+
+          <div class="organizer-card">
+
+            <strong>
+              Laraib Ehsan
+            </strong>
+
+            <span>
+              Team Lead
+            </span>
+
+          </div>
+
 
         </div>
 
@@ -1332,9 +2277,10 @@
     </section>
 
 
-    <!-- ================================
+
+    <!-- ===================================================
          FINAL CTA
-         ================================ -->
+         =================================================== -->
 
     <section class="section">
 
@@ -1342,16 +2288,24 @@
 
         <div class="cta">
 
-          <span class="eyebrow">AI Innovation Hackathon 2026</span>
+          <span class="eyebrow">
+            AI Innovation Hackathon 2026
+          </span>
 
-          <h2>Ready to Build Something Meaningful?</h2>
+
+          <h2>
+            Ready to Build Something Meaningful?
+          </h2>
+
 
           <p>
-            Review the official rules and submission format before
-            registering for the hackathon.
+            Review the official rules and submission format
+            before registering for the hackathon.
           </p>
 
+
           <div class="hackathon-actions">
+
 
             <a
               href="https://docs.google.com/forms/d/e/1FAIpQLSfoe13kLavD7Y-kfZjCabYuOWQhCRXDZNyCLzqJcndGKo7ELA/viewform"
@@ -1362,6 +2316,7 @@
               Register Now
             </a>
 
+
             <a
               href="assets/docs/AI_Innovation_Hackathon_2026_Rules_and_Regulations_FULL_NAME.docx"
               class="btn"
@@ -1369,6 +2324,7 @@
             >
               Rules & Regulations
             </a>
+
 
             <a
               href="assets/docs/AI_Innovation_Hackathon_2026_Submission_Format.docx"
@@ -1378,6 +2334,7 @@
               Submission Format
             </a>
 
+
           </div>
 
         </div>
@@ -1386,12 +2343,14 @@
 
     </section>
 
+
   </main>
 
 
-  <!-- ================================
+
+  <!-- =====================================================
        FOOTER
-       ================================ -->
+       ===================================================== -->
 
   <footer>
 
@@ -1399,28 +2358,49 @@
 
       <div class="footer-grid">
 
+
         <div>
+
           <strong>
             Women in AI, Research, Innovation & Entrepreneurship Club
           </strong>
 
+
           <p>
             Research • Innovation • Entrepreneurship
           </p>
+
         </div>
 
+
         <div class="footer-links">
-          <a href="index.html">Home</a>
-          <a href="events.html">Events</a>
-          <a href="join.html">Join Us</a>
+
+          <a href="index.html">
+            Home
+          </a>
+
+          <a href="events.html">
+            Events
+          </a>
+
+          <a href="join.html">
+            Join Us
+          </a>
+
         </div>
+
 
       </div>
 
+
       <p class="meta">
-        © <span data-year></span>
+
+        ©
+        <span data-year></span>
+
         Women in AI, Research, Innovation & Entrepreneurship Club.
         All rights reserved.
+
       </p>
 
     </div>
@@ -1428,11 +2408,13 @@
   </footer>
 
 
-  <!-- ================================
-       MAIN JAVASCRIPT
-       ================================ -->
+
+  <!-- =====================================================
+       JAVASCRIPT
+       ===================================================== -->
 
   <script src="js/main.js"></script>
+
 
 </body>
 </html>
