@@ -1,35 +1,43 @@
-# Women in AI, Research, Innovation & Entrepreneurship Club — Website v2.0
+# Women in AI, Research, Innovation & Entrepreneurship Club
 
-## Current official information
-- Club: Women in AI, Research, Innovation & Entrepreneurship Club
-- Tagline: Research • Innovation • Entrepreneurship
-- Founder: Dr. Ayesha Heena
-- President: Mohsina Banu
-- Email: womeninairclub@gmail.com
-- WhatsApp Community: https://chat.whatsapp.com/DsJeBSmTsD1FaE4n0elSIj
+Research • Innovation • Entrepreneurship
 
-## Tech
-Static HTML + CSS + JavaScript. Designed for GitHub Pages.
+Official website for the Women in AI, Research, Innovation & Entrepreneurship Club.
 
-## Before publishing
-1. Add the official Google Form URL in `join.html`.
-2. Add official LinkedIn, Instagram and GitHub URLs in `contact.html`.
-3. Add approved founder/president bios and photos if desired.
-4. Replace placeholder team/project/publication content only with verified information.
-5. Commit/push the folder to GitHub and enable GitHub Pages.
+## Website structure
+- Home
+- About
+- Research
+- Teams
+- Projects
+- Publications
+- People
+- Events
+- AI Innovation Hackathon 2026 (`hackathon.html`)
+- Join Us
+- Contact
+- Privacy
 
-## Files
-- `index.html` — homepage
-- `about.html` — vision, mission, leadership
-- `research.html` — five research areas
-- `teams.html` — team structure
-- `projects.html` — project architecture
-- `publications.html` — publication library
-- `people.html` — leadership and future profiles
-- `events.html` — events
-- `events.html` — official AI Innovation Hackathon 2026 portal
-- `join.html` — membership/community
-- `contact.html` — official contact
-- `assets/logo.png` — official uploaded logo
-- `css/style.css` — design system
-- `js/main.js` — mobile navigation + year
+## Hackathon resources
+- `assets/docs/AI_Innovation_Hackathon_2026_Rules_and_Regulations_FULL_NAME.docx`
+- `assets/docs/AI_Innovation_Hackathon_2026_Submission_Format.docx`
+- `assets/docs/AI_Innovation_Hackathon_2026_Submission_Format.pdf`
+- `assets/docs/problem-statements/` — final five participant-facing problem-statement PDFs
+
+## Hackathon problem statements
+Final participant-facing problem statements are available under `assets/docs/problem-statements/`:
+- AI/ML Methodology
+- Biomedical AI — Image & Signal Analysis
+- Explainable AI (XAI)
+- Trustworthy AI
+- Research & Publications
+
+All five PDFs use the same professional website-matched theme and standardized challenge structure.
+
+## Deployment
+Static website suitable for GitHub Pages.
+
+## Notes
+- Official club logo artwork is unchanged.
+- The final-project submission link is intentionally not published until organizers release the official submission form.
+- The final submission time is not hardcoded; the official rules state that it will be announced as part of the 20 October 2026 schedule.
