@@ -27,6 +27,7 @@ Static HTML + CSS + JavaScript. Designed for GitHub Pages.
 - `publications.html` — publication library
 - `people.html` — leadership and future profiles
 - `events.html` — events
+- `events.html` — official AI Innovation Hackathon 2026 portal
 - `join.html` — membership/community
 - `contact.html` — official contact
 - `assets/logo.png` — official uploaded logo
