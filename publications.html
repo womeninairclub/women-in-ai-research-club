@@ -15,16 +15,24 @@
 <body>
 
 <header class="nav">
+
   <div class="container nav-inner">
 
-    <a class="brand" href="index.html">
+    <a class="brand" href="index.html" aria-label="Women in AI, Research, Innovation & Entrepreneurship Club">
       <img src="assets/logo.png" alt="Women in AI, Research, Innovation & Entrepreneurship Club logo">
-      <span>Women in AI, Research, Innovation & Entrepreneurship Club</span>
+      <span>
+        WOMEN IN AI,<br>
+        RESEARCH, INNOVATION &amp;<br>
+        ENTREPRENEURSHIP CLUB
+      </span>
     </a>
 
-    <button class="menu" aria-label="Open menu">☰</button>
+    <button class="menu" aria-label="Open navigation" aria-expanded="false">
+      ☰
+    </button>
 
-    <nav class="navlinks">
+    <nav class="navlinks" aria-label="Primary navigation">
+      <a href="index.html">Home</a>
       <a href="about.html">About</a>
       <a href="research.html">Research</a>
       <a href="teams.html">Teams</a>
@@ -32,10 +40,11 @@
       <a href="publications.html">Publications</a>
       <a href="people.html">People</a>
       <a href="events.html">Events</a>
-<a href="join.html" class="btn primary">Join Us</a>
+      <a href="join.html" class="btn primary">Join Us</a>
     </nav>
 
   </div>
+
 </header>
 
 
@@ -278,7 +287,8 @@
 </footer>
 
 
-<script src="js/main.js"></script>
 
+
+<script src="js/main.js"></script>
 </body>
 </html>

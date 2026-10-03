@@ -1,32 +1,32 @@
 document.addEventListener("DOMContentLoaded", () => {
-
   const menu = document.querySelector(".menu");
-  const links = document.querySelector(".navlinks");
+  const nav = document.querySelector(".navlinks");
 
-  if (menu && links) {
+  if (menu && nav) {
     menu.addEventListener("click", () => {
-      links.classList.toggle("open");
+      const open = nav.classList.toggle("open");
+      menu.setAttribute("aria-expanded", String(open));
+      menu.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
     });
   }
 
-  // Automatically underline the page currently being visited.
-  let currentPage = window.location.pathname.split("/").pop();
-  if (!currentPage) currentPage = "index.html";
+  let current = window.location.pathname.split("/").pop();
+  if (!current) current = "index.html";
 
-  document.querySelectorAll(".navlinks a").forEach((link) => {
+  document.querySelectorAll(".navlinks a").forEach(link => {
     const href = link.getAttribute("href");
-    if (!href || href.startsWith("http") || href.startsWith("#") || href.startsWith("mailto:")) return;
-    link.classList.toggle("active", href === currentPage);
+    if (href === current) link.classList.add("active");
   });
 
-  document.querySelectorAll(".navlinks a").forEach((link) => {
+  document.querySelectorAll(".navlinks a").forEach(link => {
     link.addEventListener("click", () => {
-      if (links) links.classList.remove("open");
+      nav?.classList.remove("open");
+      menu?.setAttribute("aria-expanded", "false");
+      menu?.setAttribute("aria-label", "Open navigation");
     });
   });
 
-  document.querySelectorAll("[data-year]").forEach((element) => {
-    element.textContent = new Date().getFullYear();
+  document.querySelectorAll("[data-year]").forEach(el => {
+    el.textContent = new Date().getFullYear();
   });
-
 });
