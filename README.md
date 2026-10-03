@@ -1,7 +1,7 @@
-# Women in AI Research Club — Website v2.0
+# Women in AI, Research, Innovation & Entrepreneurship Club — Website v2.0
 
 ## Current official information
-- Club: Women in AI Research Club
+- Club: Women in AI, Research, Innovation & Entrepreneurship Club
 - Tagline: Research • Innovation • Entrepreneurship
 - Founder: Dr. Ayesha Heena
 - President: Mohsina Banu
