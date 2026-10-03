@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AI Innovation Hackathon 2026 | Women in AI Research Club</title>
+  <meta name="description" content="Official AI Innovation Hackathon 2026 portal — rules, schedule, challenges, submission requirements and judging information.">
+  <link rel="icon" href="assets/logo.png">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .hack-hero{
+      padding:92px 0 72px;
+      background:
+        radial-gradient(circle at 85% 15%,rgba(184,120,255,.18),transparent 34%),
+        linear-gradient(180deg,#0d0912,#07070b);
+      position:relative;overflow:hidden;
+    }
+    .hack-hero h1{max-width:950px}
+    .accent{color:var(--purple)}
+    .hack-badge{
+      display:inline-block;padding:7px 13px;border-radius:999px;
+      border:1px solid rgba(184,120,255,.35);
+      background:rgba(184,120,255,.07);color:#dfc4ff;
+      font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+      margin-bottom:18px
+    }
+    .hack-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:44px}
+    .hack-meta .card{padding:20px}
+    .hack-meta small{display:block;color:var(--muted);font-size:11px;letter-spacing:.12em;margin-bottom:5px}
+    .hack-meta strong{font-size:16px}
+    .anchor-nav{display:flex;flex-wrap:wrap;gap:9px;margin-top:28px}
+    .anchor-nav a{padding:9px 13px;border:1px solid var(--line);border-radius:999px;color:#ddd8e6;font-size:13px}
+    .anchor-nav a:hover{border-color:rgba(184,120,255,.4);color:#fff}
+    .timeline{display:grid;gap:12px;margin-top:28px}
+    .timeline-item{display:grid;grid-template-columns:170px 1fr;gap:22px;padding:21px;border:1px solid var(--line);border-radius:18px;background:var(--surface)}
+    .timeline-time{color:var(--purple);font-weight:700}
+    .timeline-item strong{display:block;margin-bottom:4px}
+    .timeline-item p{margin:0;color:var(--muted)}
+    .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:28px}
+    .step-card{padding:22px 16px;border:1px solid var(--line);border-radius:18px;background:var(--surface);text-align:center}
+    .step-num{width:40px;height:40px;margin:0 auto 14px;border-radius:12px;display:grid;place-items:center;color:var(--purple);border:1px solid rgba(184,120,255,.3);background:rgba(184,120,255,.07);font-weight:700}
+    .step-card p{color:var(--muted);font-size:13px}
+    .challenge{min-height:190px}
+    .challenge .tag{color:var(--purple);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+    .notice{padding:24px;border:1px solid rgba(184,120,255,.3);border-radius:20px;background:rgba(184,120,255,.06);margin-top:24px}
+    .notice p{margin:8px 0 0;color:var(--muted)}
+    .rules{display:grid;gap:11px;margin-top:28px}
+    .rule{display:grid;grid-template-columns:42px 1fr;gap:15px;padding:19px;border:1px solid var(--line);border-radius:18px;background:var(--surface)}
+    .rule-no{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;color:var(--purple);background:rgba(184,120,255,.08);border:1px solid rgba(184,120,255,.25);font-weight:700}
+    .rule strong{display:block;margin-bottom:4px}.rule p{margin:0;color:var(--muted)}
+    .submission-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:28px}
+    .checklist{display:grid;gap:10px;margin-top:16px}
+    .check{padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#0d0d13;color:#ddd8e6}
+    .check::before{content:"✓";color:var(--purple);font-weight:700;margin-right:9px}
+    .repo{background:#08080d;border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:16px;overflow:auto}
+    .repo pre{margin:0;color:#ddd6e8;font:13px/1.7 monospace}
+    .criteria{width:100%;border-collapse:collapse;margin-top:26px}
+    .criteria th,.criteria td{padding:16px;border-bottom:1px solid var(--line);text-align:left}
+    .criteria th{background:var(--surface2);color:var(--purple);font-size:13px}
+    .criteria td{background:var(--surface);color:var(--muted)}
+    .criteria td:first-child{color:#fff;font-weight:600}
+    .faq{display:grid;gap:10px;margin-top:26px}
+    .faq details{padding:19px;border:1px solid var(--line);border-radius:17px;background:var(--surface)}
+    .faq summary{cursor:pointer;font-weight:700}
+    .faq p{color:var(--muted);margin:12px 0 0}
+    .organizer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:28px}
+    .role{color:var(--purple);font-size:12px;font-weight:700;letter-spacing:.1em}
+    .final-cta{text-align:center}
+    .final-cta .lead{margin:0 auto}
+    @media(max-width:900px){
+      .hack-meta{grid-template-columns:repeat(2,1fr)}
+      .steps{grid-template-columns:repeat(2,1fr)}
+      .submission-grid{grid-template-columns:1fr}
+      .organizer-grid{grid-template-columns:1fr}
+    }
+    @media(max-width:650px){
+      .hack-meta{grid-template-columns:1fr}
+      .timeline-item{grid-template-columns:1fr;gap:5px}
+      .steps{grid-template-columns:1fr}
+      .criteria{font-size:13px}
+      .criteria th,.criteria td{padding:11px}
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">
+      <img src="assets/logo.png" alt="Women in AI Research Club logo">
+      <span>WOMEN IN AI<br>RESEARCH CLUB</span>
+    </a>
+
+    <button class="menu" aria-label="Open menu">☰</button>
+
+    <nav class="navlinks">
+      <a href="about.html">About</a>
+      <a href="research.html">Research</a>
+      <a href="teams.html">Teams</a>
+      <a href="projects.html">Projects</a>
+      <a href="publications.html">Publications</a>
+      <a href="people.html">People</a>
+      <a href="events.html">Events</a>
+      <a href="hackathon.html" class="hackathon-link">Hackathon</a>
+      <a href="join.html" class="btn primary">Join Us</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="hack-hero">
+  <div class="container">
+    <div class="hack-badge">Official Hackathon Portal</div>
+    <div class="eyebrow">Women in AI Research Club</div>
+    <h1>AI Innovation <span class="accent">Hackathon 2026</span></h1>
+    <p class="lead">
+      Build practical AI solutions, collaborate with your team and present your work
+      in an online innovation hackathon open to participants from around the world.
+    </p>
+
+    <div class="hero-actions">
+      <a class="btn primary" target="_blank" rel="noopener"
+         href="https://docs.google.com/forms/d/e/1FAIpQLSfoe13kLavD7Y-kfZjCabYuOWQhCRXDZNyCLzqJcndGKo7ELA/viewform">
+        Register Now
+      </a>
+      <a class="btn" href="#submission">Submission Guide</a>
+      <a class="btn" href="#rules">Rules & Regulations</a>
+    </div>
+
+    <div class="hack-meta">
+      <div class="card"><small>DATE</small><strong>20 October 2026</strong></div>
+      <div class="card"><small>MODE</small><strong>Online</strong></div>
+      <div class="card"><small>PARTICIPATION</small><strong>Open to Everyone</strong></div>
+      <div class="card"><small>REGISTRATION</small><strong>Free</strong></div>
+    </div>
+
+    <div class="anchor-nav">
+      <a href="#schedule">Schedule</a>
+      <a href="#challenges">Challenges</a>
+      <a href="#rules">Rules</a>
+      <a href="#submission">Submission</a>
+      <a href="#judging">Judging</a>
+      <a href="#faq">FAQ</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Before You Participate</div>
+        <h2>Registration and submission are different.</h2>
+      </div>
+      <p>
+        Participants first register through the official registration form.
+        During the hackathon, teams build their solution and later submit the
+        completed project through the official project-submission process.
+      </p>
+    </div>
+
+    <div class="grid grid-3">
+      <div class="card">
+        <div class="icon">01</div>
+        <h3>Register</h3>
+        <p>Complete the official participant registration form and provide accurate team information.</p>
+      </div>
+      <div class="card">
+        <div class="icon">02</div>
+        <h3>Build</h3>
+        <p>Work on the released challenge during the official development window.</p>
+      </div>
+      <div class="card">
+        <div class="icon">03</div>
+        <h3>Submit</h3>
+        <p>Submit the completed project, GitHub repository and required supporting information before the deadline.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="schedule">
+  <div class="container">
+    <div class="eyebrow">20 October 2026</div>
+    <h2>Hackathon Day Schedule</h2>
+
+    <div class="timeline">
+      <div class="timeline-item"><div class="timeline-time">10:00 AM</div><div><strong>Opening</strong><p>Official opening and briefing.</p></div></div>
+      <div class="timeline-item"><div class="timeline-time">10:30 AM</div><div><strong>Problem Statements Released</strong><p>Official challenges are released to participants.</p></div></div>
+      <div class="timeline-item"><div class="timeline-time">10:30 AM – 6:00 PM</div><div><strong>Development</strong><p>Teams develop, test and document their solutions.</p></div></div>
+      <div class="timeline-item"><div class="timeline-time">6:00 PM</div><div><strong>Submission Deadline</strong><p>All required project materials must be submitted.</p></div></div>
+      <div class="timeline-item"><div class="timeline-time">6:00 – 8:00 PM</div><div><strong>Judging</strong><p>Judges review and evaluate the submitted projects.</p></div></div>
+      <div class="timeline-item"><div class="timeline-time">8:00 PM</div><div><strong>Results & Closing</strong><p>Results announcement and official closing.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="challenges">
+  <div class="container">
+    <div class="eyebrow">Challenges</div>
+    <h2>Problem Statements</h2>
+    <p class="lead">The official problem statements will be released at 10:30 AM on hackathon day.</p>
+
+    <div class="notice">
+      <strong>Problem statements are intentionally not published here yet.</strong>
+      <p>
+        Once the organizers release the final challenges, replace the five cards below
+        with the official problem title, description, requirements and expected outcome.
+      </p>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:18px">
+      <div class="card challenge"><div class="tag">Challenge 01</div><h3>Coming Soon</h3><p>Official problem statement will appear here after release.</p></div>
+      <div class="card challenge"><div class="tag">Challenge 02</div><h3>Coming Soon</h3><p>Official problem statement will appear here after release.</p></div>
+      <div class="card challenge"><div class="tag">Challenge 03</div><h3>Coming Soon</h3><p>Official problem statement will appear here after release.</p></div>
+      <div class="card challenge"><div class="tag">Challenge 04</div><h3>Coming Soon</h3><p>Official problem statement will appear here after release.</p></div>
+      <div class="card challenge"><div class="tag">Challenge 05</div><h3>Coming Soon</h3><p>Official problem statement will appear here after release.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="rules">
+  <div class="container">
+    <div class="eyebrow">Participant Guide</div>
+    <h2>Rules & Regulations</h2>
+
+    <div class="rules">
+      <div class="rule"><div class="rule-no">01</div><div><strong>Eligibility</strong><p>The hackathon is open to participants from different locations and backgrounds who complete the official registration requirements.</p></div></div>
+      <div class="rule"><div class="rule-no">02</div><div><strong>Team Size</strong><p>Teams should consist of 2–4 members. Team information must be accurately represented in the registration and submission materials.</p></div></div>
+      <div class="rule"><div class="rule-no">03</div><div><strong>Originality</strong><p>Submitted work must represent the team's own work. Plagiarism, copied solutions and misrepresentation of another person's work are not permitted.</p></div></div>
+      <div class="rule"><div class="rule-no">04</div><div><strong>Development Period</strong><p>Teams must develop their solution during the official hackathon development period unless the organizers explicitly state otherwise.</p></div></div>
+      <div class="rule"><div class="rule-no">05</div><div><strong>External Resources</strong><p>Libraries, frameworks, datasets and other external resources may be used where permitted, with appropriate attribution and license compliance.</p></div></div>
+      <div class="rule"><div class="rule-no">06</div><div><strong>AI-Assisted Tools</strong><p>AI tools may be used where permitted. Teams remain responsible for their submitted work and must disclose significant AI assistance.</p></div></div>
+      <div class="rule"><div class="rule-no">07</div><div><strong>GitHub Repository</strong><p>The submitted repository must be accessible to the judges and contain the required source code and documentation.</p></div></div>
+      <div class="rule"><div class="rule-no">08</div><div><strong>Deadline</strong><p>All required submission materials must be submitted by 6:00 PM on 20 October 2026.</p></div></div>
+      <div class="rule"><div class="rule-no">09</div><div><strong>Prohibited Activity</strong><p>Unauthorized access, attacks against systems, malicious code, disruption of other teams and other harmful or unlawful activity are prohibited.</p></div></div>
+      <div class="rule"><div class="rule-no">10</div><div><strong>Conduct</strong><p>Participants must communicate respectfully with other participants, organizers, mentors and judges.</p></div></div>
+      <div class="rule"><div class="rule-no">11</div><div><strong>Submission Integrity</strong><p>Teams must provide accurate project information, team details and links. Inaccessible or incomplete submissions may not be fully evaluated.</p></div></div>
+      <div class="rule"><div class="rule-no">12</div><div><strong>Organizer Authority</strong><p>The organizers may clarify rules and address exceptional situations to protect the integrity and smooth operation of the event.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="submission">
+  <div class="container">
+    <div class="eyebrow">Final Submission</div>
+    <h2>Submission Format</h2>
+    <p class="lead">
+      Your project submission should make it easy for the judges to understand, access and evaluate your work.
+    </p>
+
+    <div class="steps">
+      <div class="step-card"><div class="step-num">01</div><strong>Build</strong><p>Complete the selected challenge.</p></div>
+      <div class="step-card"><div class="step-num">02</div><strong>GitHub</strong><p>Create an accessible project repository.</p></div>
+      <div class="step-card"><div class="step-num">03</div><strong>Document</strong><p>Complete the required README and files.</p></div>
+      <div class="step-card"><div class="step-num">04</div><strong>Demo</strong><p>Prepare a working demo or demonstration video.</p></div>
+      <div class="step-card"><div class="step-num">05</div><strong>Submit</strong><p>Submit the repository and project details through the official form.</p></div>
+    </div>
+
+    <div class="submission-grid">
+      <div class="card">
+        <h3>Required Project Information</h3>
+        <div class="checklist">
+          <div class="check">Team name and team members</div>
+          <div class="check">Selected challenge / problem statement</div>
+          <div class="check">Project title</div>
+          <div class="check">Abstract / project overview</div>
+          <div class="check">Problem addressed and proposed solution</div>
+          <div class="check">Methodology / implementation approach</div>
+          <div class="check">Technologies and datasets used</div>
+          <div class="check">GitHub repository URL</div>
+          <div class="check">Demo or demonstration video URL</div>
+          <div class="check">AI tools used and disclosure</div>
+          <div class="check">Team contribution details</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Recommended GitHub Structure</h3>
+        <p>Keep the repository organized and make the README the first place judges can understand your project.</p>
+        <div class="repo"><pre>AI-Innovation-Hackathon-2026/
+│
+├── README.md
+├── src/
+├── models/
+├── notebooks/
+├── documentation/
+├── demo/
+├── requirements.txt
+└── LICENSE (if applicable)</pre></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <h3>README.md Format</h3>
+      <div class="repo"><pre># Project Title
+
+## Team Members
+## Selected Challenge
+## Problem Statement
+## Abstract
+## Proposed Solution
+## Methodology
+## Technologies Used
+## Dataset / Data Sources
+## Results
+## Installation
+## How to Run
+## Demo
+## Future Scope
+## AI Tools Used
+## Team Contributions</pre></div>
+    </div>
+
+    <div class="notice">
+      <strong>Important:</strong>
+      <p>
+        The Google Form currently linked as “Register Now” is the participant registration form.
+        It is not the final project-submission form. The official project-submission form should be linked here
+        once the organizers publish it.
+      </p>
+    </div>
+
+    <div class="hero-actions">
+      <a class="btn primary" target="_blank" rel="noopener"
+         href="https://docs.google.com/forms/d/e/1FAIpQLSfoe13kLavD7Y-kfZjCabYuOWQhCRXDZNyCLzqJcndGKo7ELA/viewform">
+        Register for Hackathon
+      </a>
+      <a class="btn" href="#submission">Submission Checklist</a>
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="judging">
+  <div class="container">
+    <div class="eyebrow">Evaluation</div>
+    <h2>Judging Criteria</h2>
+    <p class="lead">Projects are evaluated across the following areas.</p>
+
+    <table class="criteria">
+      <thead><tr><th>Criteria</th><th>What Judges Consider</th></tr></thead>
+      <tbody>
+        <tr><td>Problem Understanding</td><td>Clarity of understanding of the selected challenge and how well the solution addresses it.</td></tr>
+        <tr><td>Innovation</td><td>Originality, creativity and thoughtfulness of the proposed approach.</td></tr>
+        <tr><td>Technical Implementation</td><td>Quality of implementation, technical choices, functionality and reliability.</td></tr>
+        <tr><td>Practical Impact</td><td>Potential usefulness, relevance, applicability and meaningful impact.</td></tr>
+        <tr><td>Presentation & Documentation</td><td>Clarity of demonstration, repository, README, documentation and communication.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="eyebrow">Responsible Development</div>
+    <h2>AI Tools Disclosure</h2>
+    <div class="card">
+      <p>
+        Participants may use AI-assisted development tools where permitted by the challenge rules.
+        Teams remain responsible for the accuracy, originality, security and functionality of their submitted work.
+      </p>
+      <p>
+        Significant use of AI tools should be disclosed in the project submission, including the tools used
+        and the nature of their contribution where relevant.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="faq">
+  <div class="container">
+    <div class="eyebrow">Help</div>
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq">
+      <details><summary>Is registration free?</summary><p>Yes. Registration and participation are free.</p></details>
+      <details><summary>Is the hackathon online?</summary><p>Yes. The AI Innovation Hackathon 2026 is an online event.</p></details>
+      <details><summary>Who can participate?</summary><p>The event is open to everyone who completes the official registration requirements.</p></details>
+      <details><summary>How many people can be in a team?</summary><p>Teams consist of 2–4 members.</p></details>
+      <details><summary>When are the problem statements released?</summary><p>The official problem statements are released at 10:30 AM on 20 October 2026.</p></details>
+      <details><summary>Where do we submit the project?</summary><p>The completed project is submitted through the official project-submission process, with the GitHub repository URL and required project information.</p></details>
+      <details><summary>Is the registration form the project-submission form?</summary><p>No. Registration and final project submission are separate steps.</p></details>
+      <details><summary>Do I need GitHub?</summary><p>Yes. The final submission requires an accessible GitHub repository containing the project materials.</p></details>
+      <details><summary>Can we use AI tools?</summary><p>AI-assisted tools may be used where permitted, but significant use should be disclosed and teams remain responsible for their work.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="eyebrow">Hackathon Team</div>
+    <h2>Organizers & Judges</h2>
+
+    <div class="organizer-grid">
+      <div class="card"><div class="role">LEAD ORGANIZER</div><h3>Dr. Ayesha Heena</h3><p>Founder & Faculty Coordinator, Women in AI Research Club.</p></div>
+      <div class="card"><div class="role">EVENT DIRECTOR</div><h3>Mohsina Banu</h3><p>President, Women in AI Research Club.</p></div>
+      <div class="card"><div class="role">CHIEF ACADEMIC & RESEARCH ADVISOR</div><h3>Prof. Dr. Inam Ullah Khan</h3><p>Honorary Chief Academic & Research Advisor.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="cta final-cta">
+      <div class="eyebrow">AI Innovation Hackathon 2026</div>
+      <h2>Ready to build?</h2>
+      <p class="lead">Read the rules, prepare your team and register through the official form.</p>
+      <div class="hero-actions" style="justify-content:center">
+        <a class="btn primary" target="_blank" rel="noopener"
+           href="https://docs.google.com/forms/d/e/1FAIpQLSfoe13kLavD7Y-kfZjCabYuOWQhCRXDZNyCLzqJcndGKo7ELA/viewform">
+          Register Now
+        </a>
+        <a class="btn" href="#rules">Read Rules</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="container footer-grid">
+    <div>
+      <div class="brand">
+        <img src="assets/logo.png" alt="Women in AI Research Club logo">
+        <span>WOMEN IN AI<br>RESEARCH CLUB</span>
+      </div>
+      <p>Research • Innovation • Entrepreneurship</p>
+      <p>© <span data-year></span> Women in AI Research Club.</p>
+    </div>
+
+    <div>
+      <strong>Hackathon</strong>
+      <div class="footer-links">
+        <a href="#schedule">Schedule</a>
+        <a href="#challenges">Challenges</a>
+        <a href="#rules">Rules</a>
+        <a href="#submission">Submission</a>
+        <a href="#judging">Judging</a>
+      </div>
+    </div>
+
+    <div>
+      <strong>Connect</strong>
+      <div class="footer-links">
+        <a href="mailto:womeninairclub@gmail.com">Email</a>
+        <a href="https://chat.whatsapp.com/DsJeBSmTsD1FaE4n0elSIj" target="_blank" rel="noopener">WhatsApp Community</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
