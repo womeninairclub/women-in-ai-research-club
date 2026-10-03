@@ -146,3 +146,30 @@ body{overflow-x:hidden}
   .hack-nav .navlinks{display:none}
   .hack-nav .navlinks.open{display:flex;position:absolute;left:12px;right:12px;top:72px;background:#fff;padding:15px;border:1px solid var(--hack-line);border-radius:16px;box-shadow:0 15px 40px rgba(0,0,0,.1);flex-direction:column}
 }
+
+/* Scheduled problem-statement release */
+[data-release-href]{
+  position:relative;
+}
+[data-release-href][aria-disabled="true"]{
+  opacity:.58;
+  cursor:not-allowed;
+  pointer-events:none;
+}
+.release-box.is-open{
+  border-color:#c9b7ff;
+  background:#faf8ff;
+}
+
+/* Problem statements remain visibly locked until the official release moment. */
+.problem-lock[aria-disabled="true"] {
+  opacity: .58;
+  cursor: not-allowed;
+  filter: saturate(.65);
+}
+.problem-lock[aria-disabled="true"]:hover {
+  transform: none;
+}
+.release-box.is-open .release-icon {
+  opacity: 1;
+}

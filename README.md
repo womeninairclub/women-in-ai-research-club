@@ -22,10 +22,10 @@ Official website for the Women in AI, Research, Innovation & Entrepreneurship Cl
 - `assets/docs/AI_Innovation_Hackathon_2026_Rules_and_Regulations_FULL_NAME.docx`
 - `assets/docs/AI_Innovation_Hackathon_2026_Submission_Format.docx`
 - `assets/docs/AI_Innovation_Hackathon_2026_Submission_Format.pdf`
-- `assets/docs/problem-statements/` — final five participant-facing problem-statement PDFs
+- `assets/docs/problem-statements/` — release directory for the five participant-facing problem-statement PDFs (kept empty in the public pre-release package)
 
 ## Hackathon problem statements
-Final participant-facing problem statements are available under `assets/docs/problem-statements/`:
+The five final participant-facing problem statements are intentionally **not included in this public pre-release package**. This prevents direct URL access before the official release. On **18 October 2026 at 12:00 AM IST**, upload the five PDFs into `assets/docs/problem-statements/`; `js/hackathon.js` will automatically unlock the website buttons.
 - AI/ML Methodology
 - Biomedical AI — Image & Signal Analysis
 - Explainable AI (XAI)
