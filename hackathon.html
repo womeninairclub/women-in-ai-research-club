@@ -457,58 +457,51 @@
     <div class="container">
 
       <div class="section-head">
-
         <div>
-
-          <div class="eyebrow">
-            Confirmed Participants
-          </div>
-
-          <h2>
-            Meet the participants.
-          </h2>
-
+          <div class="eyebrow">Confirmed Participants</div>
+          <h2>Meet the participants.</h2>
         </div>
 
         <p>
-          This section is connected to the official registration system.
-          Only participants approved for public display are shown here.
+          This directory is connected to the official registration system.
+          Participants who submit the official registration and confirmation form
+          are listed here.
         </p>
-
       </div>
 
-
-      <div class="grid grid-2">
-
-        <div class="card">
-          <div class="role">Confirmed Participants</div>
-          <h3 id="participantCount">0</h3>
-          <p>Participants approved for public display.</p>
+      <div class="participant-summary">
+        <div class="participant-stat">
+          <strong id="participantCount">0</strong>
+          <span>Confirmed Participants</span>
         </div>
 
-        <div class="card">
-          <div class="role">Teams / Entries</div>
-          <h3 id="teamCount">0</h3>
-          <p>Confirmed team or individual entries.</p>
+        <div class="participant-stat">
+          <strong id="teamCount">0</strong>
+          <span>Teams / Entries</span>
         </div>
-
       </div>
-
-
-      <p
-        id="participantStatus"
-        class="small-note"
-        style="margin-top:20px"
-      >
-        Loading confirmed participants...
-      </p>
-
 
       <div
-        id="participantGrid"
-        class="grid grid-3"
-        style="margin-top:24px"
-      ></div>
+        id="participantStatus"
+        class="participant-status"
+      >
+        Loading confirmed participants...
+      </div>
+
+      <div class="participant-table-wrap">
+        <table class="participant-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Participant / Team</th>
+              <th>Country</th>
+              <th>Type</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody id="participantGrid"></tbody>
+        </table>
+      </div>
 
     </div>
 
@@ -1536,222 +1529,123 @@ const PARTICIPANT_API =
 
 async function loadParticipants() {
 
-  const grid =
+  const tableBody =
     document.getElementById("participantGrid");
-
   const status =
     document.getElementById("participantStatus");
-
   const participantCount =
     document.getElementById("participantCount");
-
   const teamCount =
     document.getElementById("teamCount");
 
-
-  if (!grid) {
-    return;
-  }
-
+  if (!tableBody) return;
 
   try {
-
-    const response =
-      await fetch(
-        PARTICIPANT_API,
-        {
-          cache: "no-store"
-        }
-      );
-
+    const response = await fetch(PARTICIPANT_API, {
+      cache: "no-store"
+    });
 
     if (!response.ok) {
-
-      throw new Error(
-        "Participant API request failed."
-      );
-
+      throw new Error("Participant API request failed.");
     }
 
+    const participants = await response.json();
+    tableBody.innerHTML = "";
 
-    const participants =
-      await response.json();
-
-
-    grid.innerHTML = "";
-
-
-    if (
-      !Array.isArray(participants) ||
-      participants.length === 0
-    ) {
-
+    if (!Array.isArray(participants) || participants.length === 0) {
       status.textContent =
-        "Confirmed participants will appear here once the organizer approves them for public display.";
-
-      participantCount.textContent =
-        "0";
-
-      teamCount.textContent =
-        "0";
-
+        "No confirmed participants have registered yet.";
+      participantCount.textContent = "0";
+      teamCount.textContent = "0";
       return;
-
     }
-
 
     status.textContent = "";
+    participantCount.textContent = participants.length;
 
+    const entries = new Set();
 
-    participantCount.textContent =
-      participants.length;
+    participants.forEach(participant => {
+      const isTeam =
+        participant.participationType === "Team" &&
+        participant.teamName &&
+        participant.teamName.trim();
 
-
-    const teams =
-      new Set(
-
-        participants
-
-          .map(
-            participant =>
-              (participant.teamName || "").trim()
-          )
-
-          .filter(
-            name =>
-              name &&
-              name !== "Individual"
-          )
-
-      );
-
-
-    teamCount.textContent =
-      teams.size;
-
-
-    participants.forEach(
-      participant => {
-
-        const card =
-          document.createElement(
-            "article"
-          );
-
-
-        card.className =
-          "card";
-
-
-        const isTeam =
-          participant.participationType === "Team" &&
-          participant.teamName &&
-          participant.teamName.trim();
-
-
-        const displayName =
-          isTeam
-            ? participant.teamName.trim()
-            : "Individual Participant";
-
-
-        const memberText =
-          participant.teamMembers
-            ? participant.teamMembers
-            : (
-                participant.name ||
-                "Participant"
-              );
-
-
-        card.innerHTML = `
-
-          <div class="participant-top">
-
-            <span class="participant-badge">
-
-              ${
-                isTeam
-                  ? "TEAM"
-                  : "INDIVIDUAL"
-              }
-
-            </span>
-
-
-            <span class="participant-country">
-
-              ${
-                escapeParticipantHTML(
-                  participant.country ||
-                  "International"
-                )
-              }
-
-            </span>
-
-          </div>
-
-
-          <h3>
-
-            ${
-              escapeParticipantHTML(
-                displayName
-              )
-            }
-
-          </h3>
-
-
-          <p class="participant-leader">
-
-            ${
-              escapeParticipantHTML(
-                participant.name ||
-                "Participant"
-              )
-            }
-
-          </p>
-
-
-          <p class="participant-members">
-
-            ${
-              escapeParticipantHTML(
-                memberText
-              )
-            }
-
-          </p>
-
-        `;
-
-
-        grid.appendChild(
-          card
+      if (isTeam) {
+        entries.add("TEAM:" + participant.teamName.trim().toLowerCase());
+      } else {
+        entries.add(
+          "INDIVIDUAL:" +
+          (participant.name || "").trim().toLowerCase()
         );
-
       }
-    );
+    });
 
+    teamCount.textContent = entries.size;
+
+    participants.forEach((participant, index) => {
+      const row = document.createElement("tr");
+
+      const isTeam =
+        participant.participationType === "Team" &&
+        participant.teamName &&
+        participant.teamName.trim();
+
+      const displayName = isTeam
+        ? participant.teamName.trim()
+        : participant.name || "Participant";
+
+      const type = isTeam ? "TEAM" : "INDIVIDUAL";
+
+      let details;
+
+      if (isTeam) {
+        const leader = participant.name || "Team Leader";
+        const members = participant.teamMembers || "Members not specified";
+
+        details = `
+          <div class="participant-detail-title">Team Leader</div>
+          <div class="participant-detail-main">
+            ${escapeParticipantHTML(leader)}
+          </div>
+          <div class="participant-detail-sub">
+            ${escapeParticipantHTML(members)}
+          </div>
+        `;
+      } else {
+        details = `
+          <div class="participant-detail-title">Participant</div>
+          <div class="participant-detail-main">
+            ${escapeParticipantHTML(participant.name || "Participant")}
+          </div>
+        `;
+      }
+
+      row.innerHTML = `
+        <td class="participant-number">
+          ${String(index + 1).padStart(2, "0")}
+        </td>
+        <td class="participant-name">
+          ${escapeParticipantHTML(displayName)}
+        </td>
+        <td class="participant-country">
+          ${escapeParticipantHTML(participant.country || "International")}
+        </td>
+        <td>
+          <span class="participant-type">${type}</span>
+        </td>
+        <td class="participant-details">${details}</td>
+      `;
+
+      tableBody.appendChild(row);
+    });
 
   } catch (error) {
-
-    console.error(
-      "Participant API error:",
-      error
-    );
-
-
+    console.error("Participant API error:", error);
     status.textContent =
       "Participant information is temporarily unavailable. Please try again later.";
-
   }
-
 }
-
 
 
 function escapeParticipantHTML(
