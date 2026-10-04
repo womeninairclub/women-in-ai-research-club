@@ -2,24 +2,49 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <title>Confirmed Participants | AI Innovation Hackathon 2026</title>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <title>
+    Confirmed Participants | AI Innovation Hackathon 2026
+  </title>
 
   <meta
     name="description"
     content="Confirmed participants for AI Innovation Hackathon 2026."
   >
 
-  <link rel="icon" href="assets/logo.png">
+  <link
+    rel="icon"
+    href="assets/logo.png"
+  >
 
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/hackathon.css">
+  <link
+    rel="stylesheet"
+    href="css/style.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/hackathon.css"
+  >
+
+  <!-- Participant page styling -->
+  <link
+    rel="stylesheet"
+    href="css/participants.css"
+  >
+
 </head>
 
 
 <body>
+
 
 <!-- =====================================================
      NAVIGATION
@@ -29,7 +54,11 @@
 
   <div class="container nav-inner">
 
-    <a class="brand" href="index.html">
+
+    <a
+      class="brand"
+      href="index.html"
+    >
 
       <img
         src="assets/logo.png"
@@ -110,7 +139,7 @@
 
 
 <!-- =====================================================
-     MAIN CONTENT
+     MAIN
 ===================================================== -->
 
 <main>
@@ -128,9 +157,11 @@
         AI Innovation Hackathon 2026
       </div>
 
+
       <h1>
         Confirmed Participants
       </h1>
+
 
       <p>
         Meet the teams and participants officially confirmed
@@ -166,7 +197,7 @@
 
 
   <!-- ===================================================
-       PARTICIPANT DIRECTORY
+       PARTICIPANTS
   ==================================================== -->
 
   <section
@@ -203,7 +234,7 @@
 
 
       <!-- =================================================
-           STATISTICS
+           SUMMARY
       ================================================== -->
 
       <div class="participant-summary">
@@ -216,11 +247,10 @@
           </strong>
 
           <span>
-            Confirmed Participants
+            Confirmed Entries
           </span>
 
         </div>
-
 
 
         <div class="participant-stat">
@@ -230,7 +260,7 @@
           </strong>
 
           <span>
-            Teams / Entries
+            Teams
           </span>
 
         </div>
@@ -291,6 +321,7 @@
 
 
           <tbody id="participantGrid">
+
           </tbody>
 
         </table>
@@ -313,13 +344,16 @@
 
       <div class="hack-cta">
 
+
         <div class="eyebrow">
           AI Innovation Hackathon 2026
         </div>
 
+
         <h2>
           Not on the list yet?
         </h2>
+
 
         <p>
           Submit the official registration and confirmation
@@ -354,6 +388,7 @@
     </div>
 
   </section>
+
 
 </main>
 
@@ -407,6 +442,7 @@
         Hackathon
       </strong>
 
+
       <div class="footer-links">
 
         <a href="hackathon.html">
@@ -437,11 +473,13 @@
         Connect
       </strong>
 
+
       <div class="footer-links">
 
         <a href="mailto:womeninairclub@gmail.com">
           Email
         </a>
+
 
         <a
           href="https://chat.whatsapp.com/DsJeBSmTsD1FaE4n0elSIj"
@@ -463,36 +501,34 @@
 
 
 <!-- =====================================================
-     JAVASCRIPT FILES
+     EXISTING WEBSITE JAVASCRIPT
 ===================================================== -->
 
 <script src="js/main.js"></script>
+
 <script src="js/hackathon.js"></script>
 
 
 
 <!-- =====================================================
-     PARTICIPANT DIRECTORY JAVASCRIPT
+     PARTICIPANT DIRECTORY
 ===================================================== -->
 
 <script>
 
-/* =======================================================
+
+/* =====================================================
    OFFICIAL PARTICIPANT API
-======================================================= */
+===================================================== */
 
 const PARTICIPANT_API =
   "https://script.google.com/macros/s/AKfycbwMX24cUnelzb1NSO71_vgMaEuF-on2NXRYTqycq7WJ0YkF8thwjt5eA8msd1vjCGF5/exec";
 
 
 
-/* =======================================================
+/* =====================================================
    NORMALIZE NAME
-
-   Used for matching team members even when:
-   - capitalization differs
-   - extra spaces exist
-======================================================= */
+===================================================== */
 
 function normalizeName(value) {
 
@@ -505,12 +541,9 @@ function normalizeName(value) {
 
 
 
-/* =======================================================
+/* =====================================================
    ESCAPE HTML
-
-   Prevents names/countries from being interpreted
-   as HTML.
-======================================================= */
+===================================================== */
 
 function escapeParticipantHTML(value) {
 
@@ -525,14 +558,9 @@ function escapeParticipantHTML(value) {
 
 
 
-/* =======================================================
+/* =====================================================
    SPLIT TEAM MEMBERS
-
-   Supports:
-   - commas
-   - semicolons
-   - new lines
-======================================================= */
+===================================================== */
 
 function splitMembers(value) {
 
@@ -549,27 +577,35 @@ function splitMembers(value) {
 
 
 
-/* =======================================================
+/* =====================================================
    LOAD PARTICIPANTS
-======================================================= */
+===================================================== */
 
 async function loadParticipants() {
 
 
   const tableBody =
-    document.getElementById("participantGrid");
+    document.getElementById(
+      "participantGrid"
+    );
 
 
   const status =
-    document.getElementById("participantStatus");
+    document.getElementById(
+      "participantStatus"
+    );
 
 
   const participantCount =
-    document.getElementById("participantCount");
+    document.getElementById(
+      "participantCount"
+    );
 
 
   const teamCount =
-    document.getElementById("teamCount");
+    document.getElementById(
+      "teamCount"
+    );
 
 
   if (!tableBody) {
@@ -581,9 +617,9 @@ async function loadParticipants() {
   try {
 
 
-    /* ===================================================
+    /* =================================================
        FETCH API
-    ==================================================== */
+    ================================================= */
 
     const response =
       await fetch(
@@ -612,9 +648,9 @@ async function loadParticipants() {
 
 
 
-    /* ===================================================
-       NO PARTICIPANTS
-    ==================================================== */
+    /* =================================================
+       EMPTY RESULT
+    ================================================= */
 
     if (
       !Array.isArray(participants) ||
@@ -624,9 +660,11 @@ async function loadParticipants() {
       status.textContent =
         "No confirmed participants have registered yet.";
 
-      participantCount.textContent = "0";
+      participantCount.textContent =
+        "0";
 
-      teamCount.textContent = "0";
+      teamCount.textContent =
+        "0";
 
       return;
 
@@ -634,14 +672,9 @@ async function loadParticipants() {
 
 
 
-    /* ===================================================
-       STEP 1
-       
-       FIND EVERY PERSON WHO IS ALREADY PART OF A TEAM.
-       
-       This is important because some team members may
-       have "Individual" in Participation Type.
-    ==================================================== */
+    /* =================================================
+       FIND TEAM MEMBERS
+    ================================================= */
 
     const teamMemberNames =
       new Set();
@@ -651,13 +684,7 @@ async function loadParticipants() {
       participant => {
 
 
-        const teamName =
-          String(
-            participant.teamName || ""
-          ).trim();
-
-
-        if (!teamName) {
+        if (!participant.teamName) {
           return;
         }
 
@@ -684,19 +711,9 @@ async function loadParticipants() {
 
 
 
-    /* ===================================================
-       STEP 2
-       
-       GROUP TEAMS USING TEAM NAME.
-       
-       We intentionally DO NOT use:
-       
-       participant.participationType === "Team"
-       
-       because the sheet can contain team members whose
-       participation type is incorrectly/individually
-       recorded as "Individual".
-    ==================================================== */
+    /* =================================================
+       GROUP TEAMS
+    ================================================= */
 
     const teams =
       new Map();
@@ -712,7 +729,6 @@ async function loadParticipants() {
           ).trim();
 
 
-        /* No team name = not a team row */
         if (!teamName) {
           return;
         }
@@ -723,22 +739,18 @@ async function loadParticipants() {
 
 
 
-        /* Create team */
         if (!teams.has(teamKey)) {
 
           teams.set(
             teamKey,
             {
 
-              teamName: teamName,
+              teamName:
+                teamName,
 
               country:
                 participant.country ||
                 "International",
-
-              leader:
-                participant.name ||
-                "Team Leader",
 
               members: []
 
@@ -754,42 +766,6 @@ async function loadParticipants() {
 
 
 
-        /* =============================================
-           ADD PERSON'S NAME
-        ============================================== */
-
-        if (
-          participant.name
-        ) {
-
-          const participantName =
-            participant.name.trim();
-
-
-          const alreadyExists =
-            team.members.some(
-              member =>
-                normalizeName(member) ===
-                normalizeName(participantName)
-            );
-
-
-          if (!alreadyExists) {
-
-            team.members.push(
-              participantName
-            );
-
-          }
-
-        }
-
-
-
-        /* =============================================
-           ADD TEAM MEMBERS FIELD
-        ============================================== */
-
         const members =
           splitMembers(
             participant.teamMembers
@@ -800,8 +776,14 @@ async function loadParticipants() {
           member => {
 
 
+            const cleanMember =
+              member.trim();
+
+
             const memberKey =
-              normalizeName(member);
+              normalizeName(
+                cleanMember
+              );
 
 
             if (!memberKey) {
@@ -809,18 +791,43 @@ async function loadParticipants() {
             }
 
 
+
+            /*
+             * Remove the TEAM NAME if it was
+             * accidentally entered inside
+             * Team Members.
+             */
+
+            if (
+              memberKey ===
+              normalizeName(
+                team.teamName
+              )
+            ) {
+
+              return;
+
+            }
+
+
+
+            /*
+             * Avoid duplicate names.
+             */
+
             const alreadyExists =
               team.members.some(
                 existingMember =>
-                  normalizeName(existingMember) ===
-                  memberKey
+                  normalizeName(
+                    existingMember
+                  ) === memberKey
               );
 
 
             if (!alreadyExists) {
 
               team.members.push(
-                member
+                cleanMember
               );
 
             }
@@ -834,21 +841,9 @@ async function loadParticipants() {
 
 
 
-    /* ===================================================
-       STEP 3
-       
-       CREATE INDIVIDUAL PARTICIPANTS.
-       
-       Rules:
-       
-       1. If they have a Team Name → already represented
-          by that team.
-       
-       2. If their name appears in ANY Team Members field
-          → don't display them individually.
-       
-       3. Otherwise → genuine individual participant.
-    ==================================================== */
+    /* =================================================
+       FIND TRUE INDIVIDUAL PARTICIPANTS
+    ================================================= */
 
     const individuals = [];
 
@@ -870,14 +865,21 @@ async function loadParticipants() {
 
 
 
-        /* Already represented by a team */
+        /*
+         * Has a team → already represented.
+         */
+
         if (teamName) {
           return;
         }
 
 
 
-        /* Listed inside a team */
+        /*
+         * Appears inside a team → don't
+         * show separately.
+         */
+
         if (
           teamMemberNames.has(
             normalizeName(name)
@@ -890,16 +892,21 @@ async function loadParticipants() {
 
 
 
-        /* Avoid duplicate individual entries */
-        const alreadyExists =
+        /*
+         * Avoid duplicate individuals.
+         */
+
+        const exists =
           individuals.some(
             person =>
-              normalizeName(person.name) ===
+              normalizeName(
+                person.name
+              ) ===
               normalizeName(name)
           );
 
 
-        if (!alreadyExists) {
+        if (!exists) {
 
           individuals.push(
             participant
@@ -912,17 +919,12 @@ async function loadParticipants() {
 
 
 
-    /* ===================================================
-       STEP 4
-       
-       CREATE FINAL DIRECTORY ENTRIES.
-    ==================================================== */
+    /* =================================================
+       FINAL ENTRIES
+    ================================================= */
 
     const entries = [];
 
-
-
-    /* Add teams first */
 
     teams.forEach(
       team => {
@@ -930,16 +932,14 @@ async function loadParticipants() {
         entries.push(
           {
 
-            type: "TEAM",
+            type:
+              "TEAM",
 
             name:
               team.teamName,
 
             country:
               team.country,
-
-            leader:
-              team.leader,
 
             members:
               team.members
@@ -951,16 +951,14 @@ async function loadParticipants() {
     );
 
 
-
-    /* Add genuine individuals */
-
     individuals.forEach(
       participant => {
 
         entries.push(
           {
 
-            type: "INDIVIDUAL",
+            type:
+              "INDIVIDUAL",
 
             name:
               participant.name ||
@@ -978,11 +976,9 @@ async function loadParticipants() {
 
 
 
-    /* ===================================================
-       STEP 5
-       
-       UPDATE COUNTERS.
-    ==================================================== */
+    /* =================================================
+       UPDATE COUNTERS
+    ================================================= */
 
     participantCount.textContent =
       entries.length;
@@ -992,35 +988,37 @@ async function loadParticipants() {
       teams.size;
 
 
-    status.textContent = "";
+    status.textContent =
+      "";
 
 
 
-    /* ===================================================
-       STEP 6
-       
-       RENDER TABLE.
-    ==================================================== */
+    /* =================================================
+       RENDER TABLE
+    ================================================= */
 
     entries.forEach(
       (entry, index) => {
 
 
         const row =
-          document.createElement("tr");
+          document.createElement(
+            "tr"
+          );
 
 
 
-        /* =================================================
-           TEAM ENTRY
-        ================================================= */
+        /* ===============================================
+           TEAM
+        ============================================== */
 
         if (
           entry.type === "TEAM"
         ) {
 
 
-          let memberHTML;
+          let detailsHTML =
+            '<span class="no-members">—</span>';
 
 
 
@@ -1028,21 +1026,17 @@ async function loadParticipants() {
             entry.members.length > 0
           ) {
 
-
-            memberHTML =
+            detailsHTML =
               entry.members
                 .map(
                   member =>
-                    `<div>${escapeParticipantHTML(member)}</div>`
+                    `
+                    <div class="team-member-name">
+                      ${escapeParticipantHTML(member)}
+                    </div>
+                    `
                 )
                 .join("");
-
-
-          } else {
-
-
-            memberHTML =
-              "<div>Members not specified</div>";
 
           }
 
@@ -1073,26 +1067,7 @@ async function loadParticipants() {
 
 
             <td class="participant-details">
-
-              <div class="participant-detail-title">
-                Team Leader
-              </div>
-
-
-              <div class="participant-detail-main">
-                ${escapeParticipantHTML(entry.leader)}
-              </div>
-
-
-              <div class="participant-detail-title">
-                Team Members
-              </div>
-
-
-              <div class="participant-detail-sub">
-                ${memberHTML}
-              </div>
-
+              ${detailsHTML}
             </td>
 
           `;
@@ -1102,9 +1077,9 @@ async function loadParticipants() {
 
 
 
-        /* =================================================
-           INDIVIDUAL ENTRY
-        ================================================= */
+        /* ===============================================
+           INDIVIDUAL
+        ============================================== */
 
         else {
 
@@ -1134,16 +1109,9 @@ async function loadParticipants() {
 
 
             <td class="participant-details">
-
-              <div class="participant-detail-title">
-                Participant
-              </div>
-
-
-              <div class="participant-detail-main">
-                ${escapeParticipantHTML(entry.name)}
-              </div>
-
+              <span class="no-members">
+                —
+              </span>
             </td>
 
           `;
@@ -1152,8 +1120,9 @@ async function loadParticipants() {
 
 
 
-        tableBody.appendChild(row);
-
+        tableBody.appendChild(
+          row
+        );
 
       }
     );
@@ -1163,7 +1132,7 @@ async function loadParticipants() {
 
 
   /* =====================================================
-     ERROR HANDLING
+     ERROR
   ====================================================== */
 
   catch (error) {
@@ -1184,13 +1153,15 @@ async function loadParticipants() {
 
 
 
-/* =======================================================
+/* =====================================================
    START
-======================================================= */
+===================================================== */
 
 loadParticipants();
 
 </script>
 
+
 </body>
+
 </html>
