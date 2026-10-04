@@ -1,326 +1,84 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta charset="utf-8">
+  <title>Participants | AI Innovation Hackathon 2026</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width,initial-scale=1"
-  >
-
-  <title>
-    Confirmed Participants | AI Innovation Hackathon 2026
-  </title>
-
-  <meta
-    name="description"
-    content="Confirmed participants for AI Innovation Hackathon 2026."
-  >
-
-  <link
-    rel="icon"
-    href="assets/logo.png"
-  >
-
-  <link
-    rel="stylesheet"
-    href="css/style.css"
-  >
-
-  <link
-    rel="stylesheet"
-    href="css/hackathon.css"
-  >
-
-  <!-- Participant page styling -->
-  <link
-    rel="stylesheet"
-    href="css/participants.css"
-  >
-
+  <link rel="stylesheet" href="css/participants.css">
 </head>
-
 
 <body>
 
+  <main class="participants-page">
 
-<!-- =====================================================
-     NAVIGATION
-===================================================== -->
+    <!-- PAGE HEADER -->
+    <section class="participants-hero">
+      <div class="hero-content">
 
-<header class="nav hack-nav">
+        <span class="hero-label">
+          AI INNOVATION HACKATHON 2026
+        </span>
 
-  <div class="container nav-inner">
-
-
-    <a
-      class="brand"
-      href="index.html"
-    >
-
-      <img
-        src="assets/logo.png"
-        alt="Women in AI, Research, Innovation & Entrepreneurship Club logo"
-      >
-
-      <span>
-        WOMEN IN AI<br>
-        RESEARCH, INNOVATION<br>
-        &amp; ENTREPRENEURSHIP CLUB
-      </span>
-
-    </a>
-
-
-    <button
-      class="menu"
-      aria-label="Open menu"
-    >
-      ☰
-    </button>
-
-
-    <nav class="navlinks">
-
-      <a href="index.html">
-        Home
-      </a>
-
-      <a href="about.html">
-        About
-      </a>
-
-      <a href="research.html">
-        Research
-      </a>
-
-      <a href="teams.html">
-        Teams
-      </a>
-
-      <a href="projects.html">
-        Projects
-      </a>
-
-      <a href="publications.html">
-        Publications
-      </a>
-
-      <a href="people.html">
-        People
-      </a>
-
-      <a href="events.html">
-        Events
-      </a>
-
-      <a
-        href="participants.html"
-        class="active"
-      >
-        Participants
-      </a>
-
-      <a
-        href="join.html"
-        class="btn primary"
-      >
-        Join Us
-      </a>
-
-    </nav>
-
-  </div>
-
-</header>
-
-
-
-<!-- =====================================================
-     MAIN
-===================================================== -->
-
-<main>
-
-
-  <!-- ===================================================
-       HERO
-  ==================================================== -->
-
-  <section class="page-hero">
-
-    <div class="container">
-
-      <div class="eyebrow">
-        AI Innovation Hackathon 2026
-      </div>
-
-
-      <h1>
-        Confirmed Participants
-      </h1>
-
-
-      <p>
-        Meet the teams and participants officially confirmed
-        for the AI Innovation Hackathon 2026.
-      </p>
-
-
-      <div class="button-row">
-
-        <a
-          class="btn primary"
-          href="hackathon.html"
-        >
-          Back to Hackathon
-        </a>
-
-
-        <a
-          class="btn"
-          href="https://forms.gle/tc3TrSSX1HFerk2j6"
-          target="_blank"
-          rel="noopener"
-        >
-          Register / Update Details
-        </a>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-
-  <!-- ===================================================
-       PARTICIPANTS
-  ==================================================== -->
-
-  <section
-    class="section"
-    id="participants"
-  >
-
-    <div class="container">
-
-
-      <div class="section-head">
-
-        <div>
-
-          <div class="eyebrow">
-            Live Directory
-          </div>
-
-          <h2>
-            Official participant list.
-          </h2>
-
-        </div>
-
+        <h1>
+          Participants
+        </h1>
 
         <p>
-          This directory is connected to the official
-          registration system. Only confirmed participants
-          marked for website display are shown.
+          Meet the participants and teams taking part in the
+          AI Innovation Hackathon 2026.
         </p>
 
       </div>
+    </section>
 
 
+    <!-- STATS -->
+    <section class="participants-stats">
 
-      <!-- =================================================
-           SUMMARY
-      ================================================== -->
-
-      <div class="participant-summary">
-
-
-        <div class="participant-stat">
-
-          <strong id="participantCount">
-            0
-          </strong>
-
-          <span>
-            Confirmed Entries
-          </span>
-
-        </div>
-
-
-        <div class="participant-stat">
-
-          <strong id="teamCount">
-            0
-          </strong>
-
-          <span>
-            Teams
-          </span>
-
-        </div>
-
-
+      <div class="stat-card">
+        <span class="stat-label">Confirmed Entries</span>
+        <strong id="participantCount">—</strong>
       </div>
 
-
-
-      <!-- =================================================
-           STATUS
-      ================================================== -->
-
-      <div
-        id="participantStatus"
-        class="participant-status"
-      >
-        Loading confirmed participants...
+      <div class="stat-card">
+        <span class="stat-label">Countries</span>
+        <strong id="countryCount">—</strong>
       </div>
 
+      <div class="stat-card">
+        <span class="stat-label">Teams</span>
+        <strong id="teamCount">—</strong>
+      </div>
+
+    </section>
 
 
-      <!-- =================================================
-           TABLE
-      ================================================== -->
+    <!-- TABLE -->
+    <section class="participants-section">
 
-      <div class="participant-table-wrap">
+      <div class="participants-table-wrapper">
 
-        <table class="participant-table">
+        <table class="participants-table">
 
           <thead>
-
             <tr>
-
-              <th>
-                #
-              </th>
-
-              <th>
-                Participant / Team
-              </th>
-
-              <th>
-                Country
-              </th>
-
-              <th>
-                Type
-              </th>
-
-              <th>
-                Details
-              </th>
-
+              <th>#</th>
+              <th>Participant / Team</th>
+              <th>Country</th>
+              <th>Type</th>
+              <th>Details</th>
             </tr>
-
           </thead>
 
+          <tbody id="participantsTableBody">
 
-          <tbody id="participantGrid">
+            <tr>
+              <td colspan="5" class="loading-message">
+                Loading participants...
+              </td>
+            </tr>
 
           </tbody>
 
@@ -328,840 +86,616 @@
 
       </div>
 
-    </div>
-
-  </section>
-
-
-
-  <!-- ===================================================
-       CTA
-  ==================================================== -->
-
-  <section class="section alt">
-
-    <div class="container narrow">
-
-      <div class="hack-cta">
-
-
-        <div class="eyebrow">
-          AI Innovation Hackathon 2026
-        </div>
-
-
-        <h2>
-          Not on the list yet?
-        </h2>
-
-
-        <p>
-          Submit the official registration and confirmation
-          form. Confirmed participants who are approved for
-          website display will appear here automatically.
-        </p>
-
-
-        <div class="hero-actions">
-
-          <a
-            class="btn primary"
-            href="https://forms.gle/tc3TrSSX1HFerk2j6"
-            target="_blank"
-            rel="noopener"
-          >
-            Open Registration Form
-          </a>
-
-
-          <a
-            class="btn"
-            href="hackathon.html"
-          >
-            Hackathon Details
-          </a>
-
-        </div>
-
+      <div id="participantsError" class="participants-error" hidden>
+        Unable to load participants at the moment.
       </div>
 
-    </div>
+    </section>
 
-  </section>
+  </main>
 
 
-</main>
+  <script>
 
+    /*
+     * CURRENT PARTICIPANT API
+     */
+    const PARTICIPANTS_API =
+      "https://script.google.com/macros/s/AKfycbwMX24cUnelzb1NSO71_vgMaEuF-on2NXRYTqycq7WJ0YkF8thwjt5eA8msd1vjCGF5/exec";
 
 
-<!-- =====================================================
-     FOOTER
-===================================================== -->
+    /*
+     * HTML ESCAPE
+     */
+    function escapeParticipantHTML(value) {
 
-<footer>
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
-  <div class="container footer-grid">
+    }
 
 
-    <div>
+    /*
+     * NORMALIZE TEXT
+     */
+    function normalizeText(value) {
 
-      <div class="brand">
+      return String(value ?? "")
+        .trim()
+        .replace(/\s+/g, " ")
+        .toLowerCase();
 
-        <img
-          src="assets/logo.png"
-          alt="Women in AI, Research, Innovation & Entrepreneurship Club logo"
-        >
+    }
 
-        <span>
-          WOMEN IN AI<br>
-          RESEARCH, INNOVATION<br>
-          &amp; ENTREPRENEURSHIP CLUB
-        </span>
 
-      </div>
+    /*
+     * SPLIT TEAM MEMBERS
+     */
+    function splitTeamMembers(value) {
 
+      if (!value) {
+        return [];
+      }
 
-      <p>
-        Research • Innovation • Entrepreneurship
-      </p>
+      return String(value)
+        .split(/[,;\n]+/)
+        .map(name => name.trim())
+        .filter(Boolean);
 
+    }
 
-      <p>
-        ©
-        <span data-year></span>
-        Women in AI, Research, Innovation &amp; Entrepreneurship Club.
-      </p>
 
-    </div>
+    /*
+     * LOAD PARTICIPANTS
+     */
+    async function loadParticipants() {
 
+      const tableBody =
+        document.getElementById("participantsTableBody");
 
+      const errorBox =
+        document.getElementById("participantsError");
 
-    <div>
+      try {
 
-      <strong>
-        Hackathon
-      </strong>
-
-
-      <div class="footer-links">
-
-        <a href="hackathon.html">
-          Overview
-        </a>
-
-        <a href="hackathon.html#challenges">
-          Challenges
-        </a>
-
-        <a href="hackathon.html#rules">
-          Rules
-        </a>
-
-        <a href="participants.html">
-          Participants
-        </a>
-
-      </div>
-
-    </div>
-
-
-
-    <div>
-
-      <strong>
-        Connect
-      </strong>
-
-
-      <div class="footer-links">
-
-        <a href="mailto:womeninairclub@gmail.com">
-          Email
-        </a>
-
-
-        <a
-          href="https://chat.whatsapp.com/DsJeBSmTsD1FaE4n0elSIj"
-          target="_blank"
-          rel="noopener"
-        >
-          WhatsApp Community
-        </a>
-
-      </div>
-
-    </div>
-
-
-  </div>
-
-</footer>
-
-
-
-<!-- =====================================================
-     EXISTING WEBSITE JAVASCRIPT
-===================================================== -->
-
-<script src="js/main.js"></script>
-
-<script src="js/hackathon.js"></script>
-
-
-
-<!-- =====================================================
-     PARTICIPANT DIRECTORY
-===================================================== -->
-
-<script>
-
-
-/* =====================================================
-   OFFICIAL PARTICIPANT API
-===================================================== */
-
-const PARTICIPANT_API =
-  "https://script.google.com/macros/s/AKfycbwMX24cUnelzb1NSO71_vgMaEuF-on2NXRYTqycq7WJ0YkF8thwjt5eA8msd1vjCGF5/exec";
-
-
-
-/* =====================================================
-   NORMALIZE NAME
-===================================================== */
-
-function normalizeName(value) {
-
-  return String(value || "")
-    .trim()
-    .replace(/\s+/g, " ")
-    .toLowerCase();
-
-}
-
-
-
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
-
-function escapeParticipantHTML(value) {
-
-  return String(value || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-
-}
-
-
-
-/* =====================================================
-   SPLIT TEAM MEMBERS
-===================================================== */
-
-function splitMembers(value) {
-
-  if (!value) {
-    return [];
-  }
-
-  return String(value)
-    .split(/[,;\n]+/)
-    .map(name => name.trim())
-    .filter(Boolean);
-
-}
-
-
-
-/* =====================================================
-   LOAD PARTICIPANTS
-===================================================== */
-
-async function loadParticipants() {
-
-
-  const tableBody =
-    document.getElementById(
-      "participantGrid"
-    );
-
-
-  const status =
-    document.getElementById(
-      "participantStatus"
-    );
-
-
-  const participantCount =
-    document.getElementById(
-      "participantCount"
-    );
-
-
-  const teamCount =
-    document.getElementById(
-      "teamCount"
-    );
-
-
-  if (!tableBody) {
-    return;
-  }
-
-
-
-  try {
-
-
-    /* =================================================
-       FETCH API
-    ================================================= */
-
-    const response =
-      await fetch(
-        PARTICIPANT_API,
-        {
+        const response = await fetch(PARTICIPANTS_API, {
+          method: "GET",
           cache: "no-store"
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load participants.");
         }
-      );
+
+        const data = await response.json();
+
+        /*
+         * API may return either:
+         * { participants: [...] }
+         * OR directly [...]
+         */
+        const participants =
+          Array.isArray(data)
+            ? data
+            : Array.isArray(data.participants)
+              ? data.participants
+              : [];
 
 
-    if (!response.ok) {
+        /*
+         * No participants
+         */
+        if (participants.length === 0) {
 
-      throw new Error(
-        "Participant API request failed."
-      );
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="5" class="empty-message">
+                No confirmed participants yet.
+              </td>
+            </tr>
+          `;
 
-    }
+          updateStats([], []);
 
-
-    const participants =
-      await response.json();
-
-
-
-    tableBody.innerHTML = "";
-
-
-
-    /* =================================================
-       EMPTY RESULT
-    ================================================= */
-
-    if (
-      !Array.isArray(participants) ||
-      participants.length === 0
-    ) {
-
-      status.textContent =
-        "No confirmed participants have registered yet.";
-
-      participantCount.textContent =
-        "0";
-
-      teamCount.textContent =
-        "0";
-
-      return;
-
-    }
-
-
-
-    /* =================================================
-       FIND TEAM MEMBERS
-    ================================================= */
-
-    const teamMemberNames =
-      new Set();
-
-
-    participants.forEach(
-      participant => {
-
-
-        if (!participant.teamName) {
           return;
         }
 
 
-        const members =
-          splitMembers(
-            participant.teamMembers
-          );
+        /*
+         * -----------------------------------------
+         * STEP 1
+         * COLLECT ALL TEAM MEMBER NAMES
+         * -----------------------------------------
+         *
+         * Anyone listed inside a team's
+         * Team Members field will not later
+         * appear as an individual.
+         */
+
+        const allListedTeamMembers = new Set();
 
 
-        members.forEach(
-          member => {
+        participants.forEach(participant => {
 
-            teamMemberNames.add(
-              normalizeName(member)
-            );
+          const teamName =
+            String(participant.teamName || "").trim();
+
+          if (!teamName) {
+            return;
+          }
+
+          const members =
+            splitTeamMembers(participant.teamMembers);
+
+          members.forEach(member => {
+
+            const normalized =
+              normalizeText(member);
+
+            if (normalized) {
+              allListedTeamMembers.add(normalized);
+            }
+
+          });
+
+        });
+
+
+        /*
+         * -----------------------------------------
+         * STEP 2
+         * BUILD UNIQUE TEAMS
+         * -----------------------------------------
+         */
+
+        const teams = new Map();
+
+        participants.forEach(participant => {
+
+          const teamName =
+            String(participant.teamName || "").trim();
+
+          /*
+           * IMPORTANT:
+           * Team Name is the source of truth.
+           *
+           * We do NOT use participationType
+           * to decide whether something is a team.
+           */
+
+          if (!teamName) {
+            return;
+          }
+
+
+          const teamKey =
+            normalizeText(teamName);
+
+
+          if (!teamKey) {
+            return;
+          }
+
+
+          if (!teams.has(teamKey)) {
+
+            teams.set(teamKey, {
+              type: "TEAM",
+              name: teamName,
+              country:
+                String(participant.country || "").trim(),
+              members: [],
+              memberKeys: new Set()
+            });
 
           }
-        );
 
 
-      }
-    );
+          const team =
+            teams.get(teamKey);
 
 
+          /*
+           * Add Team Members
+           */
 
-    /* =================================================
-       GROUP TEAMS
-    ================================================= */
-
-    const teams =
-      new Map();
-
-
-    participants.forEach(
-      participant => {
+          const members =
+            splitTeamMembers(participant.teamMembers);
 
 
-        const teamName =
-          String(
-            participant.teamName || ""
-          ).trim();
+          members.forEach(member => {
 
-
-        if (!teamName) {
-          return;
-        }
-
-
-        const teamKey =
-          normalizeName(teamName);
-
-
-
-        if (!teams.has(teamKey)) {
-
-          teams.set(
-            teamKey,
-            {
-
-              teamName:
-                teamName,
-
-              country:
-                participant.country ||
-                "International",
-
-              members: []
-
-            }
-          );
-
-        }
-
-
-
-        const team =
-          teams.get(teamKey);
-
-
-
-        const members =
-          splitMembers(
-            participant.teamMembers
-          );
-
-
-        members.forEach(
-          member => {
-
-
-            const cleanMember =
-              member.trim();
-
+            const cleanedName =
+              String(member).trim();
 
             const memberKey =
-              normalizeName(
-                cleanMember
-              );
-
+              normalizeText(cleanedName);
 
             if (!memberKey) {
               return;
             }
 
 
-
             /*
-             * Remove the TEAM NAME if it was
-             * accidentally entered inside
-             * Team Members.
+             * Don't show the team name itself
+             * as a member.
              */
 
-            if (
-              memberKey ===
-              normalizeName(
-                team.teamName
-              )
-            ) {
-
+            if (memberKey === teamKey) {
               return;
-
             }
-
 
 
             /*
              * Avoid duplicate names.
              */
 
-            const alreadyExists =
-              team.members.some(
-                existingMember =>
-                  normalizeName(
-                    existingMember
-                  ) === memberKey
-              );
+            if (!team.memberKeys.has(memberKey)) {
 
+              team.members.push(cleanedName);
 
-            if (!alreadyExists) {
-
-              team.members.push(
-                cleanMember
-              );
+              team.memberKeys.add(memberKey);
 
             }
 
+          });
+
+        });
+
+
+        /*
+         * -----------------------------------------
+         * STEP 3
+         * BUILD GENUINE INDIVIDUALS
+         * -----------------------------------------
+         */
+
+        const individuals = [];
+
+        const individualKeys = new Set();
+
+
+        participants.forEach(participant => {
+
+          const name =
+            String(participant.name || "").trim();
+
+          const teamName =
+            String(participant.teamName || "").trim();
+
+
+          /*
+           * If this row belongs to a team,
+           * don't show it as an individual.
+           */
+
+          if (teamName) {
+            return;
           }
-        );
 
 
-      }
-    );
+          if (!name) {
+            return;
+          }
 
 
-
-    /* =================================================
-       FIND TRUE INDIVIDUAL PARTICIPANTS
-    ================================================= */
-
-    const individuals = [];
+          const nameKey =
+            normalizeText(name);
 
 
-    participants.forEach(
-      participant => {
+          /*
+           * If the person appears in ANY
+           * team's Team Members field,
+           * don't show them separately.
+           */
+
+          if (allListedTeamMembers.has(nameKey)) {
+            return;
+          }
 
 
-        const name =
-          String(
-            participant.name || ""
-          ).trim();
+          /*
+           * Avoid duplicate individual rows.
+           */
+
+          if (individualKeys.has(nameKey)) {
+            return;
+          }
 
 
-        const teamName =
-          String(
-            participant.teamName || ""
-          ).trim();
+          individualKeys.add(nameKey);
 
 
-
-        /*
-         * Has a team → already represented.
-         */
-
-        if (teamName) {
-          return;
-        }
-
-
-
-        /*
-         * Appears inside a team → don't
-         * show separately.
-         */
-
-        if (
-          teamMemberNames.has(
-            normalizeName(name)
-          )
-        ) {
-
-          return;
-
-        }
-
-
-
-        /*
-         * Avoid duplicate individuals.
-         */
-
-        const exists =
-          individuals.some(
-            person =>
-              normalizeName(
-                person.name
-              ) ===
-              normalizeName(name)
-          );
-
-
-        if (!exists) {
-
-          individuals.push(
-            participant
-          );
-
-        }
-
-      }
-    );
-
-
-
-    /* =================================================
-       FINAL ENTRIES
-    ================================================= */
-
-    const entries = [];
-
-
-    teams.forEach(
-      team => {
-
-        entries.push(
-          {
-
-            type:
-              "TEAM",
-
-            name:
-              team.teamName,
-
+          individuals.push({
+            type: "INDIVIDUAL",
+            name: name,
             country:
-              team.country,
+              String(participant.country || "").trim(),
+            members: []
+          });
 
-            members:
-              team.members
+        });
+
+
+        /*
+         * -----------------------------------------
+         * STEP 4
+         * FINAL DISPLAY LIST
+         * -----------------------------------------
+         */
+
+        const entries = [
+
+          ...Array.from(teams.values()),
+
+          ...individuals
+
+        ];
+
+
+        /*
+         * Sort alphabetically
+         */
+
+        entries.sort((a, b) => {
+
+          return normalizeText(a.name)
+            .localeCompare(normalizeText(b.name));
+
+        });
+
+
+        /*
+         * -----------------------------------------
+         * STEP 5
+         * RENDER TABLE
+         * -----------------------------------------
+         */
+
+        tableBody.innerHTML = "";
+
+
+        entries.forEach((entry, index) => {
+
+          const row =
+            document.createElement("tr");
+
+
+          /*
+           * ================================
+           * TEAM
+           * ================================
+           */
+
+          if (entry.type === "TEAM") {
+
+            let detailsHTML =
+              '<span class="no-members">No members listed</span>';
+
+
+            if (entry.members.length > 0) {
+
+              detailsHTML = `
+                <div class="team-members-box">
+
+                  <div class="team-members-heading">
+                    Team Members
+                  </div>
+
+                  <div class="team-members-list">
+
+                    ${entry.members
+                      .map(member => `
+                        <div class="team-member-name">
+
+                          <span class="member-dot"></span>
+
+                          <span>
+                            ${escapeParticipantHTML(member)}
+                          </span>
+
+                        </div>
+                      `)
+                      .join("")}
+
+                  </div>
+
+                </div>
+              `;
+
+            }
+
+
+            row.innerHTML = `
+
+              <td class="participant-number">
+                ${String(index + 1).padStart(2, "0")}
+              </td>
+
+              <td class="participant-name">
+                ${escapeParticipantHTML(entry.name)}
+              </td>
+
+              <td class="participant-country">
+                ${escapeParticipantHTML(entry.country)}
+              </td>
+
+              <td>
+                <span class="participant-type team-type">
+                  TEAM
+                </span>
+              </td>
+
+              <td class="participant-details">
+                ${detailsHTML}
+              </td>
+
+            `;
 
           }
-        );
-
-      }
-    );
 
 
-    individuals.forEach(
-      participant => {
+          /*
+           * ================================
+           * INDIVIDUAL
+           * ================================
+           */
 
-        entries.push(
-          {
+          else {
 
-            type:
-              "INDIVIDUAL",
+            row.innerHTML = `
 
-            name:
-              participant.name ||
-              "Participant",
+              <td class="participant-number">
+                ${String(index + 1).padStart(2, "0")}
+              </td>
 
-            country:
-              participant.country ||
-              "International"
+              <td class="participant-name">
+                ${escapeParticipantHTML(entry.name)}
+              </td>
+
+              <td class="participant-country">
+                ${escapeParticipantHTML(entry.country)}
+              </td>
+
+              <td>
+                <span class="participant-type individual-type">
+                  INDIVIDUAL
+                </span>
+              </td>
+
+              <td class="participant-details participant-individual-details">
+                <span class="no-members">
+                  —
+                </span>
+              </td>
+
+            `;
 
           }
-        );
+
+
+          tableBody.appendChild(row);
+
+        });
+
+
+        /*
+         * UPDATE STATISTICS
+         */
+
+        updateStats(entries, participants);
+
 
       }
-    );
+
+      catch (error) {
+
+        console.error(
+          "Participants loading error:",
+          error
+        );
 
 
+        tableBody.innerHTML = `
 
-    /* =================================================
-       UPDATE COUNTERS
-    ================================================= */
+          <tr>
+            <td colspan="5" class="error-message">
+              Unable to load participants.
+            </td>
+          </tr>
 
-    participantCount.textContent =
-      entries.length;
-
-
-    teamCount.textContent =
-      teams.size;
+        `;
 
 
-    status.textContent =
-      "";
+        errorBox.hidden = false;
+
+      }
+
+    }
 
 
+    /*
+     * -----------------------------------------
+     * UPDATE STATS
+     * -----------------------------------------
+     */
 
-    /* =================================================
-       RENDER TABLE
-    ================================================= */
+    function updateStats(entries, rawParticipants) {
 
-    entries.forEach(
-      (entry, index) => {
+      const participantCount =
+        document.getElementById("participantCount");
+
+      const countryCount =
+        document.getElementById("countryCount");
+
+      const teamCount =
+        document.getElementById("teamCount");
 
 
-        const row =
-          document.createElement(
-            "tr"
+      /*
+       * Confirmed entries = visible rows
+       */
+
+      participantCount.textContent =
+        entries.length;
+
+
+      /*
+       * Unique countries
+       */
+
+      const countries =
+        new Set();
+
+
+      entries.forEach(entry => {
+
+        const country =
+          String(entry.country || "").trim();
+
+        if (country) {
+          countries.add(
+            normalizeText(country)
           );
-
-
-
-        /* ===============================================
-           TEAM
-        ============================================== */
-
-        if (
-          entry.type === "TEAM"
-        ) {
-
-
-          let detailsHTML =
-            '<span class="no-members">—</span>';
-
-
-
-          if (
-            entry.members.length > 0
-          ) {
-
-            detailsHTML =
-              entry.members
-                .map(
-                  member =>
-                    `
-                    <div class="team-member-name">
-                      ${escapeParticipantHTML(member)}
-                    </div>
-                    `
-                )
-                .join("");
-
-          }
-
-
-
-          row.innerHTML = `
-
-            <td class="participant-number">
-              ${String(index + 1).padStart(2, "0")}
-            </td>
-
-
-            <td class="participant-name">
-              ${escapeParticipantHTML(entry.name)}
-            </td>
-
-
-            <td class="participant-country">
-              ${escapeParticipantHTML(entry.country)}
-            </td>
-
-
-            <td>
-              <span class="participant-type">
-                TEAM
-              </span>
-            </td>
-
-
-            <td class="participant-details">
-              ${detailsHTML}
-            </td>
-
-          `;
-
-
         }
 
+      });
 
 
-        /* ===============================================
-           INDIVIDUAL
-        ============================================== */
-
-        else {
+      countryCount.textContent =
+        countries.size;
 
 
-          row.innerHTML = `
+      /*
+       * Unique teams
+       */
 
-            <td class="participant-number">
-              ${String(index + 1).padStart(2, "0")}
-            </td>
-
-
-            <td class="participant-name">
-              ${escapeParticipantHTML(entry.name)}
-            </td>
-
-
-            <td class="participant-country">
-              ${escapeParticipantHTML(entry.country)}
-            </td>
-
-
-            <td>
-              <span class="participant-type">
-                INDIVIDUAL
-              </span>
-            </td>
-
-
-            <td class="participant-details">
-              <span class="no-members">
-                —
-              </span>
-            </td>
-
-          `;
-
-        }
-
-
-
-        tableBody.appendChild(
-          row
+      const teams =
+        entries.filter(
+          entry => entry.type === "TEAM"
         );
 
-      }
+
+      teamCount.textContent =
+        teams.length;
+
+    }
+
+
+    /*
+     * START
+     */
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      loadParticipants
     );
 
-
-  }
-
-
-  /* =====================================================
-     ERROR
-  ====================================================== */
-
-  catch (error) {
-
-
-    console.error(
-      "Participant API error:",
-      error
-    );
-
-
-    status.textContent =
-      "Participant information is temporarily unavailable. Please try again later.";
-
-  }
-
-}
-
-
-
-/* =====================================================
-   START
-===================================================== */
-
-loadParticipants();
-
-</script>
-
+  </script>
 
 </body>
-
 </html>
