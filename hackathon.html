@@ -17,6 +17,121 @@
   <meta property="og:title" content="AI Innovation Hackathon 2026">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://womeninairclub.github.io/women-in-ai-research-club/assets/logo.png">
+
+  <style>
+    /* ================================
+       LIVE PARTICIPANTS SECTION
+       ================================ */
+
+    .participant-summary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin: 0 0 24px;
+    }
+
+    .participant-stat {
+      padding: 24px;
+      border: 1px solid rgba(128, 90, 213, 0.18);
+      border-radius: 18px;
+      background: linear-gradient(
+        135deg,
+        rgba(128, 90, 213, 0.08),
+        rgba(255, 255, 255, 0.8)
+      );
+    }
+
+    .participant-stat strong {
+      display: block;
+      font-size: 2rem;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .participant-stat span {
+      opacity: 0.72;
+      font-size: 0.92rem;
+    }
+
+    .participant-status {
+      margin: 0 0 20px;
+      font-size: 0.95rem;
+      opacity: 0.72;
+    }
+
+    .participant-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .participant-card {
+      padding: 22px;
+      border: 1px solid rgba(128, 90, 213, 0.16);
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 8px 28px rgba(20, 20, 40, 0.06);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .participant-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 34px rgba(20, 20, 40, 0.10);
+    }
+
+    .participant-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .participant-badge {
+      display: inline-flex;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      background: rgba(128, 90, 213, 0.1);
+    }
+
+    .participant-country {
+      font-size: 0.82rem;
+      opacity: 0.7;
+    }
+
+    .participant-card h3 {
+      margin: 0 0 8px;
+    }
+
+    .participant-leader {
+      margin: 0 0 8px;
+      font-weight: 600;
+    }
+
+    .participant-members {
+      margin: 0;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      opacity: 0.72;
+      white-space: pre-line;
+    }
+
+    @media (max-width: 900px) {
+      .participant-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      .participant-summary,
+      .participant-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -54,7 +169,6 @@
       <a href="publications.html">Publications</a>
       <a href="people.html">People</a>
       <a href="events.html">Events</a>
-      <a href="participants.html">Participants</a>
 
       <a
         href="join.html"
@@ -440,6 +554,87 @@
         </div>
 
       </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================================
+       LIVE PARTICIPANTS
+       ================================ -->
+
+  <section
+    class="section"
+    id="participants"
+  >
+
+    <div class="container">
+
+      <div class="section-head">
+
+        <div>
+
+          <div class="eyebrow">
+            Confirmed Participants
+          </div>
+
+          <h2>
+            Meet the participants.
+          </h2>
+
+        </div>
+
+        <p>
+          This section is connected to the official registration system.
+          Only participants approved for public display are shown here.
+        </p>
+
+      </div>
+
+
+      <div class="participant-summary">
+
+        <div class="participant-stat">
+
+          <strong id="participantCount">
+            0
+          </strong>
+
+          <span>
+            Confirmed Participants
+          </span>
+
+        </div>
+
+
+        <div class="participant-stat">
+
+          <strong id="teamCount">
+            0
+          </strong>
+
+          <span>
+            Teams / Entries
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="participantStatus"
+        class="participant-status"
+      >
+        Loading confirmed participants...
+      </div>
+
+
+      <div
+        id="participantGrid"
+        class="participant-grid"
+      ></div>
 
     </div>
 
@@ -1015,7 +1210,7 @@
           </h3>
 
           <p>
-            Faculty Coordinator
+            Founder &amp; Faculty Coordinator
           </p>
 
         </div>
@@ -1455,6 +1650,272 @@
 <script src="js/hackathon.js"></script>
 
 
+<!-- ================================
+     LIVE PARTICIPANT API
+     ================================ -->
+
+<script>
+
+const PARTICIPANT_API =
+  "https://script.google.com/macros/s/AKfycbwMX24cUnelzb1NSO71_vgMaEuF-on2NXRYTqycq7WJ0YkF8thwjt5eA8msd1vjCGF5/exec";
+
+
+async function loadParticipants() {
+
+  const grid =
+    document.getElementById("participantGrid");
+
+  const status =
+    document.getElementById("participantStatus");
+
+  const participantCount =
+    document.getElementById("participantCount");
+
+  const teamCount =
+    document.getElementById("teamCount");
+
+
+  if (!grid) {
+    return;
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+        PARTICIPANT_API,
+        {
+          cache: "no-store"
+        }
+      );
+
+
+    if (!response.ok) {
+      throw new Error("Participant API request failed.");
+    }
+
+
+    const participants =
+      await response.json();
+
+
+    grid.innerHTML = "";
+
+
+    if (
+      !Array.isArray(participants) ||
+      participants.length === 0
+    ) {
+
+      status.textContent =
+        "Confirmed participants will appear here once the organizer approves them for public display.";
+
+      participantCount.textContent = "0";
+      teamCount.textContent = "0";
+
+      return;
+    }
+
+
+    status.textContent = "";
+
+    /*
+     * IMPORTANT:
+     * Participation Type from the Google Sheet is the
+     * ONLY source used to decide TEAM vs INDIVIDUAL.
+     *
+     * We do NOT infer type from Team Name.
+     * We do NOT regroup participants.
+     * We do NOT hide participants.
+     */
+
+    participantCount.textContent =
+      participants.length;
+
+
+    const teamEntries =
+      participants.filter(
+        participant =>
+          String(
+            participant.participationType || ""
+          ).trim().toLowerCase() === "team"
+      );
+
+
+    teamCount.textContent =
+      teamEntries.length;
+
+
+    participants.forEach(
+      participant => {
+
+        const card =
+          document.createElement("article");
+
+        card.className =
+          "participant-card";
+
+
+        const participationType =
+          String(
+            participant.participationType || ""
+          ).trim();
+
+
+        const isTeam =
+          participationType.toLowerCase() === "team";
+
+
+        /*
+         * TEAM
+         */
+
+        if (isTeam) {
+
+          const teamName =
+            String(
+              participant.teamName || ""
+            ).trim() || "Team";
+
+
+          const teamMembers =
+            String(
+              participant.teamMembers || ""
+            ).trim();
+
+
+          card.innerHTML = `
+
+            <div class="participant-top">
+
+              <span class="participant-badge">
+                TEAM
+              </span>
+
+              <span class="participant-country">
+                ${escapeParticipantHTML(
+                  participant.country ||
+                  "International"
+                )}
+              </span>
+
+            </div>
+
+
+            <h3>
+              ${escapeParticipantHTML(teamName)}
+            </h3>
+
+
+            <p class="participant-members">
+
+              ${
+                teamMembers
+                  ? escapeParticipantHTML(teamMembers)
+                  : "Team members not listed."
+              }
+
+            </p>
+
+          `;
+
+        }
+
+
+        /*
+         * INDIVIDUAL
+         *
+         * Anything that is not exactly "Team"
+         * is displayed as Individual, matching the
+         * Participation Type field in the sheet.
+         */
+
+        else {
+
+          const participantName =
+            String(
+              participant.name || ""
+            ).trim() || "Participant";
+
+
+          card.innerHTML = `
+
+            <div class="participant-top">
+
+              <span class="participant-badge">
+                INDIVIDUAL
+              </span>
+
+              <span class="participant-country">
+                ${escapeParticipantHTML(
+                  participant.country ||
+                  "International"
+                )}
+              </span>
+
+            </div>
+
+
+            <h3>
+              ${escapeParticipantHTML(
+                participantName
+              )}
+            </h3>
+
+
+            <p class="participant-members">
+              —
+            </p>
+
+          `;
+
+        }
+
+
+        grid.appendChild(card);
+
+      }
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Participant API error:",
+      error
+    );
+
+
+    status.textContent =
+      "Participant information is temporarily unavailable. Please try again later.";
+
+  }
+
+}
+
+
+
+function escapeParticipantHTML(value) {
+
+  return String(value ?? "")
+
+    .replace(/&/g, "&amp;")
+
+    .replace(/</g, "&lt;")
+
+    .replace(/>/g, "&gt;")
+
+    .replace(/"/g, "&quot;")
+
+    .replace(/'/g, "&#039;");
+
+}
+
+
+loadParticipants();
+
+</script>
 
 
 </body>
