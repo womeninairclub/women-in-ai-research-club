@@ -3,11 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Confirmed Participants | AI Innovation Hackathon 2026</title>
-  <meta name="description" content="Confirmed participants for AI Innovation Hackathon 2026.">
+  <title>Registered Teams &amp; Participants | AI Innovation Hackathon 2026</title>
+  <meta name="description" content="Registered teams and individual participants for AI Innovation Hackathon 2026.">
   <link rel="icon" href="assets/logo.png">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/hackathon.css">
+  <link rel="stylesheet" href="css/participants.css">
 </head>
 <body>
 <header class="nav hack-nav">
@@ -33,67 +34,78 @@
 </header>
 
 <main>
-  <section class="page-hero">
+  <section class="page-hero participants-hero">
     <div class="container">
       <div class="eyebrow">AI Innovation Hackathon 2026</div>
-      <h1>Confirmed Participants</h1>
-      <p>Meet the teams and participants officially confirmed for the AI Innovation Hackathon 2026.</p>
+      <h1>Registered Teams &amp; Participants</h1>
+      <p>The live registration list is generated from the official hackathon registration sheet.</p>
       <div class="button-row">
         <a class="btn primary" href="hackathon.html">Back to Hackathon</a>
-        <a class="btn" href="https://forms.gle/tc3TrSSX1HFerk2j6" target="_blank" rel="noopener">Register / Update Details</a>
+        <a class="btn" href="https://forms.gle/tc3TrSSX1HFerk2j6" target="_blank" rel="noopener">Registration Form</a>
       </div>
     </div>
   </section>
 
-  <section class="section" id="participants">
+  <section class="section participants-section" id="participants">
     <div class="container">
-      <div class="section-head">
+      <div class="section-head participants-head">
         <div>
-          <div class="eyebrow">Live Directory</div>
-          <h2>Official participant list.</h2>
+          <div class="eyebrow">Live Registration List</div>
+          <h2>Registered participants.</h2>
         </div>
-        <p>This directory is connected to the official registration system. Only confirmed participants marked for website display are shown.</p>
+        <p>Team registrations are shown once per team. Individual registrations are shown separately. The list is populated from the official registration data.</p>
       </div>
 
-      <div class="participant-summary">
+      <div class="participants-stats" aria-label="Registration summary">
         <div class="participant-stat">
+          <span>Registered</span>
           <strong id="participantCount">0</strong>
-          <span>Confirmed Participants</span>
         </div>
         <div class="participant-stat">
+          <span>Teams</span>
           <strong id="teamCount">0</strong>
-          <span>Teams / Entries</span>
+        </div>
+        <div class="participant-stat">
+          <span>Individuals</span>
+          <strong id="individualCount">0</strong>
         </div>
       </div>
 
-      <div id="participantStatus" class="participant-status">Loading confirmed participants...</div>
+      <div id="participantStatus" class="participant-status" role="status" aria-live="polite">Loading registered participants...</div>
 
-      <div class="participant-table-wrap">
-        <table class="participant-table">
+      <div class="participants-table-wrapper">
+        <table class="participants-table">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Participant / Team</th>
-              <th>Country</th>
-              <th>Type</th>
-              <th>Details</th>
+              <th scope="col">Sl. No.</th>
+              <th scope="col">Name</th>
+              <th scope="col">Type</th>
+              <th scope="col">Team Members</th>
             </tr>
           </thead>
           <tbody id="participantGrid"></tbody>
         </table>
+      </div>
+
+      <div id="participantEmpty" class="participant-empty" hidden>
+        No registration records are available at the moment.
+      </div>
+
+      <div id="participantError" class="participant-error" hidden>
+        The registration list is temporarily unavailable. Please try again later.
       </div>
     </div>
   </section>
 
   <section class="section alt">
     <div class="container narrow">
-      <div class="hack-cta">
+      <div class="hack-cta participant-cta">
         <div class="eyebrow">AI Innovation Hackathon 2026</div>
-        <h2>Not on the list yet?</h2>
-        <p>Submit the official registration and confirmation form. Confirmed participants who are approved for website display will appear here automatically.</p>
+        <h2>Want to participate?</h2>
+        <p>Complete the official registration form to join the hackathon.</p>
         <div class="hero-actions">
           <a class="btn primary" href="https://forms.gle/tc3TrSSX1HFerk2j6" target="_blank" rel="noopener">Open Registration Form</a>
-          <a class="btn" href="hackathon.html">Hackathon Details</a>
+          <a class="btn" href="hackathon.html">View Hackathon Details</a>
         </div>
       </div>
     </div>
@@ -135,131 +147,14 @@
 const PARTICIPANT_API =
   "https://script.google.com/macros/s/AKfycbwMX24cUnelzb1NSO71_vgMaEuF-on2NXRYTqycq7WJ0YkF8thwjt5eA8msd1vjCGF5/exec";
 
-async function loadParticipants() {
-  const tableBody = document.getElementById("participantGrid");
-  const status = document.getElementById("participantStatus");
-  const participantCount = document.getElementById("participantCount");
-  const teamCount = document.getElementById("teamCount");
+function normalizeText(value) {
+  return String(value ?? "")
+    .trim()
+    .replace(/\s+/g, " ");
+}
 
-  if (!tableBody) return;
-
-  try {
-    const response = await fetch(PARTICIPANT_API, {
-      cache: "no-store"
-    });
-
-    if (!response.ok) {
-      throw new Error("Participant API request failed.");
-    }
-
-    const participants = await response.json();
-
-    tableBody.innerHTML = "";
-
-    if (!Array.isArray(participants) || participants.length === 0) {
-      status.textContent =
-        "No confirmed participants have registered yet.";
-      participantCount.textContent = "0";
-      teamCount.textContent = "0";
-      return;
-    }
-
-    status.textContent = "";
-    participantCount.textContent = participants.length;
-
-    // Participation Type from the registration sheet is the ONLY authority.
-    const teams = participants.filter(participant =>
-      String(participant.participationType || "")
-        .trim()
-        .toLowerCase() === "team"
-    );
-
-    teamCount.textContent = teams.length;
-
-    participants.forEach((participant, index) => {
-      const row = document.createElement("tr");
-
-      const type =
-        String(participant.participationType || "")
-          .trim()
-          .toLowerCase();
-
-      const isTeam = type === "team";
-
-      if (isTeam) {
-        const teamName =
-          String(participant.teamName || "").trim() || "Team";
-
-        const members =
-          String(participant.teamMembers || "").trim();
-
-        row.innerHTML = `
-          <td class="participant-number">
-            ${String(index + 1).padStart(2, "0")}
-          </td>
-
-          <td class="participant-name">
-            ${escapeParticipantHTML(teamName)}
-          </td>
-
-          <td class="participant-country">
-            ${escapeParticipantHTML(
-              participant.country || "International"
-            )}
-          </td>
-
-          <td>
-            <span class="participant-type">TEAM</span>
-          </td>
-
-          <td class="participant-details">
-            <div class="team-members-list">
-              ${
-                members
-                  ? escapeParticipantHTML(members)
-                  : "Members not specified"
-              }
-            </div>
-          </td>
-        `;
-      } else {
-        const name =
-          String(participant.name || "").trim() || "Participant";
-
-        row.innerHTML = `
-          <td class="participant-number">
-            ${String(index + 1).padStart(2, "0")}
-          </td>
-
-          <td class="participant-name">
-            ${escapeParticipantHTML(name)}
-          </td>
-
-          <td class="participant-country">
-            ${escapeParticipantHTML(
-              participant.country || "International"
-            )}
-          </td>
-
-          <td>
-            <span class="participant-type">INDIVIDUAL</span>
-          </td>
-
-          <td class="participant-details participant-individual-details">
-            <span class="no-members">—</span>
-          </td>
-        `;
-      }
-
-      tableBody.appendChild(row);
-    });
-
-  } catch (error) {
-    console.error("Participant API error:", error);
-
-    status.textContent =
-      "Participant information is temporarily unavailable. Please try again later.";
-  }
+function normalizeKey(value) {
+  return normalizeText(value).toLowerCase();
 }
 
 function escapeParticipantHTML(value) {
@@ -269,6 +164,247 @@ function escapeParticipantHTML(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+function getField(item, names) {
+  for (const name of names) {
+    if (item && Object.prototype.hasOwnProperty.call(item, name)) {
+      return item[name];
+    }
+  }
+  return "";
+}
+
+function timestampValue(item) {
+  const raw = getField(item, ["timestamp", "Timestamp", "registeredAt"]);
+  if (raw === null || raw === undefined || raw === "") return 0;
+  const numeric = Number(raw);
+  if (Number.isFinite(numeric)) return numeric;
+  const parsed = Date.parse(raw);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function splitMembers(value) {
+  return String(value ?? "")
+    .split(/[\n,;|]+/)
+    .map(item => item.trim().replace(/\s+/g, " "))
+    .filter(Boolean);
+}
+
+function isUsableLeaderName(value) {
+  const text = normalizeText(value);
+  if (!text || text.includes("@") || /^team leader$/i.test(text)) return false;
+  const digitCount = (text.match(/\d/g) || []).length;
+  return digitCount < 7;
+}
+
+function uniqueNames(names) {
+  const seen = new Set();
+  const output = [];
+  names.forEach(name => {
+    const key = normalizeKey(name);
+    if (!key || seen.has(key)) return;
+    seen.add(key);
+    output.push(name);
+  });
+  return output;
+}
+
+function prepareRegistrations(rawParticipants) {
+  const entries = [];
+  const teams = new Map();
+  const individuals = new Map();
+
+  rawParticipants.forEach((participant, rawIndex) => {
+    const type = normalizeKey(
+      getField(participant, ["participationType", "Participation Type", "type"])
+    );
+    const isTeam = type === "team";
+    const name = normalizeText(
+      getField(participant, ["name", "fullName", "Full Name"])
+    );
+    const teamName = normalizeText(
+      getField(participant, ["teamName", "Team Name"])
+    );
+    const email = normalizeKey(
+      getField(participant, ["email", "emailAddress", "Email Address"])
+    );
+    const teamLeader = normalizeText(
+      getField(participant, [
+        "teamLeader",
+        "teamLeaderName",
+        "Team Leader / Primary Contact Name"
+      ])
+    );
+    const members = splitMembers(
+      getField(participant, ["teamMembers", "Team Members"])
+    );
+    const stamp = timestampValue(participant);
+
+    // Respect an explicit Website Display = No value when the API returns it.
+    const websiteDisplay = normalizeKey(
+      getField(participant, ["websiteDisplay", "Website Display"])
+    );
+    if (["no", "false", "hidden"].includes(websiteDisplay)) return;
+
+    const sourceRecord = {
+      participant,
+      name,
+      teamName: teamName || "Team",
+      teamLeader,
+      members,
+      stamp,
+      rawIndex
+    };
+
+    if (isTeam) {
+      const key = normalizeKey(teamName || name);
+      if (!key) return;
+
+      const existing = teams.get(key);
+      if (!existing) {
+        teams.set(key, {
+          key,
+          type: "Team",
+          name: teamName || name || "Team",
+          records: [sourceRecord],
+          firstStamp: stamp || Number.MAX_SAFE_INTEGER
+        });
+      } else {
+        existing.records.push(sourceRecord);
+        if (stamp && (!existing.firstStamp || stamp < existing.firstStamp)) {
+          existing.firstStamp = stamp;
+        }
+      }
+      return;
+    }
+
+    const key = email || normalizeKey(name);
+    if (!key) return;
+
+    const existing = individuals.get(key);
+    if (!existing || stamp >= existing.stamp) {
+      individuals.set(key, {
+        type: "Individual",
+        name: name || "Participant",
+        stamp,
+        firstStamp: existing ? existing.firstStamp : (stamp || Number.MAX_SAFE_INTEGER)
+      });
+    }
+  });
+
+  teams.forEach(team => {
+    // Prefer the row with the most complete member list; use the latest row on a tie.
+    const best = [...team.records]
+      .sort((a, b) => {
+        const memberDelta = b.members.length - a.members.length;
+        if (memberDelta !== 0) return memberDelta;
+        return b.stamp - a.stamp;
+      })[0];
+
+    const combinedMembers = uniqueNames([
+      ...(isUsableLeaderName(best.teamLeader) ? [best.teamLeader] : []),
+      ...best.members
+    ]);
+
+    entries.push({
+      type: "Team",
+      name: team.name,
+      members: combinedMembers,
+      sortStamp: team.firstStamp,
+      fallbackIndex: best.rawIndex
+    });
+  });
+
+  individuals.forEach(individual => {
+    entries.push({
+      type: "Individual",
+      name: individual.name,
+      members: [],
+      sortStamp: individual.firstStamp,
+      fallbackIndex: 0
+    });
+  });
+
+  entries.sort((a, b) => {
+    const aStamp = a.sortStamp || Number.MAX_SAFE_INTEGER;
+    const bStamp = b.sortStamp || Number.MAX_SAFE_INTEGER;
+    if (aStamp !== bStamp) return aStamp - bStamp;
+    return a.fallbackIndex - b.fallbackIndex;
+  });
+
+  return entries;
+}
+
+function renderParticipants(entries) {
+  const tableBody = document.getElementById("participantGrid");
+  const status = document.getElementById("participantStatus");
+  const participantCount = document.getElementById("participantCount");
+  const teamCount = document.getElementById("teamCount");
+  const individualCount = document.getElementById("individualCount");
+  const empty = document.getElementById("participantEmpty");
+
+  tableBody.innerHTML = "";
+
+  if (!entries.length) {
+    participantCount.textContent = "0";
+    teamCount.textContent = "0";
+    individualCount.textContent = "0";
+    status.textContent = "";
+    empty.hidden = false;
+    return;
+  }
+
+  empty.hidden = true;
+  participantCount.textContent = entries.length;
+  teamCount.textContent = entries.filter(item => item.type === "Team").length;
+  individualCount.textContent = entries.filter(item => item.type === "Individual").length;
+  status.textContent = `Showing ${entries.length} registered ${entries.length === 1 ? "entry" : "entries"}.`;
+
+  entries.forEach((entry, index) => {
+    const row = document.createElement("tr");
+    const memberMarkup = entry.type === "Team"
+      ? entry.members.length
+        ? `<div class="member-list">${entry.members.map(member => `<span>${escapeParticipantHTML(member)}</span>`).join("")}</div>`
+        : `<span class="no-members">Not specified</span>`
+      : `<span class="no-members">—</span>`;
+
+    row.innerHTML = `
+      <td class="participant-number">${String(index + 1).padStart(2, "0")}</td>
+      <td class="participant-name">${escapeParticipantHTML(entry.name)}</td>
+      <td><span class="participant-type ${entry.type === "Team" ? "team-type" : "individual-type"}">${entry.type}</span></td>
+      <td class="participant-details">${memberMarkup}</td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+async function loadParticipants() {
+  const status = document.getElementById("participantStatus");
+  const error = document.getElementById("participantError");
+  const tableWrapper = document.querySelector(".participants-table-wrapper");
+
+  try {
+    const response = await fetch(`${PARTICIPANT_API}?t=${Date.now()}`, {
+      cache: "no-store"
+    });
+
+    if (!response.ok) {
+      throw new Error("Participant API request failed.");
+    }
+
+    const participants = await response.json();
+    const entries = prepareRegistrations(Array.isArray(participants) ? participants : []);
+    renderParticipants(entries);
+    error.hidden = true;
+    tableWrapper.hidden = !entries.length;
+  } catch (errorObject) {
+    console.error("Participant API error:", errorObject);
+    status.textContent = "";
+    tableWrapper.hidden = true;
+    document.getElementById("participantEmpty").hidden = true;
+    error.hidden = false;
+  }
 }
 
 loadParticipants();

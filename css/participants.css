@@ -3,757 +3,243 @@
    AI INNOVATION HACKATHON 2026
    ========================================================= */
 
-
-/* =========================================================
-   PAGE HERO
-   ========================================================= */
-
-.participants-page-hero {
+.participants-hero {
   position: relative;
   overflow: hidden;
-}
-
-.participants-page-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-
-  pointer-events: none;
-
   background:
-    radial-gradient(
-      circle at 82% 18%,
-      rgba(184,120,255,.12),
-      transparent 34%
-    );
+    radial-gradient(circle at 80% 16%, rgba(184,120,255,.14), transparent 32%),
+    radial-gradient(circle at 14% 84%, rgba(125,60,255,.07), transparent 28%);
 }
-
-.participants-page-hero > .container {
-  position: relative;
-  z-index: 1;
-}
-
-
-/* =========================================================
-   PARTICIPANTS SECTION
-   ========================================================= */
 
 .participants-section {
-  padding-top: 58px;
+  padding-top: 70px;
 }
 
+.participants-head {
+  align-items: flex-end;
+}
 
-/* =========================================================
-   STATS
-   ========================================================= */
+.participants-head > p {
+  max-width: 510px;
+}
 
 .participants-stats {
-
   display: grid;
-
-  grid-template-columns:
-    repeat(3, minmax(0, 1fr));
-
-  gap: 18px;
-
-  margin-bottom: 32px;
-
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0 0 24px;
 }
 
-
-.stat-card {
-
-  padding: 23px 25px;
-
-  border:
-    1px solid var(--line);
-
-  border-radius:
-    var(--radius);
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,.018),
-      rgba(255,255,255,.006)
-    ),
-    var(--surface);
-
-  transition:
-    transform .22s ease,
-    border-color .22s ease,
-    background .22s ease;
-
+.participant-stat {
+  min-height: 94px;
+  padding: 19px 21px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--surface);
 }
 
-
-.stat-card:hover {
-
-  transform:
-    translateY(-3px);
-
-  border-color:
-    var(--line-strong);
-
-  background:
-    var(--surface-2);
-
-}
-
-
-.stat-label {
-
+.participant-stat span {
   display: block;
-
-  margin-bottom: 7px;
-
-  color:
-    var(--muted-2);
-
+  margin-bottom: 5px;
+  color: var(--muted-2);
   font-size: 10px;
-
   font-weight: 700;
-
   letter-spacing: .12em;
-
   text-transform: uppercase;
-
 }
 
-
-.stat-card strong {
-
+.participant-stat strong {
   display: block;
-
-  color:
-    var(--text);
-
-  font-size: 30px;
-
+  color: var(--text);
+  font-size: 28px;
   line-height: 1.1;
-
-  font-weight: 700;
-
 }
 
-
-/* =========================================================
-   TABLE WRAPPER
-   ========================================================= */
+.participant-status {
+  min-height: 24px;
+  margin: 0 0 12px;
+  color: var(--muted-2);
+  font-size: 12px;
+}
 
 .participants-table-wrapper {
-
   width: 100%;
-
   overflow-x: auto;
-
-  border:
-    1px solid var(--line);
-
-  border-radius:
-    var(--radius);
-
-  background:
-    var(--surface);
-
-  box-shadow:
-    var(--shadow);
-
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
 }
-
-
-/* =========================================================
-   TABLE
-   ========================================================= */
 
 .participants-table {
-
   width: 100%;
-
-  min-width: 920px;
-
+  min-width: 760px;
   border-collapse: collapse;
-
   table-layout: fixed;
-
 }
 
+.participants-table th,
+.participants-table td {
+  border-bottom: 1px solid var(--line);
+}
 
-/* =========================================================
-   COLUMN WIDTHS
-   ========================================================= */
+.participants-table th {
+  padding: 15px 18px;
+  background: var(--surface-2);
+  color: var(--muted-2);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .11em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.participants-table td {
+  padding: 17px 18px;
+  color: var(--text);
+  font-size: 14px;
+  vertical-align: top;
+}
+
+.participants-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.participants-table tbody tr:hover {
+  background: rgba(184,120,255,.035);
+}
 
 .participants-table th:nth-child(1),
 .participants-table td:nth-child(1) {
-
-  width: 65px;
-
+  width: 86px;
 }
-
 
 .participants-table th:nth-child(2),
 .participants-table td:nth-child(2) {
-
-  width: 23%;
-
+  width: 26%;
 }
-
 
 .participants-table th:nth-child(3),
 .participants-table td:nth-child(3) {
-
-  width: 15%;
-
+  width: 125px;
 }
-
 
 .participants-table th:nth-child(4),
 .participants-table td:nth-child(4) {
-
-  width: 13%;
-
-}
-
-
-.participants-table th:nth-child(5),
-.participants-table td:nth-child(5) {
-
   width: auto;
-
 }
-
-
-/* =========================================================
-   TABLE HEADER
-   ========================================================= */
-
-.participants-table thead {
-
-  background:
-    var(--surface-2);
-
-}
-
-
-.participants-table th {
-
-  padding:
-    15px 18px;
-
-  border-bottom:
-    1px solid var(--line);
-
-  color:
-    var(--muted-2);
-
-  font-size:
-    10px;
-
-  font-weight:
-    700;
-
-  letter-spacing:
-    .11em;
-
-  text-align:
-    left;
-
-  text-transform:
-    uppercase;
-
-}
-
-
-/* =========================================================
-   TABLE ROWS
-   ========================================================= */
-
-.participants-table tbody tr {
-
-  border-bottom:
-    1px solid var(--line);
-
-  transition:
-    background .2s ease;
-
-}
-
-
-.participants-table tbody tr:last-child {
-
-  border-bottom:
-    none;
-
-}
-
-
-.participants-table tbody tr:hover {
-
-  background:
-    rgba(184,120,255,.035);
-
-}
-
-
-/* =========================================================
-   TABLE CELLS
-   ========================================================= */
-
-.participants-table td {
-
-  padding:
-    18px;
-
-  color:
-    var(--text);
-
-  font-size:
-    14px;
-
-  vertical-align:
-    top;
-
-}
-
-
-/* =========================================================
-   NUMBER
-   ========================================================= */
 
 .participant-number {
-
-  color:
-    var(--purple) !important;
-
-  font-size:
-    11px !important;
-
-  font-weight:
-    700;
-
-  letter-spacing:
-    .08em;
-
-  opacity:
-    .75;
-
+  color: var(--purple) !important;
+  font-size: 11px !important;
+  font-weight: 700;
+  letter-spacing: .08em;
 }
-
-
-/* =========================================================
-   NAME
-   ========================================================= */
 
 .participant-name {
-
-  color:
-    var(--text);
-
-  font-weight:
-    600;
-
-  line-height:
-    1.45;
-
-  word-break:
-    break-word;
-
+  color: var(--text);
+  font-weight: 600;
+  line-height: 1.45;
+  word-break: break-word;
 }
-
-
-/* =========================================================
-   COUNTRY
-   ========================================================= */
-
-.participant-country {
-
-  color:
-    var(--muted);
-
-  line-height:
-    1.45;
-
-  word-break:
-    break-word;
-
-}
-
-
-/* =========================================================
-   TYPE BADGE
-   ========================================================= */
 
 .participant-type {
-
-  display:
-    inline-flex;
-
-  align-items:
-    center;
-
-  justify-content:
-    center;
-
-  min-height:
-    28px;
-
-  padding:
-    5px 10px;
-
-  border:
-    1px solid var(--line);
-
-  border-radius:
-    999px;
-
-  font-size:
-    9px;
-
-  font-weight:
-    700;
-
-  letter-spacing:
-    .09em;
-
-  white-space:
-    nowrap;
-
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 29px;
+  padding: 5px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
-
-
-/* TEAM */
 
 .team-type {
-
-  color:
-    var(--purple);
-
-  border-color:
-    rgba(184,120,255,.28);
-
-  background:
-    rgba(184,120,255,.08);
-
+  color: var(--purple);
+  border-color: rgba(184,120,255,.28);
+  background: rgba(184,120,255,.08);
 }
-
-
-/* INDIVIDUAL */
 
 .individual-type {
-
-  color:
-    var(--muted);
-
-  background:
-    rgba(255,255,255,.025);
-
+  color: var(--muted);
+  background: rgba(255,255,255,.025);
 }
-
-
-/* =========================================================
-   DETAILS
-   ========================================================= */
 
 .participant-details {
-
-  vertical-align:
-    top !important;
-
+  color: var(--muted);
+  vertical-align: top !important;
 }
 
-
-/*
- * IMPORTANT:
- *
- * There is intentionally NO
- *
- * .participant-details::before
- *
- * rule here.
- *
- * Therefore "Team Members" can NEVER
- * appear automatically for individuals.
- */
-
-
-/* =========================================================
-   TEAM MEMBERS BOX
-   ========================================================= */
-
-.team-members-box {
-
-  width:
-    100%;
-
-  padding:
-    13px;
-
-  border:
-    1px solid rgba(184,120,255,.14);
-
-  border-radius:
-    12px;
-
-  background:
-    rgba(184,120,255,.035);
-
+.member-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
 }
 
-
-/* =========================================================
-   TEAM MEMBERS TITLE
-   ========================================================= */
-
-.team-members-heading {
-
-  margin-bottom:
-    9px;
-
-  color:
-    var(--purple);
-
-  font-size:
-    9px;
-
-  font-weight:
-    700;
-
-  letter-spacing:
-    .12em;
-
-  text-transform:
-    uppercase;
-
+.member-list span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 31px;
+  padding: 6px 10px;
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 9px;
+  background: rgba(255,255,255,.018);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
 }
-
-
-/* =========================================================
-   TEAM MEMBERS LIST
-   ========================================================= */
-
-.team-members-list {
-
-  display:
-    flex;
-
-  flex-direction:
-    column;
-
-  gap:
-    5px;
-
-}
-
-
-/* =========================================================
-   TEAM MEMBER
-   ========================================================= */
-
-.team-member-name {
-
-  display:
-    flex;
-
-  align-items:
-    flex-start;
-
-  gap:
-    9px;
-
-  padding:
-    7px 9px;
-
-  border:
-    1px solid rgba(255,255,255,.045);
-
-  border-radius:
-    8px;
-
-  background:
-    rgba(255,255,255,.018);
-
-  color:
-    var(--muted);
-
-  font-size:
-    13px;
-
-  line-height:
-    1.45;
-
-  word-break:
-    break-word;
-
-}
-
-
-/* =========================================================
-   MEMBER DOT
-   ========================================================= */
-
-.member-dot {
-
-  flex:
-    0 0 5px;
-
-  width:
-    5px;
-
-  height:
-    5px;
-
-  margin-top:
-    7px;
-
-  border-radius:
-    50%;
-
-  background:
-    var(--purple);
-
-  opacity:
-    .7;
-
-}
-
-
-/* =========================================================
-   NO MEMBERS
-   ========================================================= */
 
 .no-members {
-
-  color:
-    var(--muted-2);
-
-  font-size:
-    13px;
-
+  color: var(--muted-2);
 }
 
-
-/* Individual Details */
-
-.participant-individual-details {
-
-  color:
-    var(--muted-2);
-
+.participant-empty,
+.participant-error {
+  padding: 48px 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--muted);
+  text-align: center;
 }
 
-
-/* =========================================================
-   STATES
-   ========================================================= */
-
-.loading-message,
-.empty-message,
-.error-message {
-
-  padding:
-    55px 20px !important;
-
-  color:
-    var(--muted);
-
-  text-align:
-    center;
-
+.participant-error {
+  color: var(--muted);
 }
 
-
-.participants-error {
-
-  margin-top:
-    18px;
-
-  padding:
-    14px 18px;
-
-  border:
-    1px solid var(--line);
-
-  border-radius:
-    12px;
-
-  background:
-    var(--surface);
-
-  color:
-    var(--muted);
-
-  font-size:
-    13px;
-
-  text-align:
-    center;
-
+.participant-cta {
+  max-width: 850px;
+  margin: 0 auto;
 }
 
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media (max-width: 760px) {
-
+@media (max-width: 800px) {
   .participants-stats {
-
-    grid-template-columns:
-      1fr;
-
+    grid-template-columns: 1fr;
   }
-
 
   .participants-section {
-
-    padding-top:
-      45px;
-
+    padding-top: 55px;
   }
-
 
   .participants-table-wrapper {
-
-    border-radius:
-      14px;
-
+    border-radius: 14px;
   }
-
 }
 
-
 @media (max-width: 600px) {
-
-  .participants-page-hero {
-
-    padding-top:
-      70px;
-
+  .participants-hero {
+    padding-top: 72px;
   }
 
-
-  .participants-page-hero h1 {
-
-    font-size:
-      44px;
-
+  .participants-hero h1 {
+    font-size: 42px;
   }
 
-
-  .participants-page-hero > .container > p {
-
-    font-size:
-      15px;
-
+  .participant-stat {
+    min-height: 82px;
   }
-
-
-  .stat-card {
-
-    padding:
-      20px;
-
-  }
-
 }
