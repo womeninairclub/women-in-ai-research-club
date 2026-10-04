@@ -1,1311 +1,288 @@
-/* =========================================================
-   AI INNOVATION HACKATHON 2026
-   Page-specific styles
-   Uses the main club theme from style.css
-   ========================================================= */
-
-
-/* =========================================================
-   HACKATHON NAVIGATION
-   ========================================================= */
-
-.hack-nav {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+/* AI Innovation Hackathon 2026 */
+:root{
+  --hack-ink:#14213d;
+  --hack-muted:#64748b;
+  --hack-line:#e5e7eb;
+  --hack-soft:#f7f8fb;
+  --hack-purple:#7657d8;
+  --hack-purple-dark:#5940ad;
+  --hack-white:#fff;
 }
 
-.hack-nav .navlinks {
-  gap: 15px;
-}
+html{scroll-behavior:smooth}
+body{overflow-x:hidden}
+.hack-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.96);backdrop-filter:blur(12px)}
+.hack-nav .brand span{font-size:11px;line-height:1.15;letter-spacing:.03em}
+.hack-nav .navlinks a{font-size:13px}
 
-.hack-nav .navlinks a {
-  font-size: 12px;
-}
-
-
-/* =========================================================
-   HACKATHON HERO
-   ========================================================= */
-
-.hack-hero {
-  position: relative;
-  min-height: 78vh;
-  display: flex;
-  align-items: center;
-  padding: 105px 0 90px;
-  overflow: hidden;
-  border-bottom: 1px solid var(--line);
-
+.hack-hero{
+  position:relative;
+  padding:110px 0 75px;
   background:
-    radial-gradient(
-      circle at 82% 18%,
-      rgba(184,120,255,.16),
-      transparent 32%
-    ),
-    radial-gradient(
-      circle at 8% 82%,
-      rgba(125,60,255,.10),
-      transparent 28%
-    ),
-    var(--bg);
-}
-
-.hack-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-
-  background:
-    linear-gradient(
-      rgba(255,255,255,.018) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      rgba(255,255,255,.018) 1px,
-      transparent 1px
-    );
-
-  background-size: 64px 64px;
-
-  mask-image: linear-gradient(
-    to bottom,
-    #000 0%,
-    rgba(0,0,0,.65) 65%,
-    transparent 100%
-  );
-}
-
-.hack-hero::after {
-  content: "";
-  position: absolute;
-  width: 520px;
-  height: 520px;
-  right: -220px;
-  top: -220px;
-
-  border: 1px solid rgba(184,120,255,.12);
-  border-radius: 50%;
-
-  pointer-events: none;
-}
-
-.hack-hero > .container {
-  position: relative;
-  z-index: 2;
-}
-
-.hack-badge {
-  display: inline-flex;
-  align-items: center;
-
-  margin-bottom: 22px;
-  padding: 7px 12px;
-
-  border: 1px solid rgba(184,120,255,.25);
-  border-radius: 999px;
-
-  background: rgba(184,120,255,.07);
-
-  color: var(--purple);
-
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .13em;
-  text-transform: uppercase;
-}
-
-.hack-kicker {
-  margin-bottom: 12px;
-
-  color: var(--purple);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-}
-
-.hack-hero h1 {
-  max-width: 900px;
-  margin-bottom: 23px;
-
-  font-family: "Playfair Display", serif;
-  font-size: clamp(48px, 7vw, 82px);
-  line-height: 1.02;
-  letter-spacing: -.045em;
-}
-
-.hack-hero h1 span {
-  color: var(--purple);
-}
-
-.hack-lead {
-  max-width: 760px;
-
-  color: var(--muted);
-  font-size: 17px;
-  line-height: 1.8;
-}
-
-.hack-hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 11px;
-  margin-top: 30px;
-}
-
-.hack-meta-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0,1fr));
-
-  max-width: 900px;
-  margin-top: 58px;
-  padding-top: 24px;
-
-  border-top: 1px solid var(--line);
-}
-
-.hack-meta-grid > div {
-  padding-right: 25px;
-  border-right: 1px solid var(--line);
-}
-
-.hack-meta-grid > div:not(:first-child) {
-  padding-left: 25px;
-}
-
-.hack-meta-grid > div:last-child {
-  border-right: none;
-}
-
-.hack-meta-grid strong {
-  display: block;
-  margin-bottom: 4px;
-
-  color: var(--text);
-  font-size: 14px;
-}
-
-.hack-meta-grid span {
-  color: var(--muted-2);
-  font-size: 12px;
-}
-
-
-/* =========================================================
-   GENERAL HACKATHON SECTIONS
-   ========================================================= */
-
-.hack-section {
-  position: relative;
-}
-
-.hack-section > .container {
-  position: relative;
-}
-
-.hack-section .section-head {
-  margin-bottom: 36px;
-}
-
-
-/* =========================================================
-   PROCESS / HOW IT WORKS
-   ========================================================= */
-
-.process-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0,1fr));
-  gap: 16px;
-}
-
-.process-card {
-  position: relative;
-
-  min-height: 245px;
-  padding: 25px;
-
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,.025),
-      rgba(255,255,255,.006)
-    ),
-    var(--surface);
-
-  transition:
-    transform .24s ease,
-    border-color .24s ease,
-    background .24s ease,
-    box-shadow .24s ease;
-}
-
-.process-card:hover {
-  transform: translateY(-5px);
-
-  border-color: var(--line-strong);
-
-  background: var(--surface-2);
-
-  box-shadow: var(--shadow);
-}
-
-.process-card > span {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 38px;
-  height: 38px;
-
-  margin-bottom: 23px;
-
-  border-radius: 11px;
-
-  background: rgba(184,120,255,.10);
-  color: var(--purple);
-
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.process-card h3 {
-  margin-bottom: 10px;
-}
-
-.process-card p {
-  font-size: 13px;
-}
-
-
-/* =========================================================
-   TIMELINE
-   ========================================================= */
-
-.hack-section .timeline {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0,1fr));
-
-  margin-top: 35px;
-
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-
-  overflow: hidden;
-}
-
-.hack-section .timeline-item {
-  position: relative;
-
-  min-height: 185px;
-  padding: 27px;
-
-  display: flex;
-  gap: 18px;
-  align-items: flex-start;
-
-  background: var(--surface);
-
-  border-right: 1px solid var(--line);
-}
-
-.hack-section .timeline-item:last-child {
-  border-right: none;
-}
-
-.timeline-marker {
-  flex: 0 0 auto;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 45px;
-  height: 45px;
-
-  border-radius: 50%;
-
-  background: rgba(184,120,255,.11);
-
-  color: var(--purple);
-
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.hack-section .timeline-item strong {
-  display: block;
-  margin-bottom: 8px;
-
-  color: var(--text);
-  font-size: 16px;
-}
-
-.hack-section .timeline-item p {
-  font-size: 13px;
-}
-
-
-/* =========================================================
-   MAIN DAY SCHEDULE
-   ========================================================= */
-
-.day-schedule {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0,1fr));
-
-  margin-top: 20px;
-
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-
-  overflow: hidden;
-}
-
-.day-schedule > div {
-  min-height: 105px;
-  padding: 20px;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 7px;
-
-  background: var(--surface);
-
-  border-right: 1px solid var(--line);
-}
-
-.day-schedule > div:last-child {
-  border-right: none;
-}
-
-.day-schedule span {
-  color: var(--purple);
-
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .05em;
-}
-
-.day-schedule strong {
-  color: var(--text);
-  font-size: 13px;
-}
-
-
-/* =========================================================
-   CHALLENGE PORTAL
-   ========================================================= */
-
-.release-box {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-
-  margin-bottom: 25px;
-  padding: 22px 24px;
-
-  border: 1px solid rgba(184,120,255,.22);
-  border-radius: var(--radius);
-
-  background:
-    linear-gradient(
-      135deg,
-      rgba(184,120,255,.09),
-      rgba(125,60,255,.025)
-    );
-}
-
-.release-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 43px;
-  height: 43px;
-
-  border-radius: 12px;
-
-  background: rgba(184,120,255,.11);
-
-  font-size: 17px;
-}
-
-.release-box strong {
-  display: block;
-  margin-bottom: 5px;
-
-  color: var(--text);
-  font-size: 14px;
-}
-
-.release-box p {
-  font-size: 13px;
-}
-
-
-/* =========================================================
-   TRACK FILTERS
-   ========================================================= */
-
-.track-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-
-  margin-bottom: 25px;
-}
-
-.track-tab {
-  min-height: 39px;
-  padding: 8px 14px;
-
-  border: 1px solid var(--line);
-  border-radius: 999px;
-
-  background: transparent;
-  color: var(--muted);
-
-  font-size: 12px;
-  font-weight: 600;
-
-  transition:
-    background .2s ease,
-    border-color .2s ease,
-    color .2s ease,
-    transform .2s ease;
-}
-
-.track-tab:hover {
-  transform: translateY(-1px);
-
-  border-color: var(--line-strong);
-  color: var(--text);
-}
-
-.track-tab.active {
-  border-color: var(--purple);
-  background: var(--purple);
-  color: #09070d;
-}
-
-
-/* =========================================================
-   CHALLENGE CARDS
-   ========================================================= */
-
-.challenge-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0,1fr));
-  gap: 18px;
-}
-
-.challenge-card {
-  position: relative;
-
-  padding: 25px;
-
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,.02),
-      rgba(255,255,255,.005)
-    ),
-    var(--surface);
-
-  transition:
-    transform .24s ease,
-    border-color .24s ease,
-    box-shadow .24s ease;
-}
-
-.challenge-card:hover {
-  transform: translateY(-4px);
-
-  border-color: var(--line-strong);
-
-  box-shadow: var(--shadow);
-}
-
-.challenge-card .challenge-number {
-  color: var(--purple);
-
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .13em;
-  text-transform: uppercase;
-
-  margin-bottom: 12px;
-}
-
-.challenge-card h3 {
-  margin-bottom: 9px;
-}
-
-.challenge-card p {
-  font-size: 13px;
-}
-
-.challenge-card .track-label {
-  display: inline-block;
-
-  margin-top: 18px;
-  padding: 5px 9px;
-
-  border-radius: 999px;
-
-  background: rgba(184,120,255,.08);
-
-  color: var(--purple);
-
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-
-
-/* =========================================================
-   SCREENING
-   ========================================================= */
-
-.two-col {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0,1fr));
-  gap: 20px;
-}
-
-.info-card {
-  padding: 28px;
-
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-
-  background: var(--surface);
-}
-
-.info-card h3 {
-  margin-bottom: 19px;
-}
-
-.clean-list {
-  display: grid;
-  gap: 11px;
-
-  margin: 0;
-  padding: 0;
-
-  list-style: none;
-
-  counter-reset: screening;
-}
-
-.clean-list li {
-  position: relative;
-
-  padding-left: 35px;
-
-  color: var(--muted);
-
-  font-size: 13px;
-
-  counter-increment: screening;
-}
-
-.clean-list li::before {
-  content: counter(screening, decimal-leading-zero);
-
-  position: absolute;
-  left: 0;
-  top: 0;
-
-  color: var(--purple);
-
-  font-size: 10px;
-  font-weight: 700;
-}
-
-.weight-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-
-  padding: 13px 0;
-
-  border-bottom: 1px solid var(--line);
-}
-
-.weight-row:last-child {
-  border-bottom: none;
-}
-
-.weight-row span {
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.weight-row b {
-  color: var(--purple);
-  font-size: 13px;
-}
-
-.notice {
-  margin: 22px 0;
-  padding: 17px 19px;
-
-  border-left: 3px solid var(--purple);
-  border-radius: 0 12px 12px 0;
-
-  background: rgba(184,120,255,.055);
-
-  color: var(--muted);
-
-  font-size: 13px;
-}
-
-.notice strong {
-  color: var(--text);
-}
-
-
-/* =========================================================
-   SELECTION FLOW
-   ========================================================= */
-
-.selection-flow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-
-  margin-top: 35px;
-  padding: 25px;
-
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-
-  background: var(--surface);
-}
-
-.selection-flow span {
-  padding: 9px 14px;
-
-  border: 1px solid var(--line);
-  border-radius: 999px;
-
-  color: var(--text);
-
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.selection-flow span:last-child {
-  border-color: rgba(184,120,255,.35);
-  background: rgba(184,120,255,.08);
-  color: var(--purple);
-}
-
-.selection-flow i {
-  color: var(--purple);
-  font-style: normal;
-}
-
-
-/* =========================================================
-   FINAL ROUND
-   ========================================================= */
-
-.final-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0,1fr));
-  gap: 16px;
-}
-
-.final-card {
-  padding: 24px;
-
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-
-  background: var(--surface);
-
-  transition:
-    transform .24s ease,
-    border-color .24s ease,
-    background .24s ease;
-}
-
-.final-card:hover {
-  transform: translateY(-4px);
-
-  border-color: var(--line-strong);
-  background: var(--surface-2);
-}
-
-.final-card > span {
-  display: block;
-
-  margin-bottom: 18px;
-
-  color: var(--purple);
-
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .12em;
-}
-
-.final-card h3 {
-  margin-bottom: 9px;
-}
-
-.final-card p {
-  font-size: 13px;
-}
-
-
-/* =========================================================
-   GITHUB REPOSITORY
-   ========================================================= */
-
-.repo-box {
-  margin-top: 25px;
-  padding: 28px;
-
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-
-  background: #08090e;
-}
-
-.repo-box h3 {
-  margin-bottom: 17px;
-}
-
-.repo-box pre {
-  margin: 0;
-
-  overflow-x: auto;
-
-  color: var(--muted);
+    radial-gradient(circle at 85% 20%, rgba(118,87,216,.16), transparent 32%),
+    radial-gradient(circle at 10% 90%, rgba(118,87,216,.08), transparent 30%),
+    linear-gradient(135deg,#fbfbfd,#f2f0fa);
+  border-bottom:1px solid var(--hack-line);
+}
+.hack-hero:after{
+  content:"";
+  position:absolute;inset:auto 0 0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--hack-purple),transparent);
+}
+.hack-badge{
+  display:inline-flex;padding:9px 14px;border:1px solid rgba(118,87,216,.25);
+  border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--hack-purple-dark);
+  background:rgba(255,255,255,.7)
+}
+.hack-kicker{margin:24px 0 10px;font-size:13px;font-weight:800;letter-spacing:.16em;color:var(--hack-purple-dark)}
+.hack-hero h1{font-size:clamp(46px,7vw,88px);line-height:.95;letter-spacing:-.055em;max-width:900px;margin:0;color:var(--hack-ink)}
+.hack-hero h1 span{color:var(--hack-purple)}
+.hack-lead{max-width:750px;font-size:19px;line-height:1.7;color:var(--hack-muted);margin:28px 0}
+.hack-hero-actions,.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.hack-meta-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:60px;background:var(--hack-line);border:1px solid var(--hack-line);border-radius:18px;overflow:hidden}
+.hack-meta-grid div{background:rgba(255,255,255,.9);padding:22px}
+.hack-meta-grid strong,.hack-meta-grid span{display:block}
+.hack-meta-grid strong{font-size:17px;color:var(--hack-ink)}
+.hack-meta-grid span{margin-top:5px;color:var(--hack-muted);font-size:12px}
+
+.hack-section{scroll-margin-top:85px}
+.hack-section h2{letter-spacing:-.035em}
+.alt{background:var(--hack-soft)}
+
+.process-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.process-card,.final-card,.info-card,.rule-card,.judge-grid div,.check-card{
+  border:1px solid var(--hack-line);background:#fff;border-radius:18px;
+}
+.process-card{padding:24px;min-height:190px}
+.process-card span,.final-card span{display:inline-flex;width:34px;height:34px;border-radius:10px;align-items:center;justify-content:center;background:#eee9ff;color:var(--hack-purple-dark);font-weight:800;font-size:12px}
+.process-card h3,.final-card h3{margin:22px 0 8px}
+.process-card p,.final-card p{color:var(--hack-muted);line-height:1.65;font-size:14px}
+
+.timeline{position:relative;max-width:900px;margin:35px auto 30px}
+.timeline:before{content:"";position:absolute;left:58px;top:20px;bottom:20px;width:1px;background:#d9d4ef}
+.timeline-item{position:relative;display:grid;grid-template-columns:116px 1fr;gap:28px;padding:18px 0}
+.timeline-marker{width:52px;height:52px;border-radius:15px;background:var(--hack-purple);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;z-index:1}
+.timeline-item strong{display:block;padding-top:5px;font-size:18px;color:var(--hack-ink)}
+.timeline-item p{margin:7px 0 0;color:var(--hack-muted);line-height:1.6}
+.day-schedule{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.day-schedule div{padding:18px;border:1px solid var(--hack-line);background:#fff;border-radius:14px}
+.day-schedule span,.day-schedule strong{display:block}
+.day-schedule span{font-size:12px;color:var(--hack-purple-dark);font-weight:800}
+.day-schedule strong{margin-top:6px;color:var(--hack-ink)}
+
+.release-box,.notice,.repo-box{
+  border:1px solid #ddd6fe;background:#fbfaff;border-radius:18px;padding:20px 22px;
+}
+.release-box{display:flex;gap:16px;align-items:flex-start;margin:25px 0}
+.release-icon{font-size:24px}.release-box strong{color:var(--hack-ink)}.release-box p{margin:6px 0 0;color:var(--hack-muted)}
+
+.track-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0}
+.track-tab{border:1px solid var(--hack-line);background:#fff;padding:10px 14px;border-radius:999px;cursor:pointer;font:inherit;font-size:12px;color:var(--hack-muted)}
+.track-tab.active{background:var(--hack-ink);color:#fff;border-color:var(--hack-ink)}
+
+.challenge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.challenge-card{display:flex;flex-direction:column;border:1px solid var(--hack-line);background:#fff;border-radius:18px;padding:22px;min-height:250px;transition:.2s}
+.challenge-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(20,33,61,.07)}
+.challenge-card .track-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;color:var(--hack-purple-dark)}
+.challenge-card h3{font-size:18px;line-height:1.25;margin:13px 0 10px;color:var(--hack-ink)}
+.challenge-card p{font-size:13px;line-height:1.6;color:var(--hack-muted);margin:0}
+.challenge-card button{margin-top:auto;align-self:flex-start;border:0;background:none;padding:15px 0 0;color:var(--hack-purple-dark);font-weight:800;cursor:pointer}
+.challenge-card[hidden]{display:none}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.info-card{padding:26px}
+.info-card h3{margin-top:0}
+.clean-list{margin:0;padding-left:20px;color:var(--hack-muted);line-height:1.9}
+.weight-row{display:flex;justify-content:space-between;gap:15px;padding:13px 0;border-bottom:1px solid var(--hack-line);font-size:14px}
+.weight-row:last-child{border-bottom:0}.weight-row span{color:var(--hack-muted)}.weight-row b{color:var(--hack-ink)}
+.notice{margin:22px 0;color:var(--hack-muted);line-height:1.65}.notice strong{color:var(--hack-ink)}
+
+.selection-flow{display:flex;justify-content:center;align-items:center;gap:16px;flex-wrap:wrap;margin:35px 0}
+.selection-flow span{padding:13px 18px;border-radius:999px;background:#f0edff;color:var(--hack-purple-dark);font-weight:800;font-size:13px}
+.selection-flow i{font-style:normal;color:#a1a1aa}
+
+.final-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.final-card{padding:22px;min-height:190px}
+.repo-box{margin-top:22px}.repo-box h3{margin-top:0}
+.repo-box pre{margin:0;overflow:auto;background:#161923;color:#eee;padding:20px;border-radius:12px;line-height:1.65}
+
+.submission-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.check-card{padding:17px 18px;color:var(--hack-ink);font-weight:650}
+
+.rules-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+.rule-card{padding:22px}.rule-card h3{margin-top:0}.rule-card ul{margin:0;padding-left:18px;color:var(--hack-muted);line-height:1.65;font-size:13px}
+
+.judge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
+.judge-grid div{padding:21px}.judge-grid b,.judge-grid span{display:block}.judge-grid b{color:var(--hack-ink)}.judge-grid span{margin-top:7px;color:var(--hack-muted);font-size:13px;line-height:1.55}
+.small-note{font-size:12px;color:var(--hack-muted);line-height:1.6;margin-top:20px}
+
+.faq{display:grid;gap:10px;margin-top:28px}
+.faq details{background:#fff;border:1px solid var(--hack-line);border-radius:14px;padding:18px 20px}
+.faq summary{cursor:pointer;font-weight:750;color:var(--hack-ink)}
+.faq p{color:var(--hack-muted);line-height:1.65;margin:13px 0 0;font-size:14px}
 
-  font-family:
-    "SFMono-Regular",
-    Consolas,
-    "Liberation Mono",
-    monospace;
+.hack-cta{padding:55px;text-align:center;border:1px solid #ded7ff;border-radius:24px;background:linear-gradient(135deg,#faf9ff,#f3f0ff)}
+.hack-cta h2{margin:10px auto;max-width:700px;font-size:clamp(32px,5vw,52px)}
+.hack-cta p{color:var(--hack-muted)}
+.hack-cta .hero-actions{justify-content:center;margin-top:25px}.cta-org{font-size:12px!important;margin-top:25px}
 
-  font-size: 12px;
-  line-height: 1.75;
+@media(max-width:1000px){
+  .process-grid,.final-grid{grid-template-columns:repeat(2,1fr)}
+  .challenge-grid{grid-template-columns:repeat(2,1fr)}
+  .rules-grid,.judge-grid{grid-template-columns:repeat(2,1fr)}
+  .hack-meta-grid{grid-template-columns:repeat(2,1fr)}
 }
-
-.repo-box code {
-  color: var(--muted);
-}
-
-
-/* =========================================================
-   FINAL SUBMISSION
-   ========================================================= */
-
-.submission-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0,1fr));
-  gap: 11px;
-}
-
-.check-card {
-  padding: 16px 18px;
-
-  border: 1px solid var(--line);
-  border-radius: 12px;
-
-  background: var(--surface);
-
-  color: var(--muted);
-
-  font-size: 13px;
-}
-
-.check-card::first-letter {
-  color: var(--purple);
-}
-
-
-/* =========================================================
-   RULES
-   ========================================================= */
-
-.rules-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0,1fr));
-  gap: 17px;
-
-  margin-top: 30px;
-}
-
-.rule-card {
-  padding: 24px;
-
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-
-  background: var(--surface);
-
-  transition:
-    transform .24s ease,
-    border-color .24s ease,
-    background .24s ease;
-}
-
-.rule-card:hover {
-  transform: translateY(-3px);
-
-  border-color: var(--line-strong);
-  background: var(--surface-2);
-}
-
-.rule-card h3 {
-  margin-bottom: 13px;
-
-  font-size: 17px;
-}
-
-.rule-card ul {
-  display: grid;
-  gap: 9px;
-
-  margin: 0;
-  padding: 0;
-
-  list-style: none;
-}
-
-.rule-card li {
-  position: relative;
-
-  padding-left: 17px;
-
-  color: var(--muted);
-
-  font-size: 12.5px;
-}
-
-.rule-card li::before {
-  content: "•";
-
-  position: absolute;
-  left: 0;
-
-  color: var(--purple);
-}
-
-
-/* =========================================================
-   JUDGING
-   ========================================================= */
-
-.judge-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0,1fr));
-  gap: 16px;
-
-  margin-top: 30px;
-}
-
-.judge-grid > div {
-  padding: 23px;
-
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-
-  background: var(--surface);
-}
-
-.judge-grid b {
-  display: block;
-
-  margin-bottom: 8px;
-
-  color: var(--text);
-
-  font-size: 14px;
+@media(max-width:720px){
+  .hack-nav .brand span{font-size:9px}
+  .hack-hero{padding:75px 0 50px}
+  .hack-hero h1{font-size:48px}
+  .hack-lead{font-size:16px}
+  .hack-meta-grid,.process-grid,.two-col,.final-grid,.submission-grid,.rules-grid,.judge-grid,.day-schedule,.challenge-grid{grid-template-columns:1fr}
+  .timeline:before{left:25px}.timeline-item{grid-template-columns:70px 1fr;gap:14px}
+  .timeline-marker{width:50px}
+  .selection-flow{justify-content:flex-start}
+  .selection-flow i{transform:rotate(90deg)}
+  .hack-cta{padding:35px 20px}
+  .hack-nav .navlinks{display:none}
+  .hack-nav .navlinks.open{display:flex;position:absolute;left:12px;right:12px;top:72px;background:#fff;padding:15px;border:1px solid var(--hack-line);border-radius:16px;box-shadow:0 15px 40px rgba(0,0,0,.1);flex-direction:column}
 }
 
-.judge-grid span {
-  color: var(--muted);
+/* =====================================================
+   LIVE PARTICIPANT DIRECTORY — TABLE
+   ===================================================== */
 
-  font-size: 12.5px;
-  line-height: 1.7;
+.participant-summary{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+  margin:0 0 24px;
 }
 
-
-/* =========================================================
-   FAQ
-   ========================================================= */
-
-.hack-section .narrow {
-  max-width: 820px;
+.participant-stat{
+  padding:20px 0;
+  border-top:1px solid var(--hack-line);
+  border-bottom:1px solid var(--hack-line);
 }
 
-.faq {
-  display: grid;
-  gap: 9px;
-
-  margin-top: 28px;
+.participant-stat strong{
+  display:block;
+  font-size:2.2rem;
+  line-height:1;
+  color:var(--hack-ink);
+  margin-bottom:7px;
 }
-
-.faq details {
-  border: 1px solid var(--line);
-  border-radius: 13px;
-
-  background: var(--surface);
 
-  overflow: hidden;
+.participant-stat span{
+  color:var(--hack-muted);
+  font-size:.85rem;
 }
 
-.faq summary {
-  position: relative;
-
-  padding: 18px 48px 18px 20px;
-
-  color: var(--text);
-
-  font-size: 13px;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  list-style: none;
+.participant-status{
+  margin:0 0 18px;
+  color:var(--hack-muted);
+  font-size:.88rem;
 }
 
-.faq summary::-webkit-details-marker {
-  display: none;
+.participant-table-wrap{
+  width:100%;
+  overflow-x:auto;
+  border-top:1px solid var(--hack-line);
 }
-
-.faq summary::after {
-  content: "+";
 
-  position: absolute;
-  right: 19px;
-  top: 50%;
-
-  transform: translateY(-50%);
-
-  color: var(--purple);
-
-  font-size: 18px;
-  font-weight: 400;
+.participant-table{
+  width:100%;
+  min-width:760px;
+  border-collapse:collapse;
+  text-align:left;
 }
 
-.faq details[open] summary {
-  border-bottom: 1px solid var(--line);
+.participant-table th{
+  padding:15px 14px;
+  color:var(--hack-muted);
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  border-bottom:1px solid var(--hack-line);
+  white-space:nowrap;
 }
 
-.faq details[open] summary::after {
-  content: "−";
+.participant-table td{
+  padding:19px 14px;
+  border-bottom:1px solid var(--hack-line);
+  vertical-align:top;
 }
 
-.faq details p {
-  padding: 17px 20px 20px;
-
-  font-size: 13px;
+.participant-table tbody tr{
+  transition:background .18s ease;
 }
-
-
-/* =========================================================
-   FINAL CTA
-   ========================================================= */
-
-.hack-cta {
-  position: relative;
-
-  padding: 68px 42px;
-
-  overflow: hidden;
-
-  text-align: center;
-
-  border: 1px solid rgba(184,120,255,.24);
-  border-radius: 26px;
 
-  background:
-    radial-gradient(
-      circle at center,
-      rgba(125,60,255,.14),
-      transparent 62%
-    ),
-    var(--surface);
+.participant-table tbody tr:hover{
+  background:#faf9ff;
 }
 
-.hack-cta::before {
-  content: "";
-
-  position: absolute;
-
-  width: 260px;
-  height: 260px;
-
-  left: -130px;
-  bottom: -150px;
-
-  border: 1px solid rgba(184,120,255,.10);
-  border-radius: 50%;
+.participant-number{
+  width:60px;
+  color:var(--hack-purple);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:12px;
+  font-weight:800;
 }
 
-.hack-cta > * {
-  position: relative;
-  z-index: 1;
+.participant-name{
+  min-width:190px;
+  color:var(--hack-ink);
+  font-size:15px;
+  font-weight:750;
 }
 
-.hack-cta h2 {
-  margin-bottom: 13px;
+.participant-country{
+  min-width:120px;
+  color:var(--hack-muted);
+  white-space:nowrap;
 }
 
-.hack-cta > p:not(.cta-org) {
-  max-width: 650px;
-  margin: 0 auto;
-
-  font-size: 14px;
+.participant-type{
+  color:var(--hack-purple-dark);
+  font-size:10px;
+  font-weight:850;
+  letter-spacing:.12em;
 }
 
-.hack-cta .hero-actions {
-  justify-content: center;
+.participant-details{
+  min-width:240px;
 }
-
-.cta-org {
-  margin-top: 25px;
 
-  color: var(--muted-2);
-
-  font-size: 11px;
+.participant-detail-title{
+  margin-bottom:4px;
+  color:var(--hack-muted);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.1em;
+  text-transform:uppercase;
 }
 
-.cta-org strong {
-  color: var(--muted);
+.participant-detail-main{
+  color:var(--hack-ink);
+  font-size:13px;
+  font-weight:650;
 }
-
-
-/* =========================================================
-   SMALL NOTES
-   ========================================================= */
 
-.hack-section .small-note {
-  color: var(--muted-2);
-  font-size: 11px;
-  line-height: 1.7;
+.participant-detail-sub{
+  margin-top:4px;
+  color:var(--hack-muted);
+  font-size:12px;
+  line-height:1.55;
+  white-space:pre-line;
 }
-
-
-/* =========================================================
-   RESPONSIVE — TABLET
-   ========================================================= */
-
-@media (max-width: 1100px) {
 
-  .process-grid {
-    grid-template-columns: repeat(3, minmax(0,1fr));
+@media(max-width:600px){
+  .participant-summary{
+    grid-template-columns:1fr;
+    gap:0;
   }
 
-  .final-grid {
-    grid-template-columns: repeat(3, minmax(0,1fr));
-  }
-
-  .challenge-grid {
-    grid-template-columns: repeat(2, minmax(0,1fr));
-  }
-
-  .rules-grid {
-    grid-template-columns: repeat(2, minmax(0,1fr));
-  }
-
-  .judge-grid {
-    grid-template-columns: repeat(2, minmax(0,1fr));
-  }
-
-  .day-schedule {
-    grid-template-columns: repeat(3, minmax(0,1fr));
-  }
-
-  .day-schedule > div:nth-child(3) {
-    border-right: none;
-  }
-
-  .day-schedule > div:nth-child(-n+3) {
-    border-bottom: 1px solid var(--line);
-  }
-}
-
-
-/* =========================================================
-   RESPONSIVE — MOBILE
-   ========================================================= */
-
-@media (max-width: 760px) {
-
-  .hack-hero {
-    min-height: auto;
-    padding: 76px 0 65px;
-  }
-
-  .hack-hero h1 {
-    font-size: clamp(43px, 12vw, 62px);
-  }
-
-  .hack-lead {
-    font-size: 15px;
-  }
-
-  .hack-meta-grid {
-    grid-template-columns: repeat(2, minmax(0,1fr));
-
-    margin-top: 42px;
-  }
-
-  .hack-meta-grid > div {
-    padding: 15px 15px 15px 0;
-    border-right: none;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .hack-meta-grid > div:not(:first-child) {
-    padding-left: 15px;
-  }
-
-  .hack-meta-grid > div:nth-child(2n) {
-    border-left: 1px solid var(--line);
-  }
-
-  .hack-meta-grid > div:nth-last-child(-n+2) {
-    border-bottom: none;
-  }
-
-  .process-grid,
-  .challenge-grid,
-  .rules-grid,
-  .judge-grid,
-  .final-grid,
-  .two-col,
-  .submission-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .hack-section .timeline {
-    grid-template-columns: 1fr;
-  }
-
-  .hack-section .timeline-item {
-    min-height: auto;
-
-    border-right: none;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .hack-section .timeline-item:last-child {
-    border-bottom: none;
-  }
-
-  .day-schedule {
-    grid-template-columns: 1fr;
-  }
-
-  .day-schedule > div,
-  .day-schedule > div:nth-child(3) {
-    border-right: none;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .day-schedule > div:last-child {
-    border-bottom: none;
-  }
-
-  .selection-flow {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .selection-flow span {
-    text-align: center;
-  }
-
-  .selection-flow i {
-    text-align: center;
-    transform: rotate(90deg);
-  }
-
-  .hack-cta {
-    padding: 42px 22px;
-  }
-
-  .hack-cta .hero-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .hack-cta .hero-actions .btn {
-    width: 100%;
-  }
-}
-
-
-/* =========================================================
-   VERY SMALL SCREENS
-   ========================================================= */
-
-@media (max-width: 480px) {
-
-  .hack-badge {
-    font-size: 8px;
-    letter-spacing: .10em;
-  }
-
-  .hack-meta-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .hack-meta-grid > div,
-  .hack-meta-grid > div:not(:first-child) {
-    padding: 13px 0;
-
-    border-left: none;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .hack-meta-grid > div:last-child {
-    border-bottom: none;
-  }
-
-  .release-box {
-    flex-direction: column;
-  }
-
-  .track-tabs {
-    flex-direction: column;
-  }
-
-  .track-tab {
-    width: 100%;
-    text-align: left;
-  }
-
-  .repo-box {
-    padding: 21px;
-  }
-
-  .repo-box pre {
-    font-size: 10.5px;
-  }
-
-  .hack-cta {
-    padding: 35px 18px;
+  .participant-table{
+    min-width:700px;
   }
 }
