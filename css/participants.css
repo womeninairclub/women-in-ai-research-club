@@ -1,0 +1,491 @@
+/* =====================================================
+   AI INNOVATION HACKATHON 2026
+   PARTICIPANTS PAGE
+===================================================== */
+
+
+/* =====================================================
+   PARTICIPANT SUMMARY
+===================================================== */
+
+.participant-summary {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 18px;
+
+  margin:
+    30px
+    0;
+
+}
+
+
+.participant-stat {
+
+  padding:
+    22px
+    24px;
+
+  border:
+    1px solid
+    rgba(255,255,255,0.10);
+
+  border-radius:
+    14px;
+
+  background:
+    rgba(255,255,255,0.025);
+
+}
+
+
+.participant-stat strong {
+
+  display: block;
+
+  font-size:
+    30px;
+
+  line-height:
+    1.1;
+
+  margin-bottom:
+    7px;
+
+}
+
+
+.participant-stat span {
+
+  display: block;
+
+  font-size:
+    14px;
+
+  opacity:
+    0.72;
+
+}
+
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.participant-status {
+
+  margin:
+    18px
+    0;
+
+  min-height:
+    24px;
+
+  font-size:
+    14px;
+
+  opacity:
+    0.75;
+
+}
+
+
+
+/* =====================================================
+   TABLE WRAPPER
+===================================================== */
+
+.participant-table-wrap {
+
+  width:
+    100%;
+
+  overflow-x:
+    auto;
+
+  margin-top:
+    20px;
+
+  border:
+    1px solid
+    rgba(255,255,255,0.10);
+
+  border-radius:
+    16px;
+
+}
+
+
+
+/* =====================================================
+   TABLE
+===================================================== */
+
+.participant-table {
+
+  width:
+    100%;
+
+  min-width:
+    850px;
+
+  border-collapse:
+    collapse;
+
+  table-layout:
+    fixed;
+
+}
+
+
+
+/* =====================================================
+   COLUMN WIDTHS
+===================================================== */
+
+.participant-table th:nth-child(1),
+.participant-table td:nth-child(1) {
+
+  width:
+    65px;
+
+}
+
+
+.participant-table th:nth-child(2),
+.participant-table td:nth-child(2) {
+
+  width:
+    25%;
+
+}
+
+
+.participant-table th:nth-child(3),
+.participant-table td:nth-child(3) {
+
+  width:
+    15%;
+
+}
+
+
+.participant-table th:nth-child(4),
+.participant-table td:nth-child(4) {
+
+  width:
+    110px;
+
+}
+
+
+.participant-table th:nth-child(5),
+.participant-table td:nth-child(5) {
+
+  width:
+    35%;
+
+}
+
+
+
+/* =====================================================
+   TABLE HEADER
+===================================================== */
+
+.participant-table thead th {
+
+  text-align:
+    left;
+
+  padding:
+    18px
+    16px;
+
+  font-size:
+    14px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    0.02em;
+
+  border-bottom:
+    1px solid
+    rgba(255,255,255,0.12);
+
+  white-space:
+    nowrap;
+
+}
+
+
+
+/* =====================================================
+   TABLE BODY
+===================================================== */
+
+.participant-table tbody td {
+
+  padding:
+    18px
+    16px;
+
+  vertical-align:
+    middle;
+
+  border-bottom:
+    1px solid
+    rgba(255,255,255,0.07);
+
+  font-size:
+    14px;
+
+}
+
+
+.participant-table tbody tr:last-child td {
+
+  border-bottom:
+    none;
+
+}
+
+
+
+/* =====================================================
+   HORIZONTAL ALIGNMENT
+===================================================== */
+
+.participant-number {
+
+  font-weight:
+    600;
+
+  opacity:
+    0.65;
+
+  white-space:
+    nowrap;
+
+}
+
+
+.participant-name {
+
+  font-weight:
+    600;
+
+  line-height:
+    1.45;
+
+}
+
+
+.participant-country {
+
+  white-space:
+    nowrap;
+
+}
+
+
+.participant-type {
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  min-width:
+    78px;
+
+  padding:
+    6px
+    10px;
+
+  border:
+    1px solid
+    rgba(255,255,255,0.14);
+
+  border-radius:
+    999px;
+
+  font-size:
+    11px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    0.06em;
+
+}
+
+
+
+/* =====================================================
+   DETAILS COLUMN
+===================================================== */
+
+.participant-details {
+
+  vertical-align:
+    middle !important;
+
+  line-height:
+    1.7;
+
+  padding-top:
+    18px !important;
+
+  padding-bottom:
+    18px !important;
+
+}
+
+
+.team-member-name {
+
+  display:
+    block;
+
+  margin:
+    0 0 5px;
+
+  line-height:
+    1.55;
+
+}
+
+
+.team-member-name:last-child {
+
+  margin-bottom:
+    0;
+
+}
+
+
+.no-members {
+
+  opacity:
+    0.45;
+
+}
+
+
+
+/* =====================================================
+   ROW HOVER
+===================================================== */
+
+.participant-table tbody tr {
+
+  transition:
+    background
+    0.2s
+    ease;
+
+}
+
+
+.participant-table tbody tr:hover {
+
+  background:
+    rgba(255,255,255,0.025);
+
+}
+
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (
+  max-width: 700px
+) {
+
+
+  .participant-summary {
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+
+  .participant-table {
+
+    min-width:
+      760px;
+
+  }
+
+
+  .participant-table th,
+  .participant-table td {
+
+    padding:
+      14px
+      12px;
+
+  }
+
+
+  .participant-table th:nth-child(1),
+  .participant-table td:nth-child(1) {
+
+    width:
+      55px;
+
+  }
+
+
+  .participant-table th:nth-child(2),
+  .participant-table td:nth-child(2) {
+
+    width:
+      190px;
+
+  }
+
+
+  .participant-table th:nth-child(3),
+  .participant-table td:nth-child(3) {
+
+    width:
+      120px;
+
+  }
+
+
+  .participant-table th:nth-child(4),
+  .participant-table td:nth-child(4) {
+
+    width:
+      100px;
+
+  }
+
+
+  .participant-table th:nth-child(5),
+  .participant-table td:nth-child(5) {
+
+    width:
+      250px;
+
+  }
+
+}
