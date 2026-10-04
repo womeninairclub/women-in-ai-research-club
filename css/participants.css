@@ -1,65 +1,45 @@
 /* =========================================================
-   AI INNOVATION HACKATHON 2026
    PARTICIPANTS PAGE
+   AI INNOVATION HACKATHON 2026
    ========================================================= */
 
 
 /* =========================================================
-   PAGE
+   PAGE HERO
    ========================================================= */
 
-.participants-page {
-  width: 100%;
-  min-height: 100vh;
-  padding-bottom: 80px;
+.participants-page-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.participants-page-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 82% 18%,
+      rgba(184,120,255,.12),
+      transparent 34%
+    );
+}
+
+.participants-page-hero > .container {
+  position: relative;
+  z-index: 1;
 }
 
 
 /* =========================================================
-   HERO
+   PARTICIPANTS SECTION
    ========================================================= */
 
-.participants-hero {
-  padding: 90px 24px 55px;
-  text-align: center;
-}
-
-.hero-content {
-  max-width: 850px;
-  margin: 0 auto;
-}
-
-.hero-label {
-  display: inline-block;
-  margin-bottom: 15px;
-
-  font-size: 11px;
-  font-weight: 700;
-
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-
-  opacity: 0.55;
-}
-
-.participants-hero h1 {
-  margin: 0;
-
-  font-size: clamp(42px, 7vw, 72px);
-  line-height: 1.05;
-
-  font-weight: 800;
-  letter-spacing: -0.04em;
-}
-
-.participants-hero p {
-  max-width: 650px;
-  margin: 22px auto 0;
-
-  font-size: 16px;
-  line-height: 1.7;
-
-  opacity: 0.62;
+.participants-section {
+  padding-top: 58px;
 }
 
 
@@ -68,59 +48,92 @@
    ========================================================= */
 
 .participants-stats {
-  width: min(1100px, calc(100% - 40px));
-
-  margin: 0 auto 35px;
 
   display: grid;
+
   grid-template-columns:
     repeat(3, minmax(0, 1fr));
 
-  gap: 16px;
+  gap: 18px;
+
+  margin-bottom: 32px;
+
 }
+
 
 .stat-card {
-  padding: 22px 24px;
 
-  border: 1px solid rgba(255,255,255,0.08);
+  padding: 23px 25px;
 
-  border-radius: 14px;
+  border:
+    1px solid var(--line);
 
-  background: rgba(255,255,255,0.025);
+  border-radius:
+    var(--radius);
 
-  text-align: center;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.018),
+      rgba(255,255,255,.006)
+    ),
+    var(--surface);
+
+  transition:
+    transform .22s ease,
+    border-color .22s ease,
+    background .22s ease;
+
 }
+
+
+.stat-card:hover {
+
+  transform:
+    translateY(-3px);
+
+  border-color:
+    var(--line-strong);
+
+  background:
+    var(--surface-2);
+
+}
+
 
 .stat-label {
+
   display: block;
 
-  margin-bottom: 8px;
+  margin-bottom: 7px;
+
+  color:
+    var(--muted-2);
 
   font-size: 10px;
+
   font-weight: 700;
 
-  letter-spacing: 0.12em;
+  letter-spacing: .12em;
+
   text-transform: uppercase;
 
-  opacity: 0.45;
 }
+
 
 .stat-card strong {
+
   display: block;
 
+  color:
+    var(--text);
+
   font-size: 30px;
-  font-weight: 750;
-}
 
+  line-height: 1.1;
 
-/* =========================================================
-   MAIN SECTION
-   ========================================================= */
+  font-weight: 700;
 
-.participants-section {
-  width: min(1200px, calc(100% - 40px));
-
-  margin: 0 auto;
 }
 
 
@@ -134,11 +147,17 @@
 
   overflow-x: auto;
 
-  border: 1px solid rgba(255,255,255,0.08);
+  border:
+    1px solid var(--line);
 
-  border-radius: 16px;
+  border-radius:
+    var(--radius);
 
-  background: rgba(255,255,255,0.018);
+  background:
+    var(--surface);
+
+  box-shadow:
+    var(--shadow);
 
 }
 
@@ -151,11 +170,12 @@
 
   width: 100%;
 
-  min-width: 900px;
+  min-width: 920px;
 
   border-collapse: collapse;
 
   table-layout: fixed;
+
 }
 
 
@@ -165,27 +185,41 @@
 
 .participants-table th:nth-child(1),
 .participants-table td:nth-child(1) {
+
   width: 65px;
+
 }
+
 
 .participants-table th:nth-child(2),
 .participants-table td:nth-child(2) {
+
   width: 23%;
+
 }
+
 
 .participants-table th:nth-child(3),
 .participants-table td:nth-child(3) {
+
   width: 15%;
+
 }
+
 
 .participants-table th:nth-child(4),
 .participants-table td:nth-child(4) {
-  width: 14%;
+
+  width: 13%;
+
 }
+
 
 .participants-table th:nth-child(5),
 .participants-table td:nth-child(5) {
+
   width: auto;
+
 }
 
 
@@ -194,46 +228,70 @@
    ========================================================= */
 
 .participants-table thead {
-  background: rgba(255,255,255,0.035);
+
+  background:
+    var(--surface-2);
+
 }
+
 
 .participants-table th {
 
-  padding: 16px 18px;
+  padding:
+    15px 18px;
 
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom:
+    1px solid var(--line);
 
-  font-size: 10px;
-  font-weight: 750;
+  color:
+    var(--muted-2);
 
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
+  font-size:
+    10px;
 
-  text-align: left;
+  font-weight:
+    700;
 
-  opacity: 0.55;
+  letter-spacing:
+    .11em;
+
+  text-align:
+    left;
+
+  text-transform:
+    uppercase;
+
 }
 
 
 /* =========================================================
-   TABLE BODY
+   TABLE ROWS
    ========================================================= */
 
 .participants-table tbody tr {
 
-  border-bottom: 1px solid rgba(255,255,255,0.055);
+  border-bottom:
+    1px solid var(--line);
 
   transition:
-    background 0.2s ease;
+    background .2s ease;
 
 }
+
 
 .participants-table tbody tr:last-child {
-  border-bottom: none;
+
+  border-bottom:
+    none;
+
 }
 
+
 .participants-table tbody tr:hover {
-  background: rgba(255,255,255,0.025);
+
+  background:
+    rgba(184,120,255,.035);
+
 }
 
 
@@ -243,11 +301,18 @@
 
 .participants-table td {
 
-  padding: 17px 18px;
+  padding:
+    18px;
 
-  vertical-align: middle;
+  color:
+    var(--text);
 
-  font-size: 14px;
+  font-size:
+    14px;
+
+  vertical-align:
+    top;
+
 }
 
 
@@ -257,27 +322,42 @@
 
 .participant-number {
 
-  font-size: 11px !important;
+  color:
+    var(--purple) !important;
 
-  font-weight: 700;
+  font-size:
+    11px !important;
 
-  letter-spacing: 0.08em;
+  font-weight:
+    700;
 
-  opacity: 0.35;
+  letter-spacing:
+    .08em;
+
+  opacity:
+    .75;
+
 }
 
 
 /* =========================================================
-   PARTICIPANT / TEAM NAME
+   NAME
    ========================================================= */
 
 .participant-name {
 
-  font-weight: 650;
+  color:
+    var(--text);
 
-  line-height: 1.45;
+  font-weight:
+    600;
 
-  word-break: break-word;
+  line-height:
+    1.45;
+
+  word-break:
+    break-word;
+
 }
 
 
@@ -287,37 +367,57 @@
 
 .participant-country {
 
-  opacity: 0.7;
+  color:
+    var(--muted);
 
-  line-height: 1.4;
+  line-height:
+    1.45;
 
-  word-break: break-word;
+  word-break:
+    break-word;
+
 }
 
 
 /* =========================================================
-   TYPE
+   TYPE BADGE
    ========================================================= */
 
 .participant-type {
 
-  display: inline-flex;
+  display:
+    inline-flex;
 
-  align-items: center;
+  align-items:
+    center;
 
-  justify-content: center;
+  justify-content:
+    center;
 
-  padding: 6px 9px;
+  min-height:
+    28px;
 
-  border-radius: 7px;
+  padding:
+    5px 10px;
 
-  font-size: 9px;
+  border:
+    1px solid var(--line);
 
-  font-weight: 800;
+  border-radius:
+    999px;
 
-  letter-spacing: 0.08em;
+  font-size:
+    9px;
 
-  white-space: nowrap;
+  font-weight:
+    700;
+
+  letter-spacing:
+    .09em;
+
+  white-space:
+    nowrap;
+
 }
 
 
@@ -325,11 +425,15 @@
 
 .team-type {
 
-  border: 1px solid rgba(255,255,255,0.11);
+  color:
+    var(--purple);
 
-  background: rgba(255,255,255,0.045);
+  border-color:
+    rgba(184,120,255,.28);
 
-  opacity: 0.85;
+  background:
+    rgba(184,120,255,.08);
+
 }
 
 
@@ -337,11 +441,12 @@
 
 .individual-type {
 
-  border: 1px solid rgba(255,255,255,0.07);
+  color:
+    var(--muted);
 
-  background: rgba(255,255,255,0.02);
+  background:
+    rgba(255,255,255,.025);
 
-  opacity: 0.6;
 }
 
 
@@ -351,23 +456,23 @@
 
 .participant-details {
 
-  vertical-align: top !important;
-
-  line-height: 1.5;
+  vertical-align:
+    top !important;
 
 }
 
 
 /*
  * IMPORTANT:
- * DO NOT ADD
+ *
+ * There is intentionally NO
  *
  * .participant-details::before
  *
- * here.
+ * rule here.
  *
- * "Team Members" must appear ONLY
- * inside actual TEAM entries.
+ * Therefore "Team Members" can NEVER
+ * appear automatically for individuals.
  */
 
 
@@ -377,38 +482,47 @@
 
 .team-members-box {
 
-  width: 100%;
+  width:
+    100%;
 
-  padding: 12px 14px;
+  padding:
+    13px;
 
-  border: 1px solid rgba(255,255,255,0.08);
+  border:
+    1px solid rgba(184,120,255,.14);
 
-  border-radius: 10px;
+  border-radius:
+    12px;
 
-  background: rgba(255,255,255,0.025);
-
-  box-sizing: border-box;
+  background:
+    rgba(184,120,255,.035);
 
 }
 
 
 /* =========================================================
-   TEAM MEMBERS HEADING
+   TEAM MEMBERS TITLE
    ========================================================= */
 
 .team-members-heading {
 
-  margin-bottom: 9px;
+  margin-bottom:
+    9px;
 
-  font-size: 10px;
+  color:
+    var(--purple);
 
-  font-weight: 750;
+  font-size:
+    9px;
 
-  text-transform: uppercase;
+  font-weight:
+    700;
 
-  letter-spacing: 0.09em;
+  letter-spacing:
+    .12em;
 
-  opacity: 0.5;
+  text-transform:
+    uppercase;
 
 }
 
@@ -419,38 +533,56 @@
 
 .team-members-list {
 
-  display: flex;
+  display:
+    flex;
 
-  flex-direction: column;
+  flex-direction:
+    column;
 
-  gap: 5px;
+  gap:
+    5px;
 
 }
 
 
 /* =========================================================
-   INDIVIDUAL TEAM MEMBER
+   TEAM MEMBER
    ========================================================= */
 
 .team-member-name {
 
-  display: flex;
+  display:
+    flex;
 
-  align-items: flex-start;
+  align-items:
+    flex-start;
 
-  gap: 9px;
+  gap:
+    9px;
 
-  padding: 6px 8px;
+  padding:
+    7px 9px;
 
-  border-radius: 7px;
+  border:
+    1px solid rgba(255,255,255,.045);
 
-  line-height: 1.45;
+  border-radius:
+    8px;
 
-  font-size: 13px;
+  background:
+    rgba(255,255,255,.018);
 
-  background: rgba(255,255,255,0.025);
+  color:
+    var(--muted);
 
-  word-break: break-word;
+  font-size:
+    13px;
+
+  line-height:
+    1.45;
+
+  word-break:
+    break-word;
 
 }
 
@@ -461,18 +593,26 @@
 
 .member-dot {
 
-  flex: 0 0 5px;
+  flex:
+    0 0 5px;
 
-  width: 5px;
-  height: 5px;
+  width:
+    5px;
 
-  margin-top: 7px;
+  height:
+    5px;
 
-  border-radius: 50%;
+  margin-top:
+    7px;
 
-  background: currentColor;
+  border-radius:
+    50%;
 
-  opacity: 0.5;
+  background:
+    var(--purple);
+
+  opacity:
+    .7;
 
 }
 
@@ -483,106 +623,100 @@
 
 .no-members {
 
-  opacity: 0.35;
+  color:
+    var(--muted-2);
+
+  font-size:
+    13px;
 
 }
 
+
+/* Individual Details */
 
 .participant-individual-details {
 
-  opacity: 0.35;
+  color:
+    var(--muted-2);
 
 }
 
 
 /* =========================================================
-   LOADING
+   STATES
    ========================================================= */
 
-.loading-message {
-
-  padding: 50px 20px !important;
-
-  text-align: center;
-
-  opacity: 0.45;
-
-  font-size: 13px !important;
-}
-
-
-/* =========================================================
-   EMPTY
-   ========================================================= */
-
-.empty-message {
-
-  padding: 50px 20px !important;
-
-  text-align: center;
-
-  opacity: 0.45;
-
-}
-
-
-/* =========================================================
-   ERROR
-   ========================================================= */
-
+.loading-message,
+.empty-message,
 .error-message {
 
-  padding: 50px 20px !important;
+  padding:
+    55px 20px !important;
 
-  text-align: center;
+  color:
+    var(--muted);
 
-  opacity: 0.55;
+  text-align:
+    center;
 
 }
 
 
 .participants-error {
 
-  margin-top: 20px;
+  margin-top:
+    18px;
 
-  padding: 15px 18px;
+  padding:
+    14px 18px;
 
-  border: 1px solid rgba(255,255,255,0.08);
+  border:
+    1px solid var(--line);
 
-  border-radius: 10px;
+  border-radius:
+    12px;
 
-  text-align: center;
+  background:
+    var(--surface);
 
-  font-size: 13px;
+  color:
+    var(--muted);
 
-  opacity: 0.65;
+  font-size:
+    13px;
+
+  text-align:
+    center;
 
 }
 
 
 /* =========================================================
-   RESPONSIVE
+   MOBILE
    ========================================================= */
 
-@media (max-width: 800px) {
-
-  .participants-hero {
-    padding-top: 65px;
-  }
-
+@media (max-width: 760px) {
 
   .participants-stats {
 
-    grid-template-columns: 1fr;
-
-    width: min(500px, calc(100% - 32px));
+    grid-template-columns:
+      1fr;
 
   }
 
 
   .participants-section {
 
-    width: calc(100% - 24px);
+    padding-top:
+      45px;
+
+  }
+
+
+  .participants-table-wrapper {
+
+    border-radius:
+      14px;
 
   }
 
@@ -591,16 +725,34 @@
 
 @media (max-width: 600px) {
 
-  .participants-hero {
+  .participants-page-hero {
 
-    padding-left: 18px;
-    padding-right: 18px;
+    padding-top:
+      70px;
 
   }
 
-  .participants-hero p {
 
-    font-size: 14px;
+  .participants-page-hero h1 {
+
+    font-size:
+      44px;
+
+  }
+
+
+  .participants-page-hero > .container > p {
+
+    font-size:
+      15px;
+
+  }
+
+
+  .stat-card {
+
+    padding:
+      20px;
 
   }
 
