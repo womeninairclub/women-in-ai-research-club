@@ -4,21 +4,29 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Registered Teams &amp; Participants | AI Innovation Hackathon 2026</title>
-  <meta name="description" content="Registered teams and individual participants for AI Innovation Hackathon 2026.">
+  <meta name="description" content="Official live registered teams and participants directory for the AI Innovation Hackathon 2026.">
   <link rel="icon" href="assets/logo.png">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/hackathon.css">
   <link rel="stylesheet" href="css/participants.css">
+  <link rel="canonical" href="https://womeninairclub.github.io/women-in-ai-research-club/participants.html">
 </head>
 <body>
-<header class="nav hack-nav">
+
+<!-- SITE HEADER -->
+<header class="site-header">
   <div class="container nav-inner">
-    <a class="brand" href="index.html">
-      <img src="assets/logo.png" alt="Women in AI, Research, Innovation & Entrepreneurship Club logo">
-      <span>WOMEN IN AI<br>RESEARCH, INNOVATION<br>&amp; ENTREPRENEURSHIP CLUB</span>
+    <a class="brand" href="index.html" aria-label="Women in AI, Research, Innovation &amp; Entrepreneurship Club Home">
+      <img src="assets/logo.png" alt="Women in AI, Research, Innovation &amp; Entrepreneurship Club logo">
+      <div class="brand-text">
+        <span class="brand-title">Women in AI</span>
+        <span class="brand-sub">Research • Innovation • Entrepreneurship</span>
+      </div>
     </a>
-    <button class="menu" aria-label="Open menu">☰</button>
-    <nav class="navlinks">
+
+    <button class="menu" aria-label="Open navigation" aria-expanded="false">☰</button>
+
+    <nav class="navlinks" aria-label="Primary navigation">
       <a href="index.html">Home</a>
       <a href="about.html">About</a>
       <a href="research.html">Research</a>
@@ -27,60 +35,94 @@
       <a href="publications.html">Publications</a>
       <a href="people.html">People</a>
       <a href="events.html">Events</a>
-      <a href="participants.html" class="active">Participants</a>
-      <a href="join.html" class="btn primary">Join Us</a>
+      <a href="hackathon.html" class="nav-hackathon">AI Innovation Hackathon 2026</a>
+      <a href="join.html" class="btn primary sm">Join Us</a>
     </nav>
   </div>
 </header>
 
 <main>
+  <!-- HERO -->
   <section class="page-hero participants-hero">
     <div class="container">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a> / <a href="hackathon.html">Hackathon</a> / Participants
+      </div>
       <div class="eyebrow">AI Innovation Hackathon 2026</div>
       <h1>Registered Teams &amp; Participants</h1>
-      <p>The live registration list is generated from the official hackathon registration sheet.</p>
-      <div class="button-row">
-        <a class="btn primary" href="hackathon.html">Back to Hackathon</a>
-        <a class="btn" href="https://forms.gle/tc3TrSSX1HFerk2j6" target="_blank" rel="noopener">Registration Form</a>
+      <p class="lead">
+        Live public directory of international teams and individual innovators officially registered for the AI Innovation Hackathon 2026.
+      </p>
+      <div class="button-row" style="margin-top:24px">
+        <a class="btn primary" href="https://forms.gle/tc3TrSSX1HFerk2j6" target="_blank" rel="noopener">
+          Register New Team (Stage 0)
+        </a>
+        <a class="btn secondary" href="https://forms.gle/AEkyM9kXws4LGCmFA" target="_blank" rel="noopener">
+          Round 1 Screening Form ↗
+        </a>
+        <a class="btn secondary" href="https://forms.gle/Wg9k2b7oTtwWGKYw5" target="_blank" rel="noopener">
+          Round 2 Final Submission ↗
+        </a>
+        <a class="btn" href="hackathon.html">
+          Hackathon Hub
+        </a>
       </div>
     </div>
   </section>
 
+  <!-- PARTICIPANTS DIRECTORY -->
   <section class="section participants-section" id="participants">
     <div class="container">
-      <div class="section-head participants-head">
+      <div class="section-head">
         <div>
-          <div class="eyebrow">Live Registration List</div>
-          <h2>Registered participants.</h2>
+          <div class="eyebrow">Official Registration Records</div>
+          <h2>Live Participant Directory</h2>
         </div>
-        <p>Team registrations are shown once per team. Individual registrations are shown separately. The list is populated from the official registration data.</p>
+        <p>
+          Data synchronizes automatically from the official hackathon registration sheet. Sensitive contact details are shielded for participant privacy.
+        </p>
       </div>
 
+      <!-- METRICS -->
       <div class="participants-stats" aria-label="Registration summary">
         <div class="participant-stat">
-          <span>Registered</span>
+          <span>Total Registered</span>
           <strong id="participantCount">0</strong>
         </div>
         <div class="participant-stat">
-          <span>Teams</span>
+          <span>Competing Teams</span>
           <strong id="teamCount">0</strong>
         </div>
         <div class="participant-stat">
-          <span>Individuals</span>
+          <span>Individual Participants</span>
           <strong id="individualCount">0</strong>
         </div>
       </div>
 
-      <div id="participantStatus" class="participant-status" role="status" aria-live="polite">Loading registered participants...</div>
+      <!-- SEARCH & FILTER CONTROLS -->
+      <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+        <input type="text" id="participantSearchInput" class="form-control" style="flex:1;min-width:240px" placeholder="Search by team name or member name...">
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn sm primary" id="filterAllBtn">All</button>
+          <button type="button" class="btn sm secondary" id="filterTeamsBtn">Teams Only</button>
+          <button type="button" class="btn sm secondary" id="filterIndividualsBtn">Individuals Only</button>
+        </div>
+      </div>
 
+      <div id="participantStatus" class="participant-status" role="status" aria-live="polite">
+        Connecting to registration records...
+      </div>
+
+      <!-- TABLE -->
       <div class="participants-table-wrapper">
         <table class="participants-table">
           <thead>
             <tr>
-              <th scope="col">Sl. No.</th>
-              <th scope="col">Name</th>
-              <th scope="col">Type</th>
-              <th scope="col">Team Members</th>
+              <th scope="col" style="width:80px">#</th>
+              <th scope="col" style="width:28%">Name / Team</th>
+              <th scope="col" style="width:130px">Category</th>
+              <th scope="col">Members</th>
+              <th scope="col" style="width:150px">Stage 1 Status</th>
             </tr>
           </thead>
           <tbody id="participantGrid"></tbody>
@@ -88,69 +130,96 @@
       </div>
 
       <div id="participantEmpty" class="participant-empty" hidden>
-        No registration records are available at the moment.
+        No registration records match your filter criteria.
       </div>
 
       <div id="participantError" class="participant-error" hidden>
-        The registration list is temporarily unavailable. Please try again later.
+        Registration records are temporarily syncing. If this persists, please refresh or check back shortly.
       </div>
     </div>
   </section>
 
+  <!-- CTA -->
   <section class="section alt">
     <div class="container narrow">
-      <div class="hack-cta participant-cta">
-        <div class="eyebrow">AI Innovation Hackathon 2026</div>
-        <h2>Want to participate?</h2>
-        <p>Complete the official registration form to join the hackathon.</p>
+      <div class="cta">
+        <div class="eyebrow">Ready to participate?</div>
+        <h2>Join the AI Innovation Hackathon 2026</h2>
+        <p class="lead">
+          Free international participation. Work on critical AI problems and submit your solution proposal.
+        </p>
         <div class="hero-actions">
-          <a class="btn primary" href="https://forms.gle/tc3TrSSX1HFerk2j6" target="_blank" rel="noopener">Open Registration Form</a>
-          <a class="btn" href="hackathon.html">View Hackathon Details</a>
+          <a class="btn primary lg" href="https://forms.gle/tc3TrSSX1HFerk2j6" target="_blank" rel="noopener">
+            Register Your Team
+          </a>
+          <a class="btn lg" href="hackathon.html">
+            Explore Hackathon Details
+          </a>
         </div>
       </div>
     </div>
   </section>
 </main>
 
+<!-- FOOTER -->
 <footer>
   <div class="container footer-grid">
-    <div>
-      <div class="brand">
-        <img src="assets/logo.png" alt="Women in AI, Research, Innovation & Entrepreneurship Club logo">
-        <span>WOMEN IN AI<br>RESEARCH, INNOVATION<br>&amp; ENTREPRENEURSHIP CLUB</span>
-      </div>
-      <p>Research • Innovation • Entrepreneurship</p>
-      <p>© <span data-year></span> Women in AI, Research, Innovation &amp; Entrepreneurship Club.</p>
+    <div class="footer-brand">
+      <a class="brand" href="index.html">
+        <img src="assets/logo.png" alt="Women in AI logo">
+        <div class="brand-text">
+          <span class="brand-title">Women in AI</span>
+          <span class="brand-sub">Research • Innovation • Entrepreneurship</span>
+        </div>
+      </a>
+      <p>
+        Official website for the Women in AI, Research, Innovation &amp; Entrepreneurship Club. Supporting women in Artificial Intelligence through learning, research, innovation and meaningful impact.
+      </p>
     </div>
-    <div>
-      <strong>Hackathon</strong>
+
+    <div class="footer-col">
+      <h4>Hackathon</h4>
       <div class="footer-links">
-        <a href="hackathon.html">Overview</a>
-        <a href="hackathon.html#challenges">Challenges</a>
-        <a href="hackathon.html#rules">Rules</a>
-        <a href="participants.html">Participants</a>
+        <a href="hackathon.html">Hackathon Overview</a>
+        <a href="hackathon.html#format">Two-Stage Format</a>
+        <a href="hackathon.html#challenges">Challenge Tracks</a>
+        <a href="hackathon.html#stage1">Stage 1 Screening Form</a>
+        <a href="hackathon.html#stage2">Stage 2 Final Submission</a>
+        <a href="hackathon.html#rules">Rules &amp; Regulations</a>
+        <a href="participants.html">Participant Directory</a>
       </div>
     </div>
-    <div>
-      <strong>Connect</strong>
+
+    <div class="footer-col">
+      <h4>Connect</h4>
       <div class="footer-links">
-        <a href="mailto:womeninairclub@gmail.com">Email</a>
+        <a href="mailto:womeninairclub@gmail.com">womeninairclub@gmail.com</a>
         <a href="https://chat.whatsapp.com/DsJeBSmTsD1FaE4n0elSIj" target="_blank" rel="noopener">WhatsApp Community</a>
+        <a href="join.html">Club Membership</a>
+        <a href="https://forms.gle/tc3TrSSX1HFerk2j6" target="_blank" rel="noopener">Register for Hackathon</a>
       </div>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <p>© <span data-year>2026</span> Women in AI, Research, Innovation &amp; Entrepreneurship Club. All rights reserved.</p>
+    <div>
+      <a href="privacy.html">Privacy Policy</a>
     </div>
   </div>
 </footer>
 
 <script src="js/main.js"></script>
-<script src="js/hackathon.js"></script>
 <script>
 const PARTICIPANT_API =
-  "https://script.google.com/macros/s/AKfycbwMX24cUnelzb1NSO71_vgMaEuF-on2NXRYTqycq7WJ0YkF8thwjt5eA8msd1vjCGF5/exec";
+  "https://script.google.com/macros/s/AKfycby_b9l9aPv7t6fypkcLrVd0t0-yWXplcjE8fE1QW_wi4i1RiC8BVbgk508dQP405mdz/exec";
+
+let allEntries = [];
+let currentFilter = "all"; // all, team, individual
+let currentSearch = "";
 
 function normalizeText(value) {
-  return String(value ?? "")
-    .trim()
-    .replace(/\s+/g, " ");
+  return String(value ?? "").trim().replace(/\s+/g, " ");
 }
 
 function normalizeKey(value) {
@@ -175,39 +244,11 @@ function getField(item, names) {
   return "";
 }
 
-function timestampValue(item) {
-  const raw = getField(item, ["timestamp", "Timestamp", "registeredAt"]);
-  if (raw === null || raw === undefined || raw === "") return 0;
-  const numeric = Number(raw);
-  if (Number.isFinite(numeric)) return numeric;
-  const parsed = Date.parse(raw);
-  return Number.isFinite(parsed) ? parsed : 0;
-}
-
 function splitMembers(value) {
   return String(value ?? "")
     .split(/[\n,;|]+/)
     .map(item => item.trim().replace(/\s+/g, " "))
     .filter(Boolean);
-}
-
-function isUsableLeaderName(value) {
-  const text = normalizeText(value);
-  if (!text || text.includes("@") || /^team leader$/i.test(text)) return false;
-  const digitCount = (text.match(/\d/g) || []).length;
-  return digitCount < 7;
-}
-
-function uniqueNames(names) {
-  const seen = new Set();
-  const output = [];
-  names.forEach(name => {
-    const key = normalizeKey(name);
-    if (!key || seen.has(key)) return;
-    seen.add(key);
-    output.push(name);
-  });
-  return output;
 }
 
 function prepareRegistrations(rawParticipants) {
@@ -216,195 +257,206 @@ function prepareRegistrations(rawParticipants) {
   const individuals = new Map();
 
   rawParticipants.forEach((participant, rawIndex) => {
-    const type = normalizeKey(
-      getField(participant, ["participationType", "Participation Type", "type"])
-    );
+    const type = normalizeKey(getField(participant, ["participationType", "Participation Type", "type"]));
     const isTeam = type === "team";
-    const name = normalizeText(
-      getField(participant, ["name", "fullName", "Full Name"])
-    );
-    const teamName = normalizeText(
-      getField(participant, ["teamName", "Team Name"])
-    );
-    const email = normalizeKey(
-      getField(participant, ["email", "emailAddress", "Email Address"])
-    );
-    const teamLeader = normalizeText(
-      getField(participant, [
-        "teamLeader",
-        "teamLeaderName",
-        "Team Leader / Primary Contact Name"
-      ])
-    );
-    const members = splitMembers(
-      getField(participant, ["teamMembers", "Team Members"])
-    );
-    const stamp = timestampValue(participant);
+    const name = normalizeText(getField(participant, ["name", "fullName", "Full Name"]));
+    const teamName = normalizeText(getField(participant, ["teamName", "Team Name"]));
+    const teamLeader = normalizeText(getField(participant, ["teamLeader", "teamLeaderName", "Team Leader / Primary Contact Name"]));
+    const members = splitMembers(getField(participant, ["teamMembers", "Team Members"]));
+    const screeningStatus = normalizeText(getField(participant, ["screeningStatus", "Screening Status"]));
+    const email = normalizeKey(getField(participant, ["email", "emailAddress", "Email Address"]));
 
-    // Respect an explicit Website Display = No value when the API returns it.
-    const websiteDisplay = normalizeKey(
-      getField(participant, ["websiteDisplay", "Website Display"])
-    );
+    // Respect explicit hidden flag
+    const websiteDisplay = normalizeKey(getField(participant, ["websiteDisplay", "Website Display"]));
     if (["no", "false", "hidden"].includes(websiteDisplay)) return;
-
-    const sourceRecord = {
-      participant,
-      name,
-      teamName: teamName || "Team",
-      teamLeader,
-      members,
-      stamp,
-      rawIndex
-    };
 
     if (isTeam) {
       const key = normalizeKey(teamName || name);
       if (!key) return;
 
-      const existing = teams.get(key);
-      if (!existing) {
+      if (!teams.has(key)) {
         teams.set(key, {
-          key,
           type: "Team",
           name: teamName || name || "Team",
-          records: [sourceRecord],
-          firstStamp: stamp || Number.MAX_SAFE_INTEGER
+          members: [...members],
+          teamLeader: teamLeader || name,
+          screeningStatus: screeningStatus || "Under Review"
         });
       } else {
-        existing.records.push(sourceRecord);
-        if (stamp && (!existing.firstStamp || stamp < existing.firstStamp)) {
-          existing.firstStamp = stamp;
+        const existing = teams.get(key);
+        members.forEach(m => {
+          if (!existing.members.includes(m)) existing.members.push(m);
+        });
+        if (screeningStatus && existing.screeningStatus === "Under Review") {
+          existing.screeningStatus = screeningStatus;
         }
       }
       return;
     }
 
-    const key = email || normalizeKey(name);
-    if (!key) return;
+    const indKey = email || normalizeKey(name);
+    if (!indKey) return;
 
-    const existing = individuals.get(key);
-    if (!existing || stamp >= existing.stamp) {
-      individuals.set(key, {
-        type: "Individual",
-        name: name || "Participant",
-        stamp,
-        firstStamp: existing ? existing.firstStamp : (stamp || Number.MAX_SAFE_INTEGER)
-      });
-    }
+    individuals.set(indKey, {
+      type: "Individual",
+      name: name || "Participant",
+      members: [],
+      teamLeader: "",
+      screeningStatus: screeningStatus || "Under Review"
+    });
   });
 
   teams.forEach(team => {
-    // Prefer the row with the most complete member list; use the latest row on a tie.
-    const best = [...team.records]
-      .sort((a, b) => {
-        const memberDelta = b.members.length - a.members.length;
-        if (memberDelta !== 0) return memberDelta;
-        return b.stamp - a.stamp;
-      })[0];
-
-    const combinedMembers = uniqueNames([
-      ...(isUsableLeaderName(best.teamLeader) ? [best.teamLeader] : []),
-      ...best.members
-    ]);
+    const combinedMembers = [];
+    if (team.teamLeader && !combinedMembers.includes(team.teamLeader)) {
+      combinedMembers.push(team.teamLeader);
+    }
+    team.members.forEach(m => {
+      if (!combinedMembers.includes(m)) combinedMembers.push(m);
+    });
 
     entries.push({
       type: "Team",
       name: team.name,
       members: combinedMembers,
-      sortStamp: team.firstStamp,
-      fallbackIndex: best.rawIndex
+      screeningStatus: team.screeningStatus
     });
   });
 
-  individuals.forEach(individual => {
+  individuals.forEach(ind => {
     entries.push({
       type: "Individual",
-      name: individual.name,
+      name: ind.name,
       members: [],
-      sortStamp: individual.firstStamp,
-      fallbackIndex: 0
+      screeningStatus: ind.screeningStatus
     });
-  });
-
-  entries.sort((a, b) => {
-    const aStamp = a.sortStamp || Number.MAX_SAFE_INTEGER;
-    const bStamp = b.sortStamp || Number.MAX_SAFE_INTEGER;
-    if (aStamp !== bStamp) return aStamp - bStamp;
-    return a.fallbackIndex - b.fallbackIndex;
   });
 
   return entries;
 }
 
-function renderParticipants(entries) {
+function renderTable() {
   const tableBody = document.getElementById("participantGrid");
-  const status = document.getElementById("participantStatus");
+  const statusEl = document.getElementById("participantStatus");
+  const emptyEl = document.getElementById("participantEmpty");
   const participantCount = document.getElementById("participantCount");
   const teamCount = document.getElementById("teamCount");
   const individualCount = document.getElementById("individualCount");
-  const empty = document.getElementById("participantEmpty");
+
+  // Metrics from total entries
+  participantCount.textContent = allEntries.length;
+  teamCount.textContent = allEntries.filter(i => i.type === "Team").length;
+  individualCount.textContent = allEntries.filter(i => i.type === "Individual").length;
+
+  // Filter & Search
+  let filtered = allEntries.filter(entry => {
+    if (currentFilter === "team" && entry.type !== "Team") return false;
+    if (currentFilter === "individual" && entry.type !== "Individual") return false;
+    if (currentSearch) {
+      const matchName = entry.name.toLowerCase().includes(currentSearch);
+      const matchMembers = entry.members.some(m => m.toLowerCase().includes(currentSearch));
+      return matchName || matchMembers;
+    }
+    return true;
+  });
 
   tableBody.innerHTML = "";
 
-  if (!entries.length) {
-    participantCount.textContent = "0";
-    teamCount.textContent = "0";
-    individualCount.textContent = "0";
-    status.textContent = "";
-    empty.hidden = false;
+  if (!filtered.length) {
+    statusEl.textContent = "";
+    emptyEl.hidden = false;
     return;
   }
 
-  empty.hidden = true;
-  participantCount.textContent = entries.length;
-  teamCount.textContent = entries.filter(item => item.type === "Team").length;
-  individualCount.textContent = entries.filter(item => item.type === "Individual").length;
-  status.textContent = `Showing ${entries.length} registered ${entries.length === 1 ? "entry" : "entries"}.`;
+  emptyEl.hidden = true;
+  statusEl.textContent = `Showing ${filtered.length} of ${allEntries.length} registered entries.`;
 
-  entries.forEach((entry, index) => {
+  filtered.forEach((entry, idx) => {
     const row = document.createElement("tr");
+
+    let statusPill = `<span class="status-pill under-review">Registered</span>`;
+    const st = String(entry.screeningStatus || "").toLowerCase();
+    if (st.includes("winner")) {
+      statusPill = `<span class="status-pill selected">🏆 Winner</span>`;
+    } else if (st.includes("finalist")) {
+      statusPill = `<span class="status-pill selected">⭐ Finalist</span>`;
+    } else if (st.includes("evaluation")) {
+      statusPill = `<span class="status-pill submitted">Under Evaluation</span>`;
+    } else if (st.includes("final submission")) {
+      statusPill = `<span class="status-pill submitted">Final Submitted</span>`;
+    } else if (st.includes("shortlisted") || st.includes("selected")) {
+      statusPill = `<span class="status-pill selected">Shortlisted</span>`;
+    } else if (st.includes("not selected") || st.includes("rejected")) {
+      statusPill = `<span class="status-pill not-selected">Not Selected</span>`;
+    } else if (st.includes("round 1") || st.includes("stage 1")) {
+      statusPill = `<span class="status-pill submitted">Round 1 Submitted</span>`;
+    } else if (st.includes("under review")) {
+      statusPill = `<span class="status-pill under-review">Under Review</span>`;
+    }
+
     const memberMarkup = entry.type === "Team"
       ? entry.members.length
-        ? `<div class="member-list">${entry.members.map(member => `<span>${escapeParticipantHTML(member)}</span>`).join("")}</div>`
-        : `<span class="no-members">Not specified</span>`
-      : `<span class="no-members">—</span>`;
+        ? `<div class="member-list">${entry.members.map(m => `<span>${escapeParticipantHTML(m)}</span>`).join("")}</div>`
+        : `<span style="color:var(--muted-2)">Members listed upon verification</span>`
+      : `<span style="color:var(--muted-2)">Single participant</span>`;
 
     row.innerHTML = `
-      <td class="participant-number">${String(index + 1).padStart(2, "0")}</td>
-      <td class="participant-name">${escapeParticipantHTML(entry.name)}</td>
-      <td><span class="participant-type ${entry.type === "Team" ? "team-type" : "individual-type"}">${entry.type}</span></td>
-      <td class="participant-details">${memberMarkup}</td>
+      <td style="color:var(--purple);font-weight:700;font-size:12px">${String(idx + 1).padStart(2, "0")}</td>
+      <td style="font-weight:600;color:var(--text)">${escapeParticipantHTML(entry.name)}</td>
+      <td><span class="status-pill ${entry.type === "Team" ? "submitted" : "not-selected"}">${entry.type}</span></td>
+      <td>${memberMarkup}</td>
+      <td>${statusPill}</td>
     `;
     tableBody.appendChild(row);
   });
 }
 
 async function loadParticipants() {
-  const status = document.getElementById("participantStatus");
-  const error = document.getElementById("participantError");
-  const tableWrapper = document.querySelector(".participants-table-wrapper");
+  const statusEl = document.getElementById("participantStatus");
+  const errorEl = document.getElementById("participantError");
 
   try {
-    const response = await fetch(`${PARTICIPANT_API}?t=${Date.now()}`, {
-      cache: "no-store"
-    });
-
-    if (!response.ok) {
-      throw new Error("Participant API request failed.");
-    }
-
-    const participants = await response.json();
-    const entries = prepareRegistrations(Array.isArray(participants) ? participants : []);
-    renderParticipants(entries);
-    error.hidden = true;
-    tableWrapper.hidden = !entries.length;
-  } catch (errorObject) {
-    console.error("Participant API error:", errorObject);
-    status.textContent = "";
-    tableWrapper.hidden = true;
-    document.getElementById("participantEmpty").hidden = true;
-    error.hidden = false;
+    const res = await fetch(`${PARTICIPANT_API}?t=${Date.now()}`, { cache: "no-store" });
+    if (!res.ok) throw new Error("API failed");
+    const raw = await res.json();
+    allEntries = prepareRegistrations(Array.isArray(raw) ? raw : []);
+    renderTable();
+    errorEl.hidden = true;
+  } catch (err) {
+    console.error("API error:", err);
+    statusEl.textContent = "";
+    errorEl.hidden = false;
   }
+}
+
+// Search and filter listeners
+document.getElementById("participantSearchInput")?.addEventListener("input", e => {
+  currentSearch = e.target.value.trim().toLowerCase();
+  renderTable();
+});
+
+document.getElementById("filterAllBtn")?.addEventListener("click", () => {
+  currentFilter = "all";
+  updateFilterButtons();
+  renderTable();
+});
+
+document.getElementById("filterTeamsBtn")?.addEventListener("click", () => {
+  currentFilter = "team";
+  updateFilterButtons();
+  renderTable();
+});
+
+document.getElementById("filterIndividualsBtn")?.addEventListener("click", () => {
+  currentFilter = "individual";
+  updateFilterButtons();
+  renderTable();
+});
+
+function updateFilterButtons() {
+  document.getElementById("filterAllBtn").className = currentFilter === "all" ? "btn sm primary" : "btn sm secondary";
+  document.getElementById("filterTeamsBtn").className = currentFilter === "team" ? "btn sm primary" : "btn sm secondary";
+  document.getElementById("filterIndividualsBtn").className = currentFilter === "individual" ? "btn sm primary" : "btn sm secondary";
 }
 
 loadParticipants();

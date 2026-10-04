@@ -1,61 +1,290 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Projects | Women in AI, Research, Innovation & Entrepreneurship Club</title><meta name="description" content="Women in AI, Research, Innovation & Entrepreneurship Club — Research • Innovation • Entrepreneurship">
-<link rel="icon" href="assets/logo.png"><link rel="stylesheet" href="css/style.css"><link rel="canonical" href="https://womeninairclub.github.io/women-in-ai-research-club/projects.html"><meta property="og:title" content="Projects"><meta property="og:type" content="website"><meta property="og:image" content="https://womeninairclub.github.io/women-in-ai-research-club/assets/logo.png"></head>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Research Projects | Women in AI, Research, Innovation &amp; Entrepreneurship Club</title>
+  <meta name="description" content="Explore research and engineering projects developed by researchers and members of the Women in AI, Research, Innovation &amp; Entrepreneurship Club.">
+  <link rel="icon" href="assets/logo.png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="canonical" href="https://womeninairclub.github.io/women-in-ai-research-club/projects.html">
+  <meta property="og:title" content="Research Projects | Women in AI, Research, Innovation &amp; Entrepreneurship Club">
+  <meta property="og:description" content="Verified research and engineering projects across computer vision, biomedical signal analysis, and trustworthy AI.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://womeninairclub.github.io/women-in-ai-research-club/assets/logo.png">
+</head>
 <body>
-<header class="nav">
 
+<!-- SITE HEADER -->
+<header class="site-header">
   <div class="container nav-inner">
-
-    <a class="brand" href="index.html" aria-label="Women in AI, Research, Innovation & Entrepreneurship Club">
-      <img src="assets/logo.png" alt="Women in AI, Research, Innovation & Entrepreneurship Club logo">
-      <span>
-        WOMEN IN AI,<br>
-        RESEARCH, INNOVATION &amp;<br>
-        ENTREPRENEURSHIP CLUB
-      </span>
+    <a class="brand" href="index.html" aria-label="Women in AI, Research, Innovation &amp; Entrepreneurship Club Home">
+      <img src="assets/logo.png" alt="Women in AI, Research, Innovation &amp; Entrepreneurship Club logo">
+      <div class="brand-text">
+        <span class="brand-title">Women in AI</span>
+        <span class="brand-sub">Research • Innovation • Entrepreneurship</span>
+      </div>
     </a>
 
-    <button class="menu" aria-label="Open navigation" aria-expanded="false">
-      ☰
-    </button>
+    <button class="menu" aria-label="Open navigation" aria-expanded="false">☰</button>
 
     <nav class="navlinks" aria-label="Primary navigation">
       <a href="index.html">Home</a>
       <a href="about.html">About</a>
       <a href="research.html">Research</a>
       <a href="teams.html">Teams</a>
-      <a href="projects.html">Projects</a>
+      <a href="projects.html" class="active">Projects</a>
       <a href="publications.html">Publications</a>
       <a href="people.html">People</a>
       <a href="events.html">Events</a>
-      <a href="join.html" class="btn primary">Join Us</a>
+      <a href="hackathon.html" class="nav-hackathon">AI Innovation Hackathon 2026</a>
+      <a href="join.html" class="btn primary sm">Join Us</a>
     </nav>
-
   </div>
-
 </header>
 
 <main>
-<section class="page-hero"><div class="container"><div class="breadcrumb">Home / Projects</div><div class="eyebrow">Research Projects</div><h1>Ideas become projects.</h1><p class="lead">A research project will be presented with its team, lead, research question, progress and outputs.</p></div></section>
-<section class="section"><div class="container">
- <div class="empty">No official projects have been published yet. This space is ready for the club's first research projects.</div>
- <div class="grid grid-3" style="margin-top:20px">
-  <div class="card"><div class="num">PROJECT</div><h3>Project profile</h3><p>Research area · Team · Lead · Research question · Status</p></div>
-  <div class="card"><div class="num">PROGRESS</div><h3>Research progress</h3><p>Literature review · Experiments · Analysis · Documentation</p></div>
-  <div class="card"><div class="num">OUTPUT</div><h3>Research output</h3><p>Paper · Preprint · GitHub · Prototype · Report</p></div>
- </div>
-</div></section>
+
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a> / Projects
+      </div>
+      <div class="eyebrow">Research &amp; Engineering</div>
+      <h1>Ideas Transformed into Projects</h1>
+      <p class="lead">
+        Explore scientific investigations, computational experiments, and practical machine learning applications developed by researchers, faculty, and members of the Women in AI, Research, Innovation &amp; Entrepreneurship Club.
+      </p>
+    </div>
+  </section>
+
+  <!-- ACTIVE & PUBLISHED PROJECTS -->
+  <section class="section" id="projects-list">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Verified Research Outputs</div>
+          <h2>Featured Club Projects</h2>
+        </div>
+        <p>Scientific initiatives grounded in peer-reviewed publications and active research investigations.</p>
+      </div>
+
+      <div class="grid grid-2">
+
+        <!-- PROJECT 1: FRAS -->
+        <article class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
+            <span class="role">Computer Vision • AI/ML</span>
+            <span class="status-pill selected">Published Research</span>
+          </div>
+          <h3>Advanced Face Recognition Attendance System (FRAS)</h3>
+          <p class="small-note" style="color:var(--purple-light);margin-bottom:10px">
+            <strong>Researchers:</strong> Dr. Ayesha Heena &amp; Mohsina Banu
+          </p>
+          <p style="margin-bottom:14px">
+            An automated attendance management system leveraging Convolutional Neural Networks (CNNs) for real-time facial feature extraction, matching, and logging. Designed to eliminate manual record keeping while ensuring high security and operational reliability.
+          </p>
+          <div style="margin-bottom:18px;font-size:13.5px;color:var(--text-soft)">
+            <strong>Reported Performance:</strong> 98.5% recognition accuracy with an average inference latency of 0.5 seconds.
+          </div>
+          <div class="button-row" style="margin-top:auto">
+            <a class="btn sm primary" href="https://link.springer.com/chapter/10.1007/978-3-032-08260-2_16" target="_blank" rel="noopener">
+              View Springer Publication
+            </a>
+            <a class="btn sm" href="publications.html">
+              Publication Details
+            </a>
+          </div>
+        </article>
+
+        <!-- PROJECT 2: CARDIAC SIGNAL ANALYSIS -->
+        <article class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
+            <span class="role">Biomedical AI • Biosignals</span>
+            <span class="status-pill selected">Book Chapter Output</span>
+          </div>
+          <h3>Analysis and Classification of Heart Abnormalities from ECG</h3>
+          <p class="small-note" style="color:var(--purple-light);margin-bottom:10px">
+            <strong>Lead Researcher:</strong> Dr. Ayesha Heena
+          </p>
+          <p style="margin-bottom:14px">
+            A biomedical signal processing framework for feature decomposition, noise filtration, and automated classification of cardiac arrhythmias from electrocardiogram (ECG) records. Published in Taylor &amp; Francis CRC Press.
+          </p>
+          <div style="margin-bottom:18px;font-size:13.5px;color:var(--text-soft)">
+            <strong>Domain:</strong> Healthcare Informatics &amp; Clinical Decision Support
+          </div>
+          <div class="button-row" style="margin-top:auto">
+            <a class="btn sm primary" href="people.html#ayesha-heena">
+              View Researcher Profile
+            </a>
+            <a class="btn sm" href="research.html#biomedical">
+              Explore Biomedical Stream
+            </a>
+          </div>
+        </article>
+
+        <!-- PROJECT 3: DEEPFAKE DETECTION -->
+        <article class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
+            <span class="role">Trustworthy AI • Forensics</span>
+            <span class="status-pill submitted">Active Investigation</span>
+          </div>
+          <h3>DeepFake Detection &amp; Digital Facial Forensics</h3>
+          <p class="small-note" style="color:var(--purple-light);margin-bottom:10px">
+            <strong>Research Focus:</strong> Mohsina Banu &amp; Trustworthy AI Stream
+          </p>
+          <p style="margin-bottom:14px">
+            Investigating spatial and temporal artifacts generated by generative adversarial networks (GANs) and diffusion models in synthetic facial imagery. Developing forensic metrics to detect manipulated media and prevent identity spoofing.
+          </p>
+          <div style="margin-bottom:18px;font-size:13.5px;color:var(--text-soft)">
+            <strong>Focus:</strong> Artifact identification, frequency domain analysis &amp; model robustness.
+          </div>
+          <div class="button-row" style="margin-top:auto">
+            <a class="btn sm primary" href="teams.html#trustworthy-team">
+              Join Trustworthy AI Team
+            </a>
+            <a class="btn sm" href="research.html#trustworthy">
+              Research Stream Overview
+            </a>
+          </div>
+        </article>
+
+        <!-- PROJECT 4: CLUB PROJECT FRAMEWORK -->
+        <article class="card highlighted">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
+            <span class="role">Incubation Framework</span>
+            <span class="status-pill under-review">Open for Proposals</span>
+          </div>
+          <h3>Student &amp; Member Research Incubation</h3>
+          <p class="small-note" style="color:var(--purple-light);margin-bottom:10px">
+            <strong>Supervision:</strong> Dr. Ayesha Heena &amp; Prof. Dr. Inam Ullah Khan
+          </p>
+          <p style="margin-bottom:14px">
+            The club provides a structured incubation framework for student members to propose novel research questions within our five streams. Selected projects receive academic advisory support, computational access, and manuscript guidance.
+          </p>
+          <div style="margin-bottom:18px;font-size:13.5px;color:var(--text-soft)">
+            <strong>Stages:</strong> Proposal → Empirical Experimentation → Paper Writing → Publication.
+          </div>
+          <div class="button-row" style="margin-top:auto">
+            <a class="btn sm primary" href="join.html">
+              Propose a Research Project
+            </a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECT LIFECYCLE -->
+  <section class="section alt">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Project Lifecycle</div>
+          <h2>How Projects Progress</h2>
+        </div>
+        <p>A rigorous engineering and academic standard applied to every club-affiliated project.</p>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="card">
+          <div class="num">01</div>
+          <h3>Literature &amp; Problem Formulation</h3>
+          <p>
+            Teams conduct a deep literature survey to identify open gaps, benchmark state-of-the-art models, and specify quantifiable metrics for success.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="num">02</div>
+          <h3>Experimentation &amp; Code Hygiene</h3>
+          <p>
+            Development is tracked through well-documented GitHub repositories with clear dependency definitions, unit tests, and reproducible scripts.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="num">03</div>
+          <h3>Output &amp; Scholarly Documentation</h3>
+          <p>
+            Every mature project culminates in a verifiable output: a peer-reviewed publication, conference presentation, public software tool, or deployed prototype.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section">
+    <div class="container">
+      <div class="cta">
+        <div class="eyebrow">Collaborate on Projects</div>
+        <h2>Build Your Next AI Project With Us</h2>
+        <p class="lead">
+          Join our research teams, access mentorship from experienced faculty, and turn your AI concepts into documented, published projects.
+        </p>
+        <div class="hero-actions">
+          <a class="btn primary lg" href="join.html">Join a Research Project</a>
+          <a class="btn lg" href="publications.html">View Published Papers</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
 
+<!-- FOOTER -->
 <footer>
- <div class="container footer-grid">
-  <div><div class="brand"><img src="assets/logo.png" alt=""><span>Women in AI, Research, Innovation & Entrepreneurship Club</span></div>
-  <p>Research • Innovation • Entrepreneurship</p>
-  <p>© <span data-year></span> Women in AI, Research, Innovation & Entrepreneurship Club. Built for research, collaboration and impact.</p></div>
-  <div><strong>Explore</strong><div class="footer-links"><a href="research.html">Research</a><a href="projects.html">Projects</a><a href="publications.html">Publications</a><a href="teams.html">Teams</a></div></div>
-  <div><strong>Connect</strong><div class="footer-links"><a href="mailto:womeninairclub@gmail.com">Email</a><a href="https://chat.whatsapp.com/DsJeBSmTsD1FaE4n0elSIj" target="_blank" rel="noopener">WhatsApp Community</a></div></div>
- </div>
-<div class="container" style="padding-top:10px"><a href="privacy.html">Privacy</a></div></footer>
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a class="brand" href="index.html">
+        <img src="assets/logo.png" alt="Women in AI logo">
+        <div class="brand-text">
+          <span class="brand-title">Women in AI</span>
+          <span class="brand-sub">Research • Innovation • Entrepreneurship</span>
+        </div>
+      </a>
+      <p>
+        Official website for the Women in AI, Research, Innovation &amp; Entrepreneurship Club. Supporting women in Artificial Intelligence through learning, research, innovation and meaningful impact.
+      </p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <div class="footer-links">
+        <a href="about.html">About the Club</a>
+        <a href="research.html">Research Streams</a>
+        <a href="teams.html">Research Teams</a>
+        <a href="projects.html">Projects</a>
+        <a href="publications.html">Publications</a>
+        <a href="people.html">Leadership &amp; People</a>
+        <a href="events.html">Events Calendar</a>
+        <a href="hackathon.html">AI Innovation Hackathon</a>
+        <a href="participants.html">Registered Participants</a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Connect</h4>
+      <div class="footer-links">
+        <a href="mailto:womeninairclub@gmail.com">womeninairclub@gmail.com</a>
+        <a href="https://chat.whatsapp.com/DsJeBSmTsD1FaE4n0elSIj" target="_blank" rel="noopener">WhatsApp Community</a>
+        <a href="join.html">Club Membership Form</a>
+        <a href="https://forms.gle/tc3TrSSX1HFerk2j6" target="_blank" rel="noopener">Hackathon Registration</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <p>© <span data-year>2026</span> Women in AI, Research, Innovation &amp; Entrepreneurship Club. All rights reserved.</p>
+    <div>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+  </div>
+</footer>
+
 <script src="js/main.js"></script>
-</body></html>
+</body>
+</html>
