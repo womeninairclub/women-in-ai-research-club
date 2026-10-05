@@ -65,10 +65,10 @@
         <a class="btn primary lg" href="https://forms.gle/tc3TrSSX1HFerk2j6" target="_blank" rel="noopener">
           Register Now
         </a>
-        <a class="btn outline-purple lg" href="#stage1" onclick="document.querySelector('[data-tab=\'stage1Panel\']')?.click()">
+        <a class="btn outline-purple lg" href="#stage1" onclick="document.getElementById('stage1Tab')?.click()">
           Stage 1: Idea Screening Form
         </a>
-        <a class="btn secondary lg" href="#stage2" onclick="document.querySelector('[data-tab=\'stage2Panel\']')?.click()">
+        <a class="btn secondary lg" href="#stage2" onclick="document.getElementById('stage2Tab')?.click()">
           Stage 2: Final Project Submission
         </a>
         <a class="btn sm" href="participants.html">
@@ -126,7 +126,7 @@
             <li>Screening submission via official online form</li>
           </ul>
           <div style="margin-top:auto;padding-top:14px">
-            <a href="#stage1" class="btn primary sm" onclick="document.querySelector('[data-tab=\'stage1Panel\']')?.click()">
+            <a href="#stage1" class="btn primary sm" onclick="document.getElementById('stage1Tab')?.click()">
               Open Stage 1 Screening Form ↓
             </a>
           </div>
@@ -147,7 +147,7 @@
             <li>Judging evaluation (6:00 PM – 8:00 PM IST)</li>
           </ul>
           <div style="margin-top:auto;padding-top:14px">
-            <a href="#stage2" class="btn sm" onclick="document.querySelector('[data-tab=\'stage2Panel\']')?.click()">
+            <a href="#stage2" class="btn sm" onclick="document.getElementById('stage2Tab')?.click()">
               Open Stage 2 Final Submission ↓
             </a>
           </div>
@@ -408,8 +408,11 @@
               Submit your proposed solution for the chosen problem statement below, or use the <a href="https://forms.gle/AEkyM9kXws4LGCmFA" target="_blank" rel="noopener" style="text-decoration:underline">Official Round 1 Google Form</a>. Selected teams from this round proceed directly to the Main Hackathon development phase.
             </p>
 
+            <div id="stage1LockNotice" hidden></div>
+
             <div id="stage1StatusAlert" hidden></div>
 
+            <fieldset id="stage1FormFieldset" style="border:none;padding:0;margin:0;transition:opacity 0.3s ease">
             <form id="stage1ScreeningForm">
               <div class="form-grid">
                 <div class="form-group">
@@ -479,6 +482,7 @@
                 <button type="submit" class="btn primary lg">Submit Stage 1 Proposal</button>
               </div>
             </form>
+            </fieldset>
           </div>
         </div>
 
