@@ -57,10 +57,10 @@
         <a class="btn primary" href="https://forms.gle/tc3TrSSX1HFerk2j6" target="_blank" rel="noopener">
           Register New Team (Stage 0)
         </a>
-        <a class="btn secondary" href="https://forms.gle/AEkyM9kXws4LGCmFA" target="_blank" rel="noopener">
+        <a class="btn secondary stage1-lock-btn" id="round1FormBtn" href="https://forms.gle/AEkyM9kXws4LGCmFA" target="_blank" rel="noopener">
           Round 1 Screening Form ↗
         </a>
-        <a class="btn secondary" href="https://forms.gle/Wg9k2b7oTtwWGKYw5" target="_blank" rel="noopener">
+        <a class="btn secondary stage2-lock-btn" id="round2FormBtn" href="https://forms.gle/Wg9k2b7oTtwWGKYw5" target="_blank" rel="noopener">
           Round 2 Final Submission ↗
         </a>
         <a class="btn" href="hackathon.html">
@@ -374,7 +374,7 @@ function renderTable() {
   filtered.forEach((entry, idx) => {
     const row = document.createElement("tr");
 
-    let statusPill = `<span class="status-pill under-review">Registered</span>`;
+    let statusPill = `<span class="status-pill selected">Registration Confirmed</span>`;
     const st = String(entry.screeningStatus || "").toLowerCase();
     if (st.includes("winner")) {
       statusPill = `<span class="status-pill selected">🏆 Winner</span>`;
@@ -391,7 +391,7 @@ function renderTable() {
     } else if (st.includes("round 1") || st.includes("stage 1")) {
       statusPill = `<span class="status-pill submitted">Round 1 Submitted</span>`;
     } else if (st.includes("under review")) {
-      statusPill = `<span class="status-pill under-review">Under Review</span>`;
+      statusPill = `<span class="status-pill selected">Registration Confirmed</span>`;
     }
 
     const memberMarkup = entry.type === "Team"
@@ -461,5 +461,7 @@ function updateFilterButtons() {
 
 loadParticipants();
 </script>
+<script src="js/main.js"></script>
+<script src="js/hackathon.js"></script>
 </body>
 </html>
