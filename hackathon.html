@@ -380,116 +380,107 @@
         <div id="statusLookupResult" hidden></div>
       </div>
 
-      <!-- FORMS AREA CONTAINER (BOTH STAGE 1 AND STAGE 2) -->
+      <!-- FORMS AREA CONTAINER (STAGE 1 & STAGE 2 SUBMISSION FORMS) -->
       <div class="form-section-container">
         <!-- TAB CONTROLS -->
-        <div class="form-tabs" role="tablist">
-          <button type="button" class="form-tab-btn active" data-tab="stage1Panel" role="tab" id="stage1Tab">
+        <div class="form-tabs" style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap">
+          <button type="button" class="btn form-tab-btn active" id="stage1Tab" data-target="stage1Panel">
             Stage 1: Idea Screening Form (19 Oct)
           </button>
-          <button type="button" class="form-tab-btn" data-tab="stage2Panel" role="tab" id="stage2Tab">
+          <button type="button" class="btn form-tab-btn secondary" id="stage2Tab" data-target="stage2Panel">
             Stage 2: Final Project Submission (20 Oct)
           </button>
         </div>
 
-        <!-- ==============================================
-             PANEL 1: STAGE 1 IDEA SCREENING FORM
-             ============================================== -->
+        <!-- STAGE 1 IDEA SCREENING FORM PANEL -->
         <div class="form-panel active" id="stage1Panel" role="tabpanel">
           <div class="form-card" id="stage1">
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px">
-              <div class="eyebrow" style="margin:0">Round 1 Submission (19 Oct 2026)</div>
-              <a href="https://forms.gle/AEkyM9kXws4LGCmFA" target="_blank" rel="noopener" class="btn sm outline-purple">
-                ↗ Open External Round 1 Google Form
-              </a>
+              <div class="eyebrow" style="margin:0">Round 1 Proposal (19 Oct 2026)</div>
+              <span class="status-pill under-review">Stage 1 Idea Screening</span>
             </div>
-            <h3>Stage 1: Idea Screening Submission Form</h3>
-            <p style="margin-bottom:24px">
-              Submit your proposed solution for the chosen problem statement below, or use the <a href="https://forms.gle/AEkyM9kXws4LGCmFA" target="_blank" rel="noopener" style="text-decoration:underline">Official Round 1 Google Form</a>. Selected teams from this round proceed directly to the Main Hackathon development phase.
+            <h3>Stage 1: Idea Screening Proposal Form</h3>
+            <p class="small-note" style="margin-bottom:20px;color:var(--muted)">
+              Submit your structured solution proposal for one of the released problem statements. Only teams shortlisted in Stage 1 become eligible for Stage 2.
             </p>
-
-            <div id="stage1LockNotice" hidden></div>
 
             <div id="stage1StatusAlert" hidden></div>
 
-            <fieldset id="stage1FormFieldset" style="border:none;padding:0;margin:0;transition:opacity 0.3s ease">
             <form id="stage1ScreeningForm">
               <div class="form-grid">
                 <div class="form-group">
-                  <label for="scrParticipationType">Participation Type <span class="required">*</span></label>
-                  <select id="scrParticipationType" class="form-control" required>
-                    <option value="Team">Team (2 – 4 Members)</option>
-                    <option value="Individual">Individual Participant</option>
+                  <label for="s1Type">Participation Type <span class="required">*</span></label>
+                  <select id="s1Type" class="form-control" required>
+                    <option value="Team" selected>Team</option>
+                    <option value="Individual">Individual</option>
                   </select>
                 </div>
 
                 <div class="form-group">
-                  <label for="scrTeamName">Team Name / Individual Name <span class="required">*</span></label>
-                  <input type="text" id="scrTeamName" class="form-control" placeholder="e.g. Neural Innovators" required>
+                  <label for="s1TeamName">Team Name / Participant Name <span class="required">*</span></label>
+                  <input type="text" id="s1TeamName" class="form-control" placeholder="e.g. Team Alpha or Your Full Name" required>
                 </div>
 
                 <div class="form-group">
-                  <label for="scrLeaderName">Team Leader / Primary Contact Name <span class="required">*</span></label>
-                  <input type="text" id="scrLeaderName" class="form-control" placeholder="Full Name" required>
+                  <label for="s1LeaderName">Team Leader / Primary Contact Name <span class="required">*</span></label>
+                  <input type="text" id="s1LeaderName" class="form-control" placeholder="Full name of primary contact" required>
                 </div>
 
                 <div class="form-group">
-                  <label for="scrEmail">Contact Email Address <span class="required">*</span></label>
-                  <input type="email" id="scrEmail" class="form-control" placeholder="email@example.com" required>
+                  <label for="s1Email">Primary Contact Email <span class="required">*</span></label>
+                  <input type="email" id="s1Email" class="form-control" placeholder="contact@example.com" required>
                 </div>
 
                 <div class="form-group">
-                  <label for="scrPhone">WhatsApp / Mobile Number <span class="required">*</span></label>
-                  <input type="tel" id="scrPhone" class="form-control" placeholder="+91..." required>
+                  <label for="s1Phone">Phone / WhatsApp Number</label>
+                  <input type="tel" id="s1Phone" class="form-control" placeholder="+91 9876543210">
                 </div>
 
                 <div class="form-group">
-                  <label for="scrTrack">Selected Challenge Track <span class="required">*</span></label>
-                  <select id="scrTrack" class="form-control" required>
-                    <option value="" disabled selected>Select a track</option>
-                    <option value="AI / Machine Learning Methodology">Track 1: AI/ML Methodology</option>
-                    <option value="Biomedical AI / Image & Signal Analysis">Track 2: Biomedical AI</option>
-                    <option value="Explainable AI (XAI)">Track 3: Explainable AI</option>
+                  <label for="s1Track">Hackathon Track <span class="required">*</span></label>
+                  <select id="s1Track" class="form-control" required>
+                    <option value="" disabled selected>Select assigned track</option>
+                    <option value="AI/ML Methodology">Track 1: AI/ML Methodology</option>
+                    <option value="Biomedical AI">Track 2: Biomedical AI</option>
+                    <option value="Explainable AI">Track 3: Explainable AI</option>
                     <option value="Trustworthy AI">Track 4: Trustworthy AI</option>
                     <option value="Research & Publications">Track 5: Research &amp; Innovation</option>
                   </select>
                 </div>
 
                 <div class="form-group full">
-                  <label for="scrProblemStatement">Chosen Problem Statement Title / ID <span class="required">*</span></label>
-                  <input type="text" id="scrProblemStatement" class="form-control" placeholder="e.g. Challenge 02 — Robust ECG Anomaly Detection" required>
+                  <label for="s1Statement">Problem Statement &amp; Title <span class="required">*</span></label>
+                  <input type="text" id="s1Statement" class="form-control" placeholder="Selected problem statement code and title" required>
                 </div>
 
                 <div class="form-group full">
-                  <label for="scrSolution">Proposed Solution Summary / Abstract <span class="required">*</span></label>
-                  <textarea id="scrSolution" class="form-control" placeholder="Provide a concise 200–300 word description of your solution concept, core features, and intended architecture..." required></textarea>
+                  <label for="s1Solution">Proposed Solution <span class="required">*</span></label>
+                  <textarea id="s1Solution" class="form-control" placeholder="Describe your proposed solution architecture, key novelty, and core concept..." required></textarea>
                 </div>
 
                 <div class="form-group full">
-                  <label for="scrApproach">AI / ML Methodology &amp; Technologies <span class="required">*</span></label>
-                  <textarea id="scrApproach" class="form-control" placeholder="Outline the machine learning models, algorithms, frameworks, and datasets you plan to utilize during the main development round..." required></textarea>
+                  <label for="s1Approach">AI/ML Methodology &amp; Approach <span class="required">*</span></label>
+                  <textarea id="s1Approach" class="form-control" placeholder="Explain the AI/ML techniques, algorithms, datasets, framework stack, and validation plan..." required></textarea>
                 </div>
 
                 <div class="form-group full">
-                  <label for="scrPitchLink">Pitch Deck / Concept Document Link <span class="form-hint">(Optional Google Drive / Canva link)</span></label>
-                  <input type="url" id="scrPitchLink" class="form-control" placeholder="https://drive.google.com/file/...">
-                  <span class="form-hint">Make sure link access is set to 'Anyone with link can view'.</span>
+                  <label for="s1PitchLink">Pitch Deck / Google Drive URL <span class="form-hint">(Optional — e.g. PDF/Slide presentation link)</span></label>
+                  <input type="url" id="s1PitchLink" class="form-control" placeholder="https://drive.google.com/file/d/...">
                 </div>
               </div>
 
               <div style="margin-top:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
-                <span class="small-note">Submissions are reviewed by the official academic screening committee.</span>
+                <span class="small-note">Stage 1 Deadline: 19 October 2026. Organizers review submissions before Stage 2.</span>
                 <button type="submit" class="btn primary lg">Submit Stage 1 Proposal</button>
               </div>
             </form>
-            </fieldset>
           </div>
         </div>
 
         <!-- ==============================================
-             PANEL 2: STAGE 2 FINAL PROJECT SUBMISSION FORM
+             STAGE 2 FINAL PROJECT SUBMISSION FORM
              ============================================== -->
-        <div class="form-panel" id="stage2Panel" role="tabpanel">
+        <div class="form-panel" id="stage2Panel" role="tabpanel" style="display:none">
           <div class="form-card" id="stage2">
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px">
               <div class="eyebrow" style="margin:0">Round 2 Submission (Main Hackathon — 20 Oct 2026)</div>

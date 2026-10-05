@@ -118,11 +118,9 @@
         <table class="participants-table">
           <thead>
             <tr>
-              <th scope="col" style="width:80px">#</th>
-              <th scope="col" style="width:28%">Name / Team</th>
-              <th scope="col" style="width:130px">Category</th>
-              <th scope="col">Members</th>
-              <th scope="col" style="width:150px">Stage 1 Status</th>
+              <th scope="col" style="width:110px">Sl. No.</th>
+              <th scope="col">Team Name</th>
+              <th scope="col" style="width:200px">Participation Type</th>
             </tr>
           </thead>
           <tbody id="participantGrid"></tbody>
@@ -212,7 +210,7 @@
 <script src="js/main.js"></script>
 <script>
 const PARTICIPANT_API =
-  "https://script.google.com/macros/s/AKfycby_b9l9aPv7t6fypkcLrVd0t0-yWXplcjE8fE1QW_wi4i1RiC8BVbgk508dQP405mdz/exec";
+  "https://script.google.com/macros/s/AKfycbz-Q-6TjOviAVR-REG2Wcz-4KQBc_ptyrH4neA0o83FtX01t5EROzvOHfv0vuuFcRrF/exec";
 
 let allEntries = [];
 let currentFilter = "all"; // all, team, individual
@@ -253,84 +251,39 @@ function splitMembers(value) {
 
 function prepareRegistrations(rawParticipants) {
   const entries = [];
-  const teams = new Map();
-  const individuals = new Map();
+  const teamsMap = new Map();
+  const indMap = new Map();
 
-  rawParticipants.forEach((participant, rawIndex) => {
-    const type = normalizeKey(getField(participant, ["participationType", "Participation Type", "type"]));
-    const isTeam = type === "team";
-    const name = normalizeText(getField(participant, ["name", "fullName", "Full Name"]));
-    const teamName = normalizeText(getField(participant, ["teamName", "Team Name"]));
-    const teamLeader = normalizeText(getField(participant, ["teamLeader", "teamLeaderName", "Team Leader / Primary Contact Name"]));
-    const members = splitMembers(getField(participant, ["teamMembers", "Team Members"]));
-    const screeningStatus = normalizeText(getField(participant, ["screeningStatus", "Screening Status"]));
-    const email = normalizeKey(getField(participant, ["email", "emailAddress", "Email Address"]));
-
-    // Respect explicit hidden flag
-    const websiteDisplay = normalizeKey(getField(participant, ["websiteDisplay", "Website Display"]));
-    if (["no", "false", "hidden"].includes(websiteDisplay)) return;
+  rawParticipants.forEach((item) => {
+    const rawType = normalizeKey(getField(item, ["participationType", "Participation Type", "type"]));
+    const isTeam = rawType.includes("team") || rawType === "team";
+    const teamName = normalizeText(getField(item, ["teamName", "Team Name", "name", "fullName"]));
+    const rawName = normalizeText(getField(item, ["name", "fullName", "Full Name", "teamLeader"]));
 
     if (isTeam) {
-      const key = normalizeKey(teamName || name);
+      const key = normalizeKey(teamName || rawName);
       if (!key) return;
-
-      if (!teams.has(key)) {
-        teams.set(key, {
-          type: "Team",
-          name: teamName || name || "Team",
-          members: [...members],
-          teamLeader: teamLeader || name,
-          screeningStatus: screeningStatus || "Under Review"
+      if (!teamsMap.has(key)) {
+        teamsMap.set(key, {
+          teamName: teamName || rawName || "Team",
+          type: "TEAM"
         });
-      } else {
-        const existing = teams.get(key);
-        members.forEach(m => {
-          if (!existing.members.includes(m)) existing.members.push(m);
-        });
-        if (screeningStatus && existing.screeningStatus === "Under Review") {
-          existing.screeningStatus = screeningStatus;
-        }
       }
       return;
     }
 
-    const indKey = email || normalizeKey(name);
+    const indKey = normalizeKey(rawName || teamName);
     if (!indKey) return;
-
-    individuals.set(indKey, {
-      type: "Individual",
-      name: name || "Participant",
-      members: [],
-      teamLeader: "",
-      screeningStatus: screeningStatus || "Under Review"
-    });
-  });
-
-  teams.forEach(team => {
-    const combinedMembers = [];
-    if (team.teamLeader && !combinedMembers.includes(team.teamLeader)) {
-      combinedMembers.push(team.teamLeader);
+    if (!indMap.has(indKey)) {
+      indMap.set(indKey, {
+        teamName: rawName || teamName || "Participant",
+        type: "INDIVIDUAL"
+      });
     }
-    team.members.forEach(m => {
-      if (!combinedMembers.includes(m)) combinedMembers.push(m);
-    });
-
-    entries.push({
-      type: "Team",
-      name: team.name,
-      members: combinedMembers,
-      screeningStatus: team.screeningStatus
-    });
   });
 
-  individuals.forEach(ind => {
-    entries.push({
-      type: "Individual",
-      name: ind.name,
-      members: [],
-      screeningStatus: ind.screeningStatus
-    });
-  });
+  teamsMap.forEach(t => entries.push(t));
+  indMap.forEach(i => entries.push(i));
 
   return entries;
 }
@@ -343,19 +296,15 @@ function renderTable() {
   const teamCount = document.getElementById("teamCount");
   const individualCount = document.getElementById("individualCount");
 
-  // Metrics from total entries
-  participantCount.textContent = allEntries.length;
-  teamCount.textContent = allEntries.filter(i => i.type === "Team").length;
-  individualCount.textContent = allEntries.filter(i => i.type === "Individual").length;
+  if (participantCount) participantCount.textContent = allEntries.length;
+  if (teamCount) teamCount.textContent = allEntries.filter(i => i.type === "TEAM").length;
+  if (individualCount) individualCount.textContent = allEntries.filter(i => i.type === "INDIVIDUAL").length;
 
-  // Filter & Search
   let filtered = allEntries.filter(entry => {
-    if (currentFilter === "team" && entry.type !== "Team") return false;
-    if (currentFilter === "individual" && entry.type !== "Individual") return false;
+    if (currentFilter === "team" && entry.type !== "TEAM") return false;
+    if (currentFilter === "individual" && entry.type !== "INDIVIDUAL") return false;
     if (currentSearch) {
-      const matchName = entry.name.toLowerCase().includes(currentSearch);
-      const matchMembers = entry.members.some(m => m.toLowerCase().includes(currentSearch));
-      return matchName || matchMembers;
+      return entry.teamName.toLowerCase().includes(currentSearch);
     }
     return true;
   });
@@ -369,43 +318,16 @@ function renderTable() {
   }
 
   emptyEl.hidden = true;
-  statusEl.textContent = `Showing ${filtered.length} of ${allEntries.length} registered entries.`;
+  statusEl.textContent = `Showing ${filtered.length} of ${allEntries.length} registered participant entries.`;
 
   filtered.forEach((entry, idx) => {
     const row = document.createElement("tr");
-
-    let statusPill = `<span class="status-pill selected">Registration Confirmed</span>`;
-    const st = String(entry.screeningStatus || "").toLowerCase();
-    if (st.includes("winner")) {
-      statusPill = `<span class="status-pill selected">🏆 Winner</span>`;
-    } else if (st.includes("finalist")) {
-      statusPill = `<span class="status-pill selected">⭐ Finalist</span>`;
-    } else if (st.includes("evaluation")) {
-      statusPill = `<span class="status-pill submitted">Under Evaluation</span>`;
-    } else if (st.includes("final submission")) {
-      statusPill = `<span class="status-pill submitted">Final Submitted</span>`;
-    } else if (st.includes("shortlisted") || st.includes("selected")) {
-      statusPill = `<span class="status-pill selected">Shortlisted</span>`;
-    } else if (st.includes("not selected") || st.includes("rejected")) {
-      statusPill = `<span class="status-pill not-selected">Not Selected</span>`;
-    } else if (st.includes("round 1") || st.includes("stage 1")) {
-      statusPill = `<span class="status-pill submitted">Round 1 Submitted</span>`;
-    } else if (st.includes("under review")) {
-      statusPill = `<span class="status-pill selected">Registration Confirmed</span>`;
-    }
-
-    const memberMarkup = entry.type === "Team"
-      ? entry.members.length
-        ? `<div class="member-list">${entry.members.map(m => `<span>${escapeParticipantHTML(m)}</span>`).join("")}</div>`
-        : `<span style="color:var(--muted-2)">Members listed upon verification</span>`
-      : `<span style="color:var(--muted-2)">Single participant</span>`;
+    const slNo = String(idx + 1).padStart(2, "0");
 
     row.innerHTML = `
-      <td style="color:var(--purple);font-weight:700;font-size:12px">${String(idx + 1).padStart(2, "0")}</td>
-      <td style="font-weight:600;color:var(--text)">${escapeParticipantHTML(entry.name)}</td>
-      <td><span class="status-pill ${entry.type === "Team" ? "submitted" : "not-selected"}">${entry.type}</span></td>
-      <td>${memberMarkup}</td>
-      <td>${statusPill}</td>
+      <td style="color:var(--purple);font-weight:700;font-size:13px">${slNo}</td>
+      <td style="font-weight:600;color:var(--text)">${escapeParticipantHTML(entry.teamName)}</td>
+      <td><span class="status-pill ${entry.type === "TEAM" ? "submitted" : "not-selected"}">${entry.type}</span></td>
     `;
     tableBody.appendChild(row);
   });
@@ -462,6 +384,5 @@ function updateFilterButtons() {
 loadParticipants();
 </script>
 <script src="js/main.js"></script>
-<script src="js/hackathon.js"></script>
 </body>
 </html>

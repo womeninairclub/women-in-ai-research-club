@@ -7,8 +7,9 @@ This directory contains the production Google Apps Script backend that connects 
 
 ## Architecture & Files
 
-### 1. `hackathon-backend.gs` (Main REST Web App API)
+### 1. `code.gs` / `hackathon-backend.gs` (Main REST Web App API & Judge Panel)
 - **`doGet(e)`**:
+  - `?panel=judge&key=WAI_JUDGE_2026`: Renders the live interactive Judge Panel HTML Dashboard for judges to review submissions, select/reject teams, and automatically trigger notification emails.
   - `?action=checkStatus&query=...`: Single-record status query returning ONLY the target team's status and Stage 2 eligibility flag. (Protects participant dataset privacy).
   - Default: Returns public participant directory to `participants.html` with emails, phone numbers, WhatsApp contacts, and internal notes **completely stripped**.
 - **`doPost(e)`**:
@@ -18,17 +19,19 @@ This directory contains the production Google Apps Script backend that connects 
 
 ### 2. `screening-emails.gs` (Organizer Google Sheets Batch Automation)
 - Adds a custom **"Hackathon"** menu inside Google Sheets (`Hackathon → Send Screening Result Emails`).
+- Automatically targets `Stage 1 Submissions` or `Form Responses 1` sheet.
+- Automatically creates missing column headers (`Screening Status`, `Screening Email Sent`) if missing.
 - Allows organizers to trigger batch decision notifications (`SHORTLISTED / SELECTED`, `NOT SELECTED`, `FINALIST`, `WINNER`) directly from the spreadsheet interface.
 
 ---
 
 ## 5-Minute Setup Instructions for Club Organizers
 
-1. Open the Google Sheet connected to your official Google Registration Form (`Form Responses 1`).
+1. Open the Google Sheet connected to your official Google Registration Form (`Form Responses 1` or `Stage 1 Submissions`).
 2. Go to **Extensions → Apps Script**.
 3. Create two script files:
-   - Create `hackathon-backend.gs` and paste the contents of [`hackathon-backend.gs`](file:///c:/Users/Banu/Downloads/women-in-ai-research-club-main-final-participants/women-in-ai-research-club-backup-pre-redesign/google-apps-script/hackathon-backend.gs).
-   - Create `screening-emails.gs` and paste the contents of [`screening-emails.gs`](file:///c:/Users/Banu/Downloads/women-in-ai-research-club-main-final-participants/women-in-ai-research-club-backup-pre-redesign/google-apps-script/screening-emails.gs).
+   - Create `code.gs` and paste the contents of [`code.gs`](code.gs) or [`hackathon-backend.gs`](hackathon-backend.gs).
+   - Create `screening-emails.gs` and paste the contents of [`screening-emails.gs`](screening-emails.gs).
 4. Click **Deploy → New deployment**.
 5. Select **Web app**:
    - **Description**: *AI Innovation Hackathon 2026 Production API*

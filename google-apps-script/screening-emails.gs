@@ -21,8 +21,8 @@
  */
 
 const SCREENING_CONFIG = {
-  SHEET_NAME: "Form Responses 1",
-  STATUS_SELECTED: ["selected", "shortlisted"],
+  SHEET_NAME: "Stage 1 Submissions", // Updated to Stage 1 Submissions sheet
+  STATUS_SELECTED: ["selected", "shortlisted", "shortlisted / selected"],
   STATUS_NOT_SELECTED: ["not selected", "not shortlisted", "rejected"],
   SENT_VALUE: "Sent",
   WEBSITE_URL: "https://womeninairclub.github.io/women-in-ai-research-club/hackathon.html",
@@ -66,7 +66,8 @@ function previewScreeningResultEmails() {
 }
 
 function getScreeningSheet_() {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SCREENING_CONFIG.SHEET_NAME);
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(SCREENING_CONFIG.SHEET_NAME) || ss.getSheetByName("Form Responses 1");
   if (!sheet) {
     throw new Error(`Sheet not found: ${SCREENING_CONFIG.SHEET_NAME}`);
   }
@@ -92,7 +93,7 @@ function buildScreeningModel_(sheet) {
     const screeningStatus = normalize_(row[col.screeningStatus]);
     const sent = normalize_(row[col.screeningEmailSent]) === normalize_(SCREENING_CONFIG.SENT_VALUE);
 
-    const isTeam = type === "team";
+    const isTeam = type === "team" || (teamName && teamName.toLowerCase() !== "individual");
     const groupKey = isTeam
       ? `team:${normalize_(teamName || fullName)}`
       : `individual:${email || normalize_(fullName)}`;
@@ -175,24 +176,27 @@ function processScreeningGroups_(sheet, model, previewOnly) {
     if (previewOnly) return;
 
     pendingRecipients.forEach(recipient => {
-      const message = buildEmail_(group, decision, recipient.name);
-      MailApp.sendEmail({
-        to: recipient.email,
-        subject: message.subject,
-        htmlBody: message.htmlBody,
-        body: message.textBody,
-        name: "AI Innovation Hackathon 2026"
-      });
-      sent++;
-
-      // Mark every row belonging to this recipient as sent immediately.
-      // This prevents a retry from intentionally sending the same email twice.
-      group.rows
-        .filter(item => item.email === recipient.email)
-        .forEach(item => {
-          sheet.getRange(item.rowNumber, model.col.screeningEmailSent + 1)
-            .setValue(SCREENING_CONFIG.SENT_VALUE);
+      try {
+        const message = buildEmail_(group, decision, recipient.name);
+        MailApp.sendEmail({
+          to: recipient.email,
+          subject: message.subject,
+          htmlBody: message.htmlBody,
+          body: message.textBody,
+          name: "AI Innovation Hackathon 2026"
         });
+        sent++;
+
+        // Mark every row belonging to this recipient as sent immediately.
+        group.rows
+          .filter(item => item.email === recipient.email)
+          .forEach(item => {
+            sheet.getRange(item.rowNumber, model.col.screeningEmailSent + 1)
+              .setValue(SCREENING_CONFIG.SENT_VALUE);
+          });
+      } catch (err) {
+        Logger.log(`Failed to send email to ${recipient.email}: ${err.toString()}`);
+      }
     });
   });
 
@@ -219,7 +223,7 @@ function buildEmail_(group, decision, recipientName) {
 
   const htmlBody = `
     <div style="font-family:Arial,sans-serif;line-height:1.65;color:#222;max-width:680px;margin:0 auto">
-      <h2 style="margin-bottom:18px">${escapeHtml_(title)}</h2>
+      <h2 style="margin-bottom:18px;color:${selected ? '#0284c7' : '#333'}">${escapeHtml_(title)}</h2>
       <p>${greeting}</p>
       <p>${paragraph}</p>
       <p>${nextStep}</p>
@@ -239,28 +243,33 @@ function buildEmail_(group, decision, recipientName) {
 }
 
 function findColumns_(headers) {
+  const sheet = getScreeningSheet_();
+
+  function getOrAdd(candidate) {
+    let index = headers.findIndex(header => header.toLowerCase().trim().startsWith(candidate.toLowerCase().trim()));
+    if (index !== -1) return index;
+    
+    // Add missing column header to Google Sheet automatically
+    index = headers.length;
+    sheet.getRange(1, index + 1).setValue(candidate);
+    headers.push(candidate);
+    return index;
+  }
+
   return {
-    fullName: findHeader_(headers, ["Full Name"]),
-    email: findHeader_(headers, ["Email Address"]),
-    participationType: findHeader_(headers, ["Participation Type"]),
-    teamName: findHeader_(headers, ["Team Name"]),
-    teamLeader: findHeader_(headers, ["Team Leader / Primary Contact Name"]),
-    screeningStatus: findHeader_(headers, ["Screening Status"]),
-    screeningEmailSent: findHeader_(headers, ["Screening Email Sent"])
+    fullName: getOrAdd("Full Name"),
+    email: getOrAdd("Email Address"),
+    participationType: getOrAdd("Participation Type"),
+    teamName: getOrAdd("Team Name"),
+    teamLeader: getOrAdd("Team Leader / Primary Contact Name"),
+    screeningStatus: getOrAdd("Screening Status"),
+    screeningEmailSent: getOrAdd("Screening Email Sent")
   };
 }
 
-function findHeader_(headers, candidates) {
-  for (const candidate of candidates) {
-    const index = headers.findIndex(header => header.toLowerCase().startsWith(candidate.toLowerCase()));
-    if (index !== -1) return index;
-  }
-  throw new Error(`Required column not found: ${candidates[0]}`);
-}
-
 function decisionType_(status) {
-  if (SCREENING_CONFIG.STATUS_SELECTED.includes(status)) return "SELECTED";
-  if (SCREENING_CONFIG.STATUS_NOT_SELECTED.includes(status)) return "NOT_SELECTED";
+  if (SCREENING_CONFIG.STATUS_SELECTED.some(s => status.includes(s))) return "SELECTED";
+  if (SCREENING_CONFIG.STATUS_NOT_SELECTED.some(s => status.includes(s))) return "NOT_SELECTED";
   return "";
 }
 
