@@ -1,26 +1,44 @@
 /**
  * AI INNOVATION HACKATHON 2026 — SECURE BACKEND API, FINAL JUDGE PANEL & WORKFLOW AUTOMATION
  * Women in AI, Research, Innovation & Entrepreneurship Club
- * 
+ *
  * Features:
  * 1. doGet:
  *    - ?panel=judge&key=WAI_JUDGE_2026 -> Renders protected Final Round Judge Panel HTML Dashboard.
  *    - ?action=checkStatus&query=... -> Returns single participant/team status & Stage 2 eligibility flag.
- *    - Default (Public Participants Roster) -> Reads ONLY from 'Form Responses 1', deduplicates teams, returns ONLY: Sl. No (id), Team Name, Participation Type. ZERO private data exposed.
+ *    - Default (Public Participants Roster) -> Reads ONLY from 'Form Responses 1', deduplicates teams,
+ *      returns ONLY: Sl. No (id), Team Name, Participation Type. ZERO private data exposed.
  * 2. doPost:
  *    - Stage1_Screening -> Logs proposal to 'Stage 1 Submissions', dispatches receipt email.
- *    - Stage2_Final -> Gated by Stage 1 shortlist status, logs final project (GitHub repo, demo URL, title, description) to 'Final Submissions', dispatches confirmation email.
- * 3. Final Round Judge Panel:
+ *    - Stage2_Final     -> Gated by Stage 1 shortlist status; checks eligibility only
+ *      (Final Submissions is populated directly by Google Form; this route only verifies gate).
+ * 3. Final Round Judge Panel (ONE AND ONLY judge panel — route: ?panel=judge&key=WAI_JUDGE_2026):
  *    - Reads ONLY from 'Final Submissions' sheet.
  *    - Evaluates final projects with decisions: WINNER, FINALIST, NOT SELECTED.
- *    - Stores decision in 'Final Evaluation Status' & 'Final Decision Email Sent' without modifying Stage 1 screening status.
- *    - Sends distinct Final Round Result Emails protected with try/catch email safety.
+ *    - Stores decision in 'Final Evaluation Status' & 'Final Decision Email Sent'.
+ *    - NEVER modifies Screening Status or Stage 1 Submissions.
+ *    - Sends distinct Final Round Result Emails; email resolved server-side via cross-reference.
+ *
+ * SPREADSHEET: Always opened via SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID).
+ * Never relies on SpreadsheetApp.getActiveSpreadsheet().
+ *
+ * FINAL SUBMISSIONS REAL SCHEMA (Google Form columns — DO NOT REORDER):
+ *   Col 0: Timestamp
+ *   Col 1: Participant / Team Name
+ *   Col 2: Selected Problem Statement
+ *   Col 3: GitHub Repository URL
+ *   Col 4: Final Project Demo Video
+ *   Col 5: Live Demo / Deployment Link
+ *   Col 6: Final Submission Declaration
+ *   Col 7: Final Evaluation Status       (added by script if missing)
+ *   Col 8: Final Decision Email Sent     (added by script if missing)
  */
 
 const CONFIG = {
+  SPREADSHEET_ID: "1FPFuuXNhlENuaZx1UvggOoAPRmbpX3Mz4jenNVMZCm0",
   REGISTRATION_SHEET: "Form Responses 1",
   STAGE1_SHEET: "Stage 1 Submissions",
-  STAGE2_SHEET: "Final Submissions",
+  STAGE2_SHEET: "Form Responses 2",
   JUDGE_KEY: "WAI_JUDGE_2026",
   EVENT_NAME: "AI Innovation Hackathon 2026",
   ORGANIZER_EMAIL: "womeninairclub@gmail.com",
@@ -33,7 +51,7 @@ const CONFIG = {
 function doGet(e) {
   try {
     const params = e ? e.parameter : {};
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
 
     // ROUTE 1: PRIVATE FINAL JUDGE PANEL DASHBOARD
     if (params.panel === "judge") {
@@ -117,27 +135,28 @@ function doGet(e) {
       }
 
       if (stage2Sheet) {
+        // Final Submissions real schema: Col 1 = Participant / Team Name
         const data2 = stage2Sheet.getDataRange().getValues();
         if (data2.length > 1) {
+          const hdrs2 = data2[0].map(h => String(h || "").trim().toLowerCase());
+          let evalColIdx2 = hdrs2.findIndex(h => h === "final evaluation status");
           const rows2 = data2.slice(1);
           const match2 = rows2.find(r => {
-            const ref = String(r[0] || "").toLowerCase();
-            const team = String(r[2] || "").toLowerCase();
-            const email = String(r[3] || "").toLowerCase();
-            return ref === q || team === q || email === q;
+            const team = String(r[1] || "").toLowerCase();
+            return team === q;
           });
 
           if (match2) {
-            const finalStatus = match2[9] || "FINAL SUBMISSION RECEIVED";
+            const finalStatus = (evalColIdx2 !== -1 && match2[evalColIdx2])
+              ? String(match2[evalColIdx2])
+              : "FINAL SUBMISSION RECEIVED";
             if (foundRecord) {
               foundRecord.status = finalStatus;
-              foundRecord.finalRefId = match2[0];
             } else {
               foundRecord = {
-                teamName: match2[2] || "Participant",
+                teamName: match2[1] || "Participant",
                 type: "Team",
-                status: finalStatus,
-                finalRefId: match2[0]
+                status: finalStatus
               };
             }
           }
@@ -165,12 +184,14 @@ function doGet(e) {
         type: foundRecord.type,
         status: normalizeStatusName_(foundRecord.status),
         eligibleForStage2: eligibleForStage2,
-        referenceId: foundRecord.referenceId || foundRecord.finalRefId || null
+        referenceId: foundRecord.referenceId || null
       });
     }
 
     // ROUTE 3: DEFAULT SANITIZED PUBLIC PARTICIPANTS DIRECTORY
     // Reads ONLY from 'Form Responses 1' (Official Registration Sheet)
+    // Public Participants API — exposes ONLY: id, teamName, participationType
+    // NO email, phone, screening status, or private data.
     const regSheet = ss.getSheetByName(CONFIG.REGISTRATION_SHEET) || ss.getSheets()[0];
     if (!regSheet) return jsonResponse_([]);
 
@@ -185,27 +206,45 @@ function doGet(e) {
     const publicList = [];
 
     rows.forEach(row => {
-      const rawType = String(row[col.participationType] || "").trim().toUpperCase();
-      const isTeam = rawType.includes("TEAM") || (row[col.teamName] && String(row[col.teamName]).trim() !== "");
-      const typeLabel = isTeam ? "TEAM" : "INDIVIDUAL";
-
-      let teamName = "";
+      const rawType = String(row[col.participationType] || "").trim().toLowerCase();
       const rawTeamField = String(row[col.teamName] || "").trim();
       const rawTeamLower = rawTeamField.toLowerCase();
-      const isInvalidTeamName = !rawTeamField || rawTeamLower === "individual" || rawTeamLower === "n/a" || rawTeamLower === "none" || rawTeamLower === "na" || rawTeamLower === "-";
+      const rawName = String(row[col.fullName] || row[col.teamLeader] || "").trim();
+      const rawNameLower = rawName.toLowerCase();
 
-      if (isTeam && !isInvalidTeamName) {
-        teamName = rawTeamField;
+      const isInvalidTeamName = !rawTeamField || 
+        rawTeamLower === "individual" || 
+        rawTeamLower === "n/a" || 
+        rawTeamLower === "none" || 
+        rawTeamLower === "na" || 
+        rawTeamLower === "-" ||
+        (rawNameLower && rawTeamLower === rawNameLower);
+
+      let isTeam = false;
+      if (rawType.includes("indiv") || rawType.includes("solo") || rawType.includes("single")) {
+        isTeam = false;
+      } else if (rawType.includes("team") || rawType.includes("group")) {
+        isTeam = true;
       } else {
-        // For individual participation or missing team name, display the registered participant's name
-        teamName = String(row[col.fullName] || row[col.teamLeader] || rawTeamField || "Participant").trim();
+        // Fallback: If rawType wasn't explicit, check team name field
+        isTeam = !isInvalidTeamName;
       }
 
-      if (!teamName || teamName.toLowerCase() === "individual") {
-        teamName = String(row[col.fullName] || row[col.teamLeader] || "Participant").trim();
+      const typeLabel = isTeam ? "TEAM" : "INDIVIDUAL";
+
+      let displayName = "";
+      if (isTeam && !isInvalidTeamName) {
+        displayName = rawTeamField;
+      } else {
+        displayName = rawName || (rawTeamLower !== "individual" ? rawTeamField : "") || "Participant";
+        if (displayName.toLowerCase() === "individual") {
+          displayName = rawName || "Participant";
+        }
       }
 
-      const normKey = teamName.toLowerCase();
+      if (!displayName) return;
+
+      const normKey = displayName.toLowerCase();
 
       // Deduplicate teams so each team appears only once
       if (isTeam && seenTeams.has(normKey)) {
@@ -217,7 +256,7 @@ function doGet(e) {
 
       publicList.push({
         id: publicList.length + 1,
-        teamName: teamName,
+        teamName: displayName,
         participationType: typeLabel
       });
     });
@@ -245,7 +284,7 @@ function doPost(e) {
       return jsonResponse_({ success: false, error: "Invalid JSON format" }, 400);
     }
 
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
 
     // STAGE 1: IDEA SCREENING SUBMISSION (Round 1)
     if (body.type === "Stage1_Screening") {
@@ -309,7 +348,8 @@ function doPost(e) {
         solution, approach, pitchLink, "ROUND 1 SUBMITTED", "No"
       ]);
 
-      updateRegistrationStatus_(ss, teamName, email, "ROUND 1 SUBMITTED");
+      // Update only Stage 1 Submissions (never touches Final Submissions)
+      updateStage1Status_(ss, teamName, email, "ROUND 1 SUBMITTED");
 
       let emailSent = false;
       try {
@@ -344,29 +384,24 @@ function doPost(e) {
       });
     }
 
-    // STAGE 2: FINAL PROJECT SUBMISSION (Round 2)
+    // STAGE 2: ELIGIBILITY CHECK
+    // Final Submissions sheet is populated directly by the Google Form.
+    // This route only verifies Stage 1 shortlist eligibility before the participant
+    // proceeds to the external Google Form for final submission.
+    // It does NOT write to Final Submissions.
     if (body.type === "Stage2_Final") {
       const teamName = String(body.teamName || "").trim();
-      const email = String(body.email || "").trim();
-      const track = String(body.track || "").trim();
-      const projectTitle = String(body.projectTitle || "").trim();
-      const githubUrl = String(body.githubUrl || "").trim();
-      const demoUrl = String(body.demoUrl || "").trim();
-      const description = String(body.description || "").trim();
+      const email    = String(body.email    || "").trim();
 
-      if (!teamName || !email || !track || !projectTitle || !githubUrl || !description) {
+      if (!teamName || !email) {
         return jsonResponse_({
           success: false,
-          error: "Missing required fields. Please fill in Team Name, Leader Email, Track, Project Title, GitHub Repository, and Description."
+          error: "Missing required fields. Please provide Team Name and Email."
         }, 400);
       }
 
       if (!validateEmail_(email)) {
         return jsonResponse_({ success: false, error: "Invalid team leader email address." }, 400);
-      }
-
-      if (!githubUrl.toLowerCase().includes("github.com")) {
-        return jsonResponse_({ success: false, error: "Invalid GitHub URL. Must be a valid public github.com repository." }, 400);
       }
 
       const eligibility = checkTeamEligibility_(ss, teamName, email);
@@ -378,76 +413,10 @@ function doPost(e) {
         }, 403);
       }
 
-      let stage2Sheet = ss.getSheetByName(CONFIG.STAGE2_SHEET);
-      if (!stage2Sheet) {
-        stage2Sheet = ss.insertSheet(CONFIG.STAGE2_SHEET);
-        stage2Sheet.appendRow([
-          "Reference ID", "Timestamp (IST)", "Team Name", "Leader Email",
-          "Track", "Project Title", "GitHub Repository", "Demo URL",
-          "Description", "Final Evaluation Status", "Final Decision Email Sent"
-        ]);
-      } else {
-        const s2Data = stage2Sheet.getDataRange().getValues();
-        if (s2Data.length > 1) {
-          const rows2 = s2Data.slice(1);
-          const duplicate = rows2.find(r => {
-            const exTeam = String(r[2] || "").toLowerCase().trim();
-            const exGit = String(r[6] || "").toLowerCase().trim();
-            return exTeam === teamName.toLowerCase() || exGit === githubUrl.toLowerCase();
-          });
-
-          if (duplicate) {
-            return jsonResponse_({
-              success: false,
-              alreadySubmitted: true,
-              refId: duplicate[0],
-              message: "Final project has already been submitted for this team.",
-              status: "FINAL SUBMISSION RECEIVED"
-            }, 200);
-          }
-        }
-      }
-
-      const timestamp = Utilities.formatDate(new Date(), "Asia/Kolkata", "yyyy-MM-dd HH:mm:ss");
-      const refId = "WAI-FIN-" + Math.floor(100000 + Math.random() * 900000);
-
-      stage2Sheet.appendRow([
-        refId, timestamp, teamName, email, track,
-        projectTitle, githubUrl, demoUrl, description, "FINAL SUBMISSION RECEIVED", "Pending"
-      ]);
-
-      updateRegistrationStatus_(ss, teamName, email, "FINAL SUBMISSION RECEIVED");
-
-      let emailSent = false;
-      try {
-        MailApp.sendEmail({
-          to: email,
-          subject: `${CONFIG.EVENT_NAME} — Final Project Submission Confirmation [${refId}]`,
-          htmlBody: `
-            <div style="font-family:Arial,sans-serif;line-height:1.6;color:#222;max-width:600px">
-              <h2 style="color:#059669">Final Project Submission Recorded</h2>
-              <p>Dear ${escapeHtml_(teamName)},</p>
-              <p>Your final hackathon project submission has been officially recorded for evaluation by the judging panel.</p>
-              <p><strong>Official Reference Code:</strong> <span style="font-family:monospace;font-weight:bold;color:#059669">${refId}</span><br>
-              <strong>Project Title:</strong> ${escapeHtml_(projectTitle)}<br>
-              <strong>GitHub Repository:</strong> <a href="${githubUrl}">${githubUrl}</a><br>
-              <strong>Official Server Timestamp:</strong> ${timestamp} IST</p>
-              <p>Jury evaluation is conducted between 6:00 PM and 8:00 PM IST today. Final results will be published at <strong>8:00 PM IST</strong> on the official hackathon website.</p>
-              <p>Best of luck!<br><strong>AI Innovation Hackathon 2026 Jury & Organizing Team</strong><br>Women in AI, Research, Innovation & Entrepreneurship Club</p>
-            </div>
-          `
-        });
-        emailSent = true;
-      } catch (mailErr) {
-        Logger.log("MailApp notice failed: " + mailErr.toString());
-      }
-
       return jsonResponse_({
         success: true,
-        refId: refId,
-        timestamp: timestamp,
-        status: "FINAL SUBMISSION RECEIVED",
-        emailSent: emailSent
+        message: "Team is eligible for final submission.",
+        currentStatus: eligibility.currentStatus
       });
     }
 
@@ -531,12 +500,12 @@ function renderJudgePanel() {
           <thead>
             <tr>
               <th>Sl. No.</th>
-              <th>Team Name</th>
-              <th>Leader Email</th>
-              <th>Track</th>
-              <th>Project Title</th>
-              <th>Deliverables</th>
-              <th>Description</th>
+              <th>Participant / Team Name</th>
+              <th>Selected Problem Statement</th>
+              <th>GitHub Repository</th>
+              <th>Demo Video</th>
+              <th>Live Demo / Deployment</th>
+              <th>Declaration</th>
               <th>Current Final Status</th>
               <th>Final Decision Action</th>
             </tr>
@@ -589,26 +558,30 @@ function renderJudgePanel() {
             }
 
             var repoLink = row.githubUrl ? '<a href="' + escapeHtml(row.githubUrl) + '" target="_blank" rel="noopener" class="link">GitHub Repo 🔗</a>' : '<span style="color:var(--muted)">No Repo</span>';
-            var demoLink = row.demoUrl ? '<br><a href="' + escapeHtml(row.demoUrl) + '" target="_blank" rel="noopener" class="link" style="color:#34d399">Live Demo 🚀</a>' : '';
+            var videoCell = row.videoLink ? '<a href="' + escapeHtml(row.videoLink) + '" target="_blank" rel="noopener" class="link" style="color:#f59e0b;">▶ Video</a>' : '<span style="color:var(--muted)">—</span>';
+            var liveCell = row.liveLink ? '<a href="' + escapeHtml(row.liveLink) + '" target="_blank" rel="noopener" class="link" style="color:#34d399;">Live Demo 🚀</a>' : '<span style="color:var(--muted)">—</span>';
 
-            var descTrunc = escapeHtml(row.description || 'No description');
-            if (descTrunc.length > 120) descTrunc = descTrunc.substring(0, 120) + '...';
+            var stmtTrunc = escapeHtml(row.problemStatement || '—');
+            if (stmtTrunc.length > 100) stmtTrunc = stmtTrunc.substring(0, 100) + '...';
+            var declTrunc = escapeHtml(row.declaration || '—');
+            if (declTrunc.length > 60) declTrunc = declTrunc.substring(0, 60) + '...';
 
-            tr.innerHTML = \`
-              <td style="font-weight:700;color:var(--muted)">\${(idx + 1 < 10 ? '0' : '') + (idx + 1)}</td>
-              <td><strong>\${escapeHtml(row.teamName)}</strong></td>
-              <td>\${escapeHtml(row.email)}</td>
-              <td><span style="font-size:12px;color:var(--primary);font-weight:600">\${escapeHtml(row.track || 'General')}</span></td>
-              <td><strong>\${escapeHtml(row.projectTitle || 'N/A')}</strong></td>
-              <td>\${repoLink}\${demoLink}</td>
-              <td><div class="desc-text" title="\${escapeHtml(row.description)}">\${descTrunc}</div></td>
-              <td id="status-\${idx}">\${statusBadge}</td>
-              <td id="action-\${idx}">
-                <button class="btn btn-winner" onclick="makeDecision('\${escapeHtml(row.email)}', '\${escapeHtml(row.teamName)}', 'winner', \${idx})">🏆 Winner</button>
-                <button class="btn btn-finalist" onclick="makeDecision('\${escapeHtml(row.email)}', '\${escapeHtml(row.teamName)}', 'finalist', \${idx})">⭐ Finalist</button>
-                <button class="btn btn-reject" onclick="makeDecision('\${escapeHtml(row.email)}', '\${escapeHtml(row.teamName)}', 'not_selected', \${idx})">❌ Not Selected</button>
-              </td>
-            \`;
+            var tn = escapeHtml(row.teamName || '');
+            var tnAttr = escapeHtml(row.teamName || '');
+            tr.innerHTML =
+              '<td style="font-weight:700;color:var(--muted)">' + (idx + 1 < 10 ? '0' : '') + (idx + 1) + '</td>' +
+              '<td><strong>' + tn + '</strong></td>' +
+              '<td><div class="desc-text" title="' + escapeHtml(row.problemStatement || '') + '">' + stmtTrunc + '</div></td>' +
+              '<td>' + repoLink + '</td>' +
+              '<td>' + videoCell + '</td>' +
+              '<td>' + liveCell + '</td>' +
+              '<td><div class="desc-text" title="' + escapeHtml(row.declaration || '') + '">' + declTrunc + '</div></td>' +
+              '<td id="status-' + idx + '">' + statusBadge + '</td>' +
+              '<td id="action-' + idx + '">' +
+                '<button class="btn btn-winner" data-team="' + tnAttr + '" onclick="onDecisionClick(this,\\\'winner\\\',' + idx + ')">🏆 Winner</button>' +
+                '<button class="btn btn-finalist" data-team="' + tnAttr + '" onclick="onDecisionClick(this,\\\'finalist\\\',' + idx + ')">⭐ Finalist</button>' +
+                '<button class="btn btn-reject" data-team="' + tnAttr + '" onclick="onDecisionClick(this,\\\'not_selected\\\',' + idx + ')">❌ Not Selected</button>' +
+              '</td>';
             tbody.appendChild(tr);
           });
 
@@ -623,16 +596,22 @@ function renderJudgePanel() {
           document.getElementById('cntNotSelected').innerText = notSelected;
         }
 
-        function makeDecision(email, teamName, decision, idx) {
+        function onDecisionClick(btn, decision, idx) {
+          var teamName = btn.getAttribute('data-team');
+          makeDecision(teamName, decision, idx);
+        }
+
+        // Passes teamName (not email); email is resolved server-side by processJudgeDecision
+        function makeDecision(teamName, decision, idx) {
           var labelMap = { 'winner': 'WINNER', 'finalist': 'FINALIST', 'not_selected': 'NOT SELECTED' };
           var targetLabel = labelMap[decision] || decision.toUpperCase();
 
-          if (!confirm("Are you sure you want to set the final decision for team '" + teamName + "' to " + targetLabel + "?\\nThis will save the status and send a final-round result email.")) {
+          if (!confirm('Are you sure you want to set the final decision for "' + teamName + '" to ' + targetLabel + '?\\nThis will save the status and send a final-round result email.')) {
             return;
           }
 
           var actionTd = document.getElementById('action-' + idx);
-          var statusTd = document.getElementById('status-' + idx);
+          var statusTd  = document.getElementById('status-' + idx);
           actionTd.innerHTML = '<em style="color:var(--muted);font-size:12px">Saving Decision &amp; Dispatching Email...</em>';
 
           google.script.run
@@ -645,30 +624,29 @@ function renderJudgePanel() {
                 } else {
                   statusTd.innerHTML = '<span class="badge badge-rejected">NOT SELECTED</span>';
                 }
-                
                 if (res.success) {
                   actionTd.innerHTML = '<span style="color:#34d399;font-weight:700">✅ Saved &amp; Email Sent</span>';
                 } else {
-                  actionTd.innerHTML = '<span style="color:#fbbf24;font-weight:700">⚠️ Saved (Email Failed)</span>';
-                  alert('Decision saved in sheet, but email notification failed: ' + res.message);
+                  actionTd.innerHTML = '<span style="color:#fbbf24;font-weight:700">⚠️ Saved (' + escapeHtml(res.message) + ')</span>';
                 }
               } else {
                 alert('Error saving decision: ' + res.message);
-                restoreActionButtons(email, teamName, idx, actionTd);
+                restoreActionButtons(teamName, idx, actionTd);
               }
             })
             .withFailureHandler(function(err) {
               alert('Server Error: ' + err.message);
-              restoreActionButtons(email, teamName, idx, actionTd);
+              restoreActionButtons(teamName, idx, actionTd);
             })
-            .processJudgeDecision(email, decision);
+            .processJudgeDecision(teamName, decision);
         }
 
-        function restoreActionButtons(email, teamName, idx, actionTd) {
-          actionTd.innerHTML = 
-            '<button class="btn btn-winner" onclick="makeDecision(\\\'' + email + '\\\', \\\'' + teamName + '\\\', \\\'winner\\\', ' + idx + ')">🏆 Winner</button>' +
-            '<button class="btn btn-finalist" onclick="makeDecision(\\\'' + email + '\\\', \\\'' + teamName + '\\\', \\\'finalist\\\', ' + idx + ')">⭐ Finalist</button>' +
-            '<button class="btn btn-reject" onclick="makeDecision(\\\'' + email + '\\\', \\\'' + teamName + '\\\', \\\'not_selected\\\', ' + idx + ')">❌ Not Selected</button>';
+        function restoreActionButtons(teamName, idx, actionTd) {
+          var tnAttr = escapeHtml(teamName || '');
+          actionTd.innerHTML =
+            '<button class="btn btn-winner" data-team="' + tnAttr + '" onclick="onDecisionClick(this,\\\'winner\\\',' + idx + ')">🏆 Winner</button>' +
+            '<button class="btn btn-finalist" data-team="' + tnAttr + '" onclick="onDecisionClick(this,\\\'finalist\\\',' + idx + ')">⭐ Finalist</button>' +
+            '<button class="btn btn-reject" data-team="' + tnAttr + '" onclick="onDecisionClick(this,\\\'not_selected\\\',' + idx + ')">❌ Not Selected</button>';
         }
 
         function escapeHtml(str) {
@@ -682,133 +660,179 @@ function renderJudgePanel() {
   return HtmlService.createHtmlOutput(html).setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
+/**
+ * getJudgeData() — Reads ONLY from 'Final Submissions' sheet.
+ * Real headers (confirmed by user):
+ *   Col 0: Timestamp
+ *   Col 1: Participant / Team Name
+ *   Col 2: Selected Problem Statement
+ *   Col 3: GitHub Repository URL
+ *   Col 4: Final Project Demo Video
+ *   Col 5: Live Demo / Deployment Link
+ *   Col 6: Final Submission Declaration
+ *   Col 7: Final Evaluation Status       (appended by script if missing)
+ *   Col 8: Final Decision Email Sent     (appended by script if missing)
+ *
+ * Email is NOT stored in Final Submissions — resolved server-side via cross-reference.
+ */
 function getJudgeData() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = ss.getSheetByName(CONFIG.STAGE2_SHEET); // MUST READ ONLY FROM FINAL SUBMISSIONS SHEET
+  // Reads ONLY from Final Submissions. Never reads Stage 1 Submissions or Form Responses 1.
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(CONFIG.STAGE2_SHEET);
   if (!sheet) return [];
 
   const data = sheet.getDataRange().getValues();
   if (data.length <= 1) return [];
 
-  const headers = data[0].map(h => String(h || "").toLowerCase().trim());
+  // Ensure required judging columns exist (append header if missing)
+  const hdrs = data[0].map(h => String(h || "").trim());
+  let statusColIdx = hdrs.findIndex(h => h.toLowerCase() === "final evaluation status");
+  if (statusColIdx === -1) {
+    statusColIdx = hdrs.length;
+    sheet.getRange(1, statusColIdx + 1).setValue("Final Evaluation Status");
+    hdrs.push("Final Evaluation Status");
+  }
+  let emailSentColIdx = hdrs.findIndex(h => h.toLowerCase() === "final decision email sent");
+  if (emailSentColIdx === -1) {
+    emailSentColIdx = hdrs.length;
+    sheet.getRange(1, emailSentColIdx + 1).setValue("Final Decision Email Sent");
+    hdrs.push("Final Decision Email Sent");
+  }
+  SpreadsheetApp.flush();
 
-  const getColIdx = (candidates) => {
-    return headers.findIndex(h => candidates.some(c => h.includes(c)));
-  };
-
-  const emailIdx = getColIdx(["leader email", "email address", "email", "contact"]);
-  const teamIdx = getColIdx(["team name", "team", "leader", "name"]);
-  const trackIdx = getColIdx(["track", "category"]);
-  const titleIdx = getColIdx(["project title", "title", "project"]);
-  const githubIdx = getColIdx(["github repository", "github", "repo", "source code"]);
-  const demoIdx = getColIdx(["demo url", "demo", "deployment", "live"]);
-  const descIdx = getColIdx(["description", "overview", "abstract"]);
-  const statusIdx = getColIdx(["final evaluation status", "evaluation status", "status", "decision"]);
+  // Use fixed column positions based on confirmed real sheet structure
+  const COL_TEAM  = 1; // Participant / Team Name
+  const COL_STMT  = 2; // Selected Problem Statement
+  const COL_REPO  = 3; // GitHub Repository URL
+  const COL_VIDEO = 4; // Final Project Demo Video
+  const COL_LIVE  = 5; // Live Demo / Deployment Link
+  const COL_DECL  = 6; // Final Submission Declaration
 
   const teamMap = new Map();
 
   for (let i = 1; i < data.length; i++) {
     const row = data[i];
-    const email = emailIdx !== -1 && row[emailIdx] ? String(row[emailIdx]).trim() : "";
-    const teamName = teamIdx !== -1 && row[teamIdx] ? String(row[teamIdx]).trim() : ("Team " + i);
-    const track = trackIdx !== -1 && row[trackIdx] ? String(row[trackIdx]).trim() : "General Track";
-    const projectTitle = titleIdx !== -1 && row[titleIdx] ? String(row[titleIdx]).trim() : "Final Project";
-    const githubUrl = githubIdx !== -1 && row[githubIdx] ? String(row[githubIdx]).trim() : "";
-    const demoUrl = demoIdx !== -1 && row[demoIdx] ? String(row[demoIdx]).trim() : "";
-    const description = descIdx !== -1 && row[descIdx] ? String(row[descIdx]).trim() : "";
-    const status = statusIdx !== -1 && row[statusIdx] ? String(row[statusIdx]).trim() : "PENDING EVALUATION";
+    const teamName = String(row[COL_TEAM] || "").trim();
+    if (!teamName) continue;
 
-    if (!email && !teamName) continue;
+    const problemStatement = String(row[COL_STMT]  || "").trim();
+    const githubUrl        = String(row[COL_REPO]  || "").trim();
+    const videoLink        = String(row[COL_VIDEO] || "").trim();
+    const liveLink         = String(row[COL_LIVE]  || "").trim();
+    const declaration      = String(row[COL_DECL]  || "").trim();
+    const status           = statusColIdx < row.length && row[statusColIdx]
+                             ? String(row[statusColIdx]).trim()
+                             : "PENDING EVALUATION";
 
-    const key = teamName.toLowerCase() || email.toLowerCase();
-    
-    // Always take the latest submission if duplicate final submission rows exist for a team
-    teamMap.set(key, {
-      email: email,
-      teamName: teamName,
-      track: track,
-      projectTitle: projectTitle,
-      githubUrl: githubUrl,
-      demoUrl: demoUrl,
-      description: description,
-      status: status
+    // Keep latest row per team if duplicates exist
+    teamMap.set(teamName.toLowerCase(), {
+      teamName:         teamName,
+      problemStatement: problemStatement,
+      githubUrl:        githubUrl,
+      videoLink:        videoLink,
+      liveLink:         liveLink,
+      declaration:      declaration,
+      status:           status
     });
   }
 
   return Array.from(teamMap.values());
 }
 
-function processJudgeDecision(email, decision) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = ss.getSheetByName(CONFIG.STAGE2_SHEET); // TARGETS FINAL SUBMISSIONS SHEET ONLY
-  if (!sheet) return { success: false, savedInSheet: false, message: "Final Submissions sheet not found." };
+/**
+ * processJudgeDecision(teamName, decision)
+ *
+ * Called from the Judge Panel UI with the TEAM NAME (not email), because
+ * 'Final Submissions' does NOT contain an email column.
+ *
+ * Server-side email resolution:
+ *   1. Match team name in 'Final Submissions' → update Final Evaluation Status.
+ *   2. Cross-reference 'Stage 1 Submissions' (then 'Form Responses 1') by
+ *      team name to retrieve the registered leader email.
+ *   3. Send the Final Round Result Email to the resolved address.
+ */
+function processJudgeDecision(teamName, decision) {
+  // Updates ONLY Final Evaluation Status and Final Decision Email Sent in Final Submissions.
+  // NEVER modifies Screening Status or Stage 1 Submissions.
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(CONFIG.STAGE2_SHEET);
+  if (!sheet) return { success: false, savedInSheet: false, message: CONFIG.STAGE2_SHEET + " sheet not found." };
 
   const data = sheet.getDataRange().getValues();
   if (data.length <= 1) return { success: false, savedInSheet: false, message: "No final submissions data available." };
 
-  const headers = data[0].map(h => String(h || "").toLowerCase().trim());
-
-  let emailIdx = headers.findIndex(h => h.includes("email"));
-  if (emailIdx === -1) emailIdx = 3;
-
-  let teamIdx = headers.findIndex(h => h.includes("team name") || h.includes("team"));
-  if (teamIdx === -1) teamIdx = 2;
-
-  let statusIdx = headers.findIndex(h => h === "final evaluation status" || h.includes("evaluation status") || h.includes("status"));
-  let emailSentIdx = headers.findIndex(h => h === "final decision email sent" || h.includes("decision email sent") || h.includes("email sent"));
-
-  // Automatically create required columns if missing
+  // Locate or create judging columns
+  const hdrs = data[0].map(h => String(h || "").trim().toLowerCase());
+  let statusIdx = hdrs.findIndex(h => h === "final evaluation status");
   if (statusIdx === -1) {
-    statusIdx = headers.length;
+    statusIdx = hdrs.length;
     sheet.getRange(1, statusIdx + 1).setValue("Final Evaluation Status");
-    headers.push("final evaluation status");
+    hdrs.push("final evaluation status");
   }
+  let emailSentIdx = hdrs.findIndex(h => h === "final decision email sent");
   if (emailSentIdx === -1) {
-    emailSentIdx = headers.length;
+    emailSentIdx = hdrs.length;
     sheet.getRange(1, emailSentIdx + 1).setValue("Final Decision Email Sent");
-    headers.push("final decision email sent");
+    hdrs.push("final decision email sent");
   }
 
-  const cleanEmail = String(email || "").trim().toLowerCase();
+  // Col 1 = Participant / Team Name (fixed position, confirmed by user)
+  const COL_TEAM = 1;
+  const cleanTeam = String(teamName || "").trim().toLowerCase();
+
   const matchedRowIndices = [];
-  let teamName = "";
+  let resolvedTeamName = teamName;
 
   for (let i = 1; i < data.length; i++) {
-    const rowEmail = data[i][emailIdx] ? String(data[i][emailIdx]).trim().toLowerCase() : "";
-    const rowTeam = data[i][teamIdx] ? String(data[i][teamIdx]).trim().toLowerCase() : "";
-    
-    if (rowEmail === cleanEmail || (cleanEmail && rowTeam === cleanEmail)) {
-      matchedRowIndices.push(i + 1);
-      if (!teamName && data[i][teamIdx]) {
-        teamName = String(data[i][teamIdx]).trim();
-      }
+    const rowTeam = String(data[i][COL_TEAM] || "").trim();
+    if (rowTeam.toLowerCase() === cleanTeam) {
+      matchedRowIndices.push(i + 1); // 1-based sheet row
+      if (!resolvedTeamName) resolvedTeamName = rowTeam;
     }
   }
 
   if (matchedRowIndices.length === 0) {
-    return { success: false, savedInSheet: false, message: "Participant email or team name '" + cleanEmail + "' not found in Final Submissions." };
+    return {
+      success: false,
+      savedInSheet: false,
+      message: "Team '" + teamName + "' not found in " + CONFIG.STAGE2_SHEET + "."
+    };
   }
 
+  // Map decision key → status label
   let finalStatus = "PENDING EVALUATION";
-  if (decision === "winner") finalStatus = "WINNER";
+  if (decision === "winner")       finalStatus = "WINNER";
   else if (decision === "finalist") finalStatus = "FINALIST";
   else if (decision === "not_selected") finalStatus = "NOT SELECTED";
 
-  // Update Final Evaluation Status across all matching rows for the team in Final Submissions
+  // Write Final Evaluation Status to all matching rows in Final Submissions ONLY.
+  // Stage 1 Submissions and Screening Status are NEVER touched here.
   matchedRowIndices.forEach(rowNum => {
     sheet.getRange(rowNum, statusIdx + 1).setValue(finalStatus);
   });
   SpreadsheetApp.flush();
 
-  // Send distinct Final Round Result Email (wrapped safely in try/catch)
-  let emailResult = { success: false, error: "Email dispatch attempted" };
-  try {
-    emailResult = sendFinalResultEmail(cleanEmail, teamName || "Participant", decision);
-  } catch (err) {
-    emailResult = { success: false, error: err.toString() };
+  // -------------------------------------------------------
+  // SERVER-SIDE EMAIL RESOLUTION
+  // Final Submissions has no email column → cross-reference
+  // Stage 1 Submissions first, then Form Responses 1.
+  // Email is never exposed to the public API.
+  // -------------------------------------------------------
+  const resolvedEmail = resolveEmailByTeamName_(ss, cleanTeam);
+
+  // Send Final Round Result Email
+  let emailResult = { success: false, error: "No matching email found for team" };
+  if (resolvedEmail) {
+    try {
+      emailResult = sendFinalResultEmail_(resolvedEmail, resolvedTeamName || "Participant", decision);
+    } catch (err) {
+      emailResult = { success: false, error: err.toString() };
+    }
+  } else {
+    Logger.log("processJudgeDecision: Could not resolve email for team '" + teamName + "'");
   }
 
-  const emailStatusText = emailResult.success ? "Sent" : "Failed";
+  const emailStatusText = emailResult.success ? "Sent" : ("Failed" + (resolvedEmail ? "" : " (email not found)"));
   matchedRowIndices.forEach(rowNum => {
     sheet.getRange(rowNum, emailSentIdx + 1).setValue(emailStatusText);
   });
@@ -817,11 +841,118 @@ function processJudgeDecision(email, decision) {
   if (emailResult.success) {
     return { success: true, savedInSheet: true, message: "Final decision saved and email sent successfully!" };
   } else {
-    return { success: false, savedInSheet: true, message: "Decision saved to sheet, but email delivery failed: " + (emailResult.error || "MailApp error") };
+    return {
+      success: false,
+      savedInSheet: true,
+      message: "Decision saved to sheet, but email delivery failed: " + (emailResult.error || "MailApp error")
+    };
   }
 }
 
-function sendFinalResultEmail(email, teamName, decision) {
+/**
+ * resolveEmailByTeamName_(ss, rawInputName)
+ * Looks up the authoritative recipient email for a final submission by searching ONLY:
+ *   Stage 1 Submissions
+ *
+ * Matching order:
+ *   1. Team Name (teams)
+ *   2. Team Leader / Primary Contact Name / Full Name (individual participants / leaders)
+ *
+ * Normalization:
+ *   - Trims whitespace
+ *   - Lowercases
+ *   - Collapses multiple internal whitespace sequences
+ *
+ * NOTE: Form Responses 1 is NEVER used for final-result email resolution.
+ * Returns email string or null.
+ */
+function resolveEmailByTeamName_(ss, rawInputName) {
+  function normalizeVal_(val) {
+    return String(val || "").trim().toLowerCase().replace(/\s+/g, " ");
+  }
+
+  const normInput = normalizeVal_(rawInputName);
+  if (!normInput) return null;
+
+  const s1Sheet = ss.getSheetByName(CONFIG.STAGE1_SHEET);
+  if (!s1Sheet) {
+    Logger.log("resolveEmailByTeamName_: Stage 1 Submissions sheet not found.");
+    return null;
+  }
+
+  const s1Data = s1Sheet.getDataRange().getValues();
+  if (s1Data.length <= 1) return null;
+
+  const rawHeaders = s1Data[0].map(h => String(h || "").trim().toLowerCase());
+
+  // Dynamic header resolution
+  function findColIndex_(patterns) {
+    for (let p of patterns) {
+      const idx = rawHeaders.findIndex(h => h === p || h.includes(p));
+      if (idx !== -1) return idx;
+    }
+    return -1;
+  }
+
+  const teamNameIdx = findColIndex_(["team name", "team_name", "team"]);
+  const leaderNameIdx = findColIndex_(["team leader / primary contact name", "team leader", "team_leader", "leader name", "leader"]);
+  const fullNameIdx = findColIndex_(["full name", "participant name", "participant / team name", "name"]);
+  const emailIdx = findColIndex_(["email address", "email", "leader email", "primary email"]);
+
+  // Effective email column
+  const effectiveEmailIdx = emailIdx !== -1 ? emailIdx : 5; // fallback to standard Stage 1 col 5 if header missing
+
+  // Rule 4A: First pass — match Team Name
+  if (teamNameIdx !== -1) {
+    for (let i = 1; i < s1Data.length; i++) {
+      const row = s1Data[i];
+      const rowTeam = normalizeVal_(row[teamNameIdx]);
+      if (rowTeam && rowTeam === normInput) {
+        const email = String(row[effectiveEmailIdx] || "").trim();
+        if (email && email.includes("@")) {
+          return email;
+        }
+      }
+    }
+  }
+
+  // Rule 4B: Second pass — match Team Leader / Primary Contact Name or Full Name for individuals/solo
+  const candidateIndices = [leaderNameIdx, fullNameIdx].filter(idx => idx !== -1 && idx !== teamNameIdx);
+  if (candidateIndices.length > 0) {
+    for (let i = 1; i < s1Data.length; i++) {
+      const row = s1Data[i];
+      for (let cIdx of candidateIndices) {
+        const rowName = normalizeVal_(row[cIdx]);
+        if (rowName && rowName === normInput) {
+          const email = String(row[effectiveEmailIdx] || "").trim();
+          if (email && email.includes("@")) {
+            return email;
+          }
+        }
+      }
+    }
+  }
+
+  // Also check standard fixed positions (col 3 = Team Name, col 4 = Team Leader) as backup if headers were unconventional
+  if (teamNameIdx === -1 && leaderNameIdx === -1) {
+    for (let i = 1; i < s1Data.length; i++) {
+      const row = s1Data[i];
+      const t = normalizeVal_(row[3]);
+      const l = normalizeVal_(row[4]);
+      if ((t === normInput || l === normInput)) {
+        const email = String(row[effectiveEmailIdx] || "").trim();
+        if (email && email.includes("@")) {
+          return email;
+        }
+      }
+    }
+  }
+
+  return null; // No matching Stage 1 participant/team or no valid email found
+}
+
+function sendFinalResultEmail_(email, teamName, decision) {
+  // Private helper. Final round result emails are completely separate from Stage 1 screening emails.
   try {
     if (!email || !email.includes("@")) {
       return { success: false, error: "Invalid recipient email address." };
@@ -896,80 +1027,121 @@ function sendFinalResultEmail(email, teamName, decision) {
 // =========================================================
 // 4. SERVER HELPER FUNCTIONS
 // =========================================================
+
+/**
+ * checkTeamEligibility_
+ * Checks Stage 1 Submissions first (then Form Responses 1) to determine
+ * whether the team has been shortlisted/selected for Stage 2.
+ * Used to gate the Stage 2 final submission form.
+ */
 function checkTeamEligibility_(ss, teamName, email) {
-  const normTeam = String(teamName || "").toLowerCase().trim();
-  const normEmail = String(email || "").toLowerCase().trim();
+  const normTeam  = String(teamName || "").toLowerCase().trim();
+  const normEmail = String(email    || "").toLowerCase().trim();
 
-  const regSheet = ss.getSheetByName(CONFIG.STAGE1_SHEET) || ss.getSheetByName(CONFIG.REGISTRATION_SHEET);
-  if (!regSheet) return { isEligible: false, reason: "Submissions sheet unavailable." };
+  // Check Stage 1 Submissions first (primary source of screening status)
+  const s1Sheet = ss.getSheetByName(CONFIG.STAGE1_SHEET);
+  if (s1Sheet) {
+    const s1Data = s1Sheet.getDataRange().getValues();
+    if (s1Data.length > 1) {
+      const rows1 = s1Data.slice(1);
+      const match = rows1.find(r => {
+        const t = String(r[3] || "").toLowerCase().trim();
+        const e = String(r[5] || "").toLowerCase().trim();
+        return t === normTeam || e === normEmail;
+      });
 
-  const data = regSheet.getDataRange().getValues();
-  if (data.length < 2) return { isEligible: false, reason: "No registration records found." };
+      if (match) {
+        // Col 12 = Screening Status in Stage 1 Submissions
+        const status = normalizeStatusName_(match[12] || "ROUND 1 SUBMITTED").toUpperCase();
+        const isEligible = (
+          status.includes("SHORTLISTED") ||
+          status.includes("SELECTED") ||
+          status.includes("FINAL SUBMISSION PENDING") ||
+          status.includes("FINAL SUBMISSION RECEIVED") ||
+          status.includes("UNDER EVALUATION") ||
+          status.includes("FINALIST") ||
+          status.includes("WINNER")
+        );
 
-  const headers = data[0].map(h => String(h || "").trim());
-  const col = findColumns_(headers);
-  const rows = data.slice(1);
-
-  const match = rows.find(r => {
-    const t = String(r[col.teamName] || "").toLowerCase().trim();
-    const e = String(r[col.email] || "").toLowerCase().trim();
-    const l = String(r[col.teamLeader] || "").toLowerCase().trim();
-    return t === normTeam || e === normEmail || l === normTeam;
-  });
-
-  if (!match) {
-    return { isEligible: false, reason: "Team or Leader email not found in official records." };
-  }
-
-  const status = normalizeStatusName_(match[col.screeningStatus] || "REGISTERED").toUpperCase();
-
-  const isEligible = (
-    status.includes("SHORTLISTED") ||
-    status.includes("SELECTED") ||
-    status.includes("FINAL SUBMISSION PENDING") ||
-    status.includes("FINAL SUBMISSION RECEIVED") ||
-    status.includes("UNDER EVALUATION") ||
-    status.includes("FINALIST") ||
-    status.includes("WINNER")
-  );
-
-  if (!isEligible) {
-    if (status.includes("NOT SELECTED") || status.includes("REJECTED")) {
-      return {
-        isEligible: false,
-        currentStatus: "NOT SELECTED",
-        reason: "Stage 1 Screening Outcome: Not Selected. Round 2 submission is not permitted."
-      };
+        if (!isEligible) {
+          if (status.includes("NOT SELECTED") || status.includes("REJECTED")) {
+            return {
+              isEligible:    false,
+              currentStatus: "NOT SELECTED",
+              reason: "Stage 1 Screening Outcome: Not Selected. Round 2 submission is not permitted."
+            };
+          }
+          return {
+            isEligible:    false,
+            currentStatus: status,
+            reason: `Current status is ${status}. Round 2 submission is permitted only after Stage 1 shortlisting.`
+          };
+        }
+        return { isEligible: true, currentStatus: status };
+      }
     }
-    return {
-      isEligible: false,
-      currentStatus: status,
-      reason: `Current status is ${status}. Round 2 submission is permitted only after Stage 1 shortlisting.`
-    };
   }
 
-  return { isEligible: true, currentStatus: status };
+  // Fallback: check Form Responses 1
+  const regSheet = ss.getSheetByName(CONFIG.REGISTRATION_SHEET);
+  if (regSheet) {
+    const data = regSheet.getDataRange().getValues();
+    if (data.length >= 2) {
+      const headers = data[0].map(h => String(h || "").trim());
+      const col  = findColumns_(headers);
+      const rows = data.slice(1);
+      const match = rows.find(r => {
+        const t = String(r[col.teamName]   || "").toLowerCase().trim();
+        const e = String(r[col.email]      || "").toLowerCase().trim();
+        const l = String(r[col.teamLeader] || "").toLowerCase().trim();
+        return t === normTeam || e === normEmail || l === normTeam;
+      });
+
+      if (match) {
+        const status = normalizeStatusName_(match[col.screeningStatus] || "REGISTERED").toUpperCase();
+        const isEligible = (
+          status.includes("SHORTLISTED") ||
+          status.includes("SELECTED") ||
+          status.includes("FINALIST") ||
+          status.includes("WINNER")
+        );
+        if (!isEligible) {
+          return {
+            isEligible:    false,
+            currentStatus: status,
+            reason: `Current status is ${status}. Round 2 submission requires Stage 1 shortlisting.`
+          };
+        }
+        return { isEligible: true, currentStatus: status };
+      }
+    }
+  }
+
+  return { isEligible: false, reason: "Team or Leader email not found in official Stage 1 records." };
 }
 
-function updateRegistrationStatus_(ss, teamName, email, newStatus) {
-  const regSheet = ss.getSheetByName(CONFIG.STAGE1_SHEET) || ss.getSheetByName(CONFIG.REGISTRATION_SHEET);
-  if (!regSheet) return;
+/**
+ * updateStage1Status_
+ * Updates Screening Status in Stage 1 Submissions ONLY.
+ * Called ONLY during Stage 1 submission handling.
+ * NEVER called from judge decision functions.
+ */
+function updateStage1Status_(ss, teamName, email, newStatus) {
+  const s1Sheet = ss.getSheetByName(CONFIG.STAGE1_SHEET);
+  if (!s1Sheet) return;
 
-  const data = regSheet.getDataRange().getValues();
+  const data = s1Sheet.getDataRange().getValues();
   if (data.length < 2) return;
 
-  const headers = data[0].map(h => String(h || "").trim());
-  const col = findColumns_(headers);
-  if (col.screeningStatus === -1) return;
-
-  const normTeam = String(teamName || "").toLowerCase().trim();
-  const normEmail = String(email || "").toLowerCase().trim();
+  const normTeam  = String(teamName || "").toLowerCase().trim();
+  const normEmail = String(email    || "").toLowerCase().trim();
 
   for (let i = 1; i < data.length; i++) {
-    const t = String(data[i][col.teamName] || "").toLowerCase().trim();
-    const e = String(data[i][col.email] || "").toLowerCase().trim();
+    // Stage 1 fixed cols: 3=Team Name, 5=Email Address, 12=Screening Status
+    const t = String(data[i][3] || "").toLowerCase().trim();
+    const e = String(data[i][5] || "").toLowerCase().trim();
     if (t === normTeam || e === normEmail) {
-      regSheet.getRange(i + 1, col.screeningStatus + 1).setValue(newStatus);
+      s1Sheet.getRange(i + 1, 13).setValue(newStatus); // Col 13 = Screening Status (1-based)
       break;
     }
   }
@@ -1001,12 +1173,12 @@ function findColumns_(headers) {
   };
 
   return {
-    timestamp: getCol(["timestamp", "registered"]),
-    fullName: getCol(["full name", "name"]),
-    email: getCol(["email address", "email"]),
-    participationType: getCol(["participation type", "type"]),
-    teamName: getCol(["team name"]),
-    teamLeader: getCol(["team leader", "primary contact"]),
+    timestamp: getCol(["timestamp", "registered", "date"]),
+    fullName: getCol(["full name", "participant name", "leader name", "name"]),
+    email: getCol(["email address", "leader email", "email"]),
+    participationType: getCol(["participation type", "participation", "individual or team", "type", "mode"]),
+    teamName: getCol(["team name", "team"]),
+    teamLeader: getCol(["team leader", "primary contact", "leader"]),
     teamMembers: getCol(["team members", "members"]),
     screeningStatus: getCol(["screening status", "status"])
   };

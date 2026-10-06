@@ -66,7 +66,10 @@ function previewScreeningResultEmails() {
 }
 
 function getScreeningSheet_() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  // Use the same explicit Spreadsheet ID as the main backend (code.gs).
+  // This ensures screening emails work correctly when run from the deployed Apps Script.
+  const SPREADSHEET_ID = "1FPFuuXNhlENuaZx1UvggOoAPRmbpX3Mz4jenNVMZCm0";
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheet = ss.getSheetByName(SCREENING_CONFIG.SHEET_NAME) || ss.getSheetByName("Form Responses 1");
   if (!sheet) {
     throw new Error(`Sheet not found: ${SCREENING_CONFIG.SHEET_NAME}`);

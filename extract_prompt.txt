@@ -1,0 +1,588 @@
+<USER_REQUEST>
+I need you to make a FINAL, CAREFUL correction to my existing Women in AI, Research, Innovation & Entrepreneurship Club website and Google Apps Script backend.
+
+IMPORTANT:
+DO NOT rebuild the website.
+DO NOT redesign unrelated pages.
+DO NOT change the existing logo.
+DO NOT remove working functionality.
+DO NOT create duplicate systems.
+Work with the existing project and make only the changes specified below.
+
+PROJECT:
+Women in AI, Research, Innovation & Entrepreneurship Club
+
+HACKATHON:
+AI Innovation Hackathon 2026
+
+
+==================================================
+1. CRITICAL REQUIREMENT — ONLY ONE JUDGE PANEL
+==================================================
+
+There must be ONLY ONE Judge Panel in the entire project.
+
+The ONLY Judge Panel must be the:
+
+FINAL ROUND JUDGE PANEL
+
+The Final Round Judge Panel must read and evaluate ONLY:
+
+Final Submissions
+
+It must NOT judge, evaluate, or display submissions from:
+
+- Form Responses 1
+- Stage 1 Submissions
+- Stage 1 Idea Screening
+- Registration data
+
+--------------------------------------------------
+REMOVE THE OLD STAGE 1 / FORM 1 JUDGE PANEL COMPLETELY
+--------------------------------------------------
+
+Search the entire repository for:
+
+- Judge Panel
+- Judge Dashboard
+- Stage 1 Judge
+- Form 1 Judge
+- panel=judge
+- getJudgeData
+- processJudgeDecision
+- Form Responses 1
+- Stage 1 Submissions
+
+Find any old Judge Panel that was created for Stage 1/Form 1/registration.
+
+REMOVE THAT OLD JUDGE PANEL COMPLETELY.
+
+Do NOT simply hide it with CSS.
+
+Do NOT leave an alternate URL for it.
+
+Do NOT leave duplicate Judge Panel code.
+
+Do NOT leave another judge dashboard that can be opened separately.
+
+There must be exactly ONE judge interface after this change:
+
+FINAL ROUND JUDGE PANEL
+
+
+==================================================
+2. DO NOT REMOVE STAGE 1 SCREENING
+==================================================
+
+VERY IMPORTANT:
+
+Removing the Stage 1 Judge Panel does NOT mean removing Stage 1 screening.
+
+KEEP THE ENTIRE STAGE 1 SCREENING WORKFLOW.
+
+Keep:
+
+- Stage 1 Idea Screening form
+- Stage 1 submission handling
+- Stage 1 Submissions sheet
+- Screening Status
+- Screening Email Sent
+- Stage 1 screening emails
+- screening-emails.gs
+- Stage 1 shortlist/rejection process
+- Stage 1 → Stage 2 eligibility gate
+
+Stage 1 is still required to determine which participants are allowed to submit their final project.
+
+The only thing being removed is the OLD Stage 1 JUDGE PANEL.
+
+Do NOT delete or break screening-emails.gs.
+
+
+==================================================
+3. FINAL ROUND JUDGE PANEL
+==================================================
+
+The ONLY Judge Panel route should be:
+
+?panel=judge&key=WAI_JUDGE_2026
+
+The Final Judge Panel must:
+
+1. Validate the judge key.
+2. Open the correct Google Spreadsheet.
+3. Read ONLY Final Submissions.
+4. Display final project submissions.
+5. Allow the judges to make final decisions.
+6. Save the final decision.
+7. Send the final result email.
+8. Update the final email status.
+
+Final decisions must be exactly:
+
+- WINNER
+- FINALIST
+- NOT SELECTED
+
+
+==================================================
+4. ACTUAL FINAL SUBMISSIONS SHEET
+==================================================
+
+The existing Final Submissions sheet already has these ORIGINAL columns:
+
+1. Timestamp
+2. Participant / Team Name
+3. Selected Problem Statement
+4. GitHub Repository URL
+5. Final Project Demo Video
+6. Live Demo / Deployment Link
+7. Final Submission Declaration
+
+DO NOT delete, rename, reorder, or replace these seven columns.
+
+The backend may add ONLY these two columns for judging:
+
+8. Final Evaluation Status
+9. Final Decision Email Sent
+
+Therefore the final sheet should be:
+
+Timestamp
+Participant / Team Name
+Selected Problem Statement
+GitHub Repository URL
+Final Project Demo Video
+Live Demo / Deployment Link
+Final Submission Declaration
+Final Evaluation Status
+Final Decision Email Sent
+
+DO NOT add unnecessary old fields such as:
+
+- Leader Email
+- Track
+- Project Title
+- Description
+
+The existing Final Submissions structure must be preserved.
+
+
+==================================================
+5. FINAL JUDGE PANEL DISPLAY
+==================================================
+
+The Final Judge Panel should display:
+
+- Sl. No.
+- Participant / Team Name
+- Selected Problem Statement
+- GitHub Repository
+- Demo Video
+- Live Demo / Deployment
+- Final Submission Declaration
+- Current Final Evaluation Status
+- Final Decision Actions
+
+Decision buttons:
+
+- Winner
+- Finalist
+- Not Selected
+
+
+==================================================
+6. FINAL JUDGING MUST BE COMPLETELY SEPARATE FROM STAGE 1
+==================================================
+
+When a judge selects:
+
+WINNER
+FINALIST
+NOT SELECTED
+
+ONLY update:
+
+Final Evaluation Status
+
+inside:
+
+Final Submissions
+
+Also update:
+
+Final Decision Email Sent
+
+according to whether the final result email was successfully sent.
+
+VERY IMPORTANT:
+
+Final judging must NEVER modify:
+
+Screening Status
+
+Final judging must NEVER modify:
+
+Stage 1 Submissions
+
+Final judging must NEVER change Stage 1 screening results.
+
+Stage 1 screening and Final judging must remain completely separate.
+
+
+==================================================
+7. FINAL RESULT EMAIL
+==================================================
+
+There is NO email column in Final Submissions.
+
+DO NOT add an email column.
+
+The final result email recipient must be resolved server-side.
+
+Use:
+
+1. Stage 1 Submissions
+2. If necessary, fallback to Form Responses 1
+
+Resolve the participant/team's registered email using the participant/team information.
+
+The email address must NEVER be exposed through the public Participants API.
+
+Final result emails must be separate from Stage 1 screening emails.
+
+Final result decisions:
+
+- WINNER
+- FINALIST
+- NOT SELECTED
+
+
+==================================================
+8. GOOGLE SPREADSHEET CONNECTION
+==================================================
+
+This is CRITICAL.
+
+The backend must explicitly connect to this exact Google Spreadsheet:
+
+Spreadsheet ID:
+
+1FPFuuXNhlENuaZx1UvggOoAPRmbpX3Mz4jenNVMZCm0
+
+Add this to CONFIG:
+
+SPREADSHEET_ID: "1FPFuuXNhlENuaZx1UvggOoAPRmbpX3Mz4jenNVMZCm0"
+
+Use:
+
+SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID)
+
+Do NOT rely on:
+
+SpreadsheetApp.getActiveSpreadsheet()
+
+The deployed Web App must explicitly open the correct spreadsheet.
+
+Use the following sheet names:
+
+REGISTRATION_SHEET = "Form Responses 1"
+
+STAGE1_SHEET = "Stage 1 Submissions"
+
+STAGE2_SHEET = "Final Submissions"
+
+
+==================================================
+9. PUBLIC PARTICIPANTS PAGE
+==================================================
+
+Keep the existing public Participants page.
+
+It may read ONLY:
+
+Form Responses 1
+
+The public API/page may expose ONLY:
+
+- Sl. No.
+- Team Name / Participant Name
+- Participation Type
+
+DO NOT expose:
+
+- Email
+- Phone
+- Team Leader
+- Team Members
+- Screening Status
+- Final Evaluation Status
+- GitHub Repository
+- Demo Video
+- Live Demo
+- Private Reference IDs
+- Judge information
+
+Keep the existing Participants page design.
+
+
+==================================================
+10. REMOVE OLD JUDGE CODE SAFELY
+==================================================
+
+Search the entire project, especially:
+
+google-apps-script/code.gs
+google-apps-script/hackathon-backend.gs
+google-apps-script/screening-emails.gs
+js/hackathon.js
+hackathon.html
+any judge HTML files
+any admin pages
+any JavaScript related to judging
+
+Classify judge-related code into:
+
+A. Stage 1 Screening
+B. Old Stage 1/Form 1 Judge Panel
+C. Final Round Judge Panel
+
+REMOVE ONLY B.
+
+KEEP A.
+
+KEEP/FIX C.
+
+Do not accidentally delete Stage 1 screening functionality.
+
+
+==================================================
+11. BACKEND STRUCTURE
+==================================================
+
+There must be:
+
+- ONE active doGet(e)
+- ONE active doPost(e)
+- ONE Final Judge Panel route
+- ONE Final Judge decision workflow
+
+Do not leave duplicate executable doGet() or doPost() functions across .gs files.
+
+screening-emails.gs must remain the Stage 1 screening email helper.
+
+It must NOT contain another Judge Panel.
+
+
+==================================================
+12. OLD onFormSubmit TRIGGER
+==================================================
+
+Do NOT recreate an onFormSubmit trigger.
+
+The old onFormSubmit trigger has already been removed because the current backend does not use that function.
+
+Do not add it back.
+
+
+==================================================
+13. CLUB LEADERSHIP UPDATE
+==================================================
+
+Update the club leadership information throughout the website.
+
+DR. AYESHA HEENA
+
+Wherever she is currently shown as:
+
+Faculty Advisor
+
+or:
+
+Faculty Coordinator
+
+for the club leadership designation, change it to:
+
+CEO & Founder
+
+The correct club leadership designation must be:
+
+Dr. Ayesha Heena
+CEO & Founder
+
+Remove "Faculty Advisor" from her club leadership designation.
+
+Do not show conflicting leadership titles for her on different pages.
+
+
+==================================================
+14. HOME PAGE — ADD VICE PRESIDENT
+==================================================
+
+The Home page must clearly show the Vice President in the leadership section.
+
+Add:
+
+Bushra Hamdani
+Vice President
+
+The main leadership section should clearly show:
+
+Dr. Ayesha Heena — CEO & Founder
+
+Mohsina Banu — President
+
+Bushra Hamdani — Vice President
+
+Keep the existing President.
+
+Do not remove Mohsina Banu.
+
+Do not change Mohsina Banu's designation to Founder.
+
+
+==================================================
+15. HACKATHON EVENT ROLES
+==================================================
+
+Keep the hackathon-specific roles separate from club leadership titles.
+
+For AI Innovation Hackathon 2026:
+
+Dr. Ayesha Heena
+Lead Organizer
+
+Mohsina Banu
+Event Director
+
+Do NOT call Mohsina Banu Founder for the hackathon.
+
+Do NOT replace the hackathon roles with the club leadership titles.
+
+Club leadership and hackathon event roles are different.
+
+
+==================================================
+16. OFFICIAL CLUB NAME
+==================================================
+
+Use the exact official name:
+
+Women in AI, Research, Innovation & Entrepreneurship Club
+
+Do not unnecessarily shorten it.
+
+Do not change or replace the existing logo artwork.
+
+
+==================================================
+17. DO NOT REDESIGN THE WEBSITE
+==================================================
+
+Do NOT:
+
+- rebuild the website
+- replace the existing theme
+- replace the logo
+- redesign unrelated pages
+- change working forms unnecessarily
+- remove existing navigation unnecessarily
+- change the hackathon workflow
+- change registration functionality
+- change existing Stage 1 screening functionality
+
+Only make the requested corrections.
+
+
+==================================================
+18. FINAL FULL PROJECT AUDIT
+==================================================
+
+After making the changes, perform a complete repository audit.
+
+Verify:
+
+JUDGE SYSTEM:
+- Exactly ONE Judge Panel exists.
+- It is the Final Round Judge Panel.
+- It reads ONLY Final Submissions.
+- No Stage 1/Form 1 Judge Panel remains.
+- No alternate Stage 1 Judge URL remains.
+
+STAGE 1:
+- Stage 1 screening still works.
+- Stage 1 Submissions still works.
+- Screening Status still works.
+- Screening emails still work.
+- screening-emails.gs remains intact.
+- Stage 1 → Stage 2 gating still works.
+
+FINAL ROUND:
+- Final Submissions is the only judging source.
+- Final Evaluation Status stores final decisions.
+- Final Decision Email Sent stores email status.
+- Stage 1 Screening Status is never modified by final judging.
+
+SPREADSHEET:
+- Exact Spreadsheet ID is used.
+- Spreadsheet is opened using SpreadsheetApp.openById().
+- Actual Final Submissions schema is respected.
+
+WEBSITE:
+- Dr. Ayesha Heena = CEO & Founder
+- Mohsina Banu = President
+- Bushra Hamdani = Vice President
+- Vice President appears on Home page.
+- Hackathon:
+  - Dr. Ayesha Heena = Lead Organizer
+  - Mohsina Banu = Event Director
+
+SECURITY:
+- Judge Panel requires WAI_JUDGE_2026.
+- Public Participants API exposes no private information.
+- No Stage 1 Judge Panel remains accessible.
+
+
+==================================================
+19. VERY IMPORTANT — DO NOT DEPLOY YET
+==================================================
+
+Do NOT deploy the Apps Script automatically.
+
+First make the changes.
+
+Then perform the full audit.
+
+Then give me a detailed report containing:
+
+1. Files modified
+2. Files from which the old Stage 1/Form 1 Judge Panel was removed
+3. Confirmation that Stage 1 screening was preserved
+4. Confirmation that exactly ONE Judge Panel remains
+5. Exact Final Judge Panel route/function
+6. Confirmation that Final Judge Panel reads ONLY Final Submissions
+7. Exact Final Submissions schema being used
+8. Confirmation that Stage 1 Screening Status is untouched by final judging
+9. Final email resolution method
+10. Confirmation of public API privacy
+11. Confirmation that SpreadsheetApp.openById() uses:
+   1FPFuuXNhlENuaZx1UvggOoAPRmbpX3Mz4jenNVMZCm0
+12. Confirmation that Dr. Ayesha Heena is now CEO & Founder
+13. Confirmation that Bushra Hamdani appears as Vice President on the Home page
+14. Confirmation that Mohsina Banu remains President
+15. Confirmation that hackathon roles remain:
+   - Dr. Ayesha Heena — Lead Organizer
+   - Mohsina Banu — Event Director
+16. Any remaining judge-related code in each .gs file and why it remains
+17. Any errors or unresolved issues found during the audit
+
+DO NOT simply say "Done".
+
+DO NOT deploy until I review the audit report.
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-10-06T15:51:29+05:30.
+</ADDITIONAL_METADATA>
+<USER_SETTINGS_CHANGE>
+The user changed setting `Model Selection` from None to Claude Sonnet 4.6 (Thinking). No need to comment on this change if the user doesn't ask about it. If reporting what model you are, please use a human readable name instead of the exact string.
+</USER_SETTINGS_CHANGE>
