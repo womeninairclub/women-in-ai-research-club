@@ -284,3 +284,118 @@ footer,.site-footer{padding:43px 0;border-top:1px solid var(--line);background:#
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* =========================================================
+   SITE-WIDE FLOATING FEEDBACK BUTTON & MODAL
+   ========================================================= */
+.floating-feedback-btn {
+  position: fixed;
+  right: 22px;
+  bottom: 26px;
+  z-index: 1500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: linear-gradient(135deg, var(--purple), var(--purple-2));
+  color: #08060d;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 10px 25px rgba(184, 120, 255, 0.35);
+  cursor: pointer;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  user-select: none;
+  font-family: inherit;
+}
+
+.floating-feedback-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 14px 32px rgba(184, 120, 255, 0.45);
+}
+
+.floating-feedback-btn:active {
+  transform: translateY(0);
+}
+
+.floating-feedback-btn span.badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+@media (max-width: 600px) {
+  .floating-feedback-btn {
+    right: 14px;
+    bottom: 16px;
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+}
+
+.feedback-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+  background: rgba(5, 6, 10, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.feedback-modal-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.feedback-modal {
+  width: min(94%, 560px);
+  max-height: 90vh;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 20px;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.65);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: translateY(20px) scale(0.98);
+  transition: transform 0.25s ease;
+}
+
+.feedback-modal-backdrop.is-open .feedback-modal {
+  transform: translateY(0) scale(1);
+}
+
+.feedback-modal-header {
+  padding: 22px 26px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface-2);
+}
+
+.feedback-modal-header h3 {
+  font-size: 20px;
+  margin: 0;
+  color: var(--text);
+}
+
+.feedback-modal-body {
+  padding: 26px;
+  overflow-y: auto;
+}
+
+.feedback-modal-body form {
+  display: grid;
+  gap: 16px;
+}
+

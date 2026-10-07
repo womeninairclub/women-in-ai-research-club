@@ -65,6 +65,28 @@ function doGet(e) {
       return renderJudgePanel();
     }
 
+    // ROUTE 1B: SECURE PROBLEM STATEMENT RELEASE KEY DISPATCH
+    // Hard server-side enforcement: releases encryption key ONLY on or after 18 October 2026 (00:00:00 IST).
+    if (params.action === "getReleaseKey") {
+      const istNowStr = Utilities.formatDate(new Date(), "Asia/Kolkata", "yyyy-MM-dd'T'HH:mm:ssXXX");
+      const releaseTimeMs = Date.parse("2026-10-18T00:00:00+05:30");
+      const currentServerTimeMs = new Date().getTime();
+
+      if (currentServerTimeMs < releaseTimeMs) {
+        return jsonResponse_({
+          unlocked: false,
+          serverTimeIST: istNowStr,
+          message: "Problem statements are securely locked until 18 October 2026 at 12:00 AM IST (Asia/Kolkata)."
+        }, 200);
+      }
+
+      return jsonResponse_({
+        unlocked: true,
+        releaseKey: "AI_INNOVATION_HACKATHON_2026_OFFICIAL_RELEASE_18OCT2026_IST",
+        serverTimeIST: istNowStr
+      }, 200);
+    }
+
     // ROUTE 2: SECURE SINGLE PARTICIPANT / TEAM STATUS LOOKUP
     if (params.action === "checkStatus") {
       const q = String(params.query || "").trim().toLowerCase();

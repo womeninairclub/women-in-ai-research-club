@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AI Innovation Hackathon 2026 | Women in AI, Research, Innovation &amp; Entrepreneurship Club</title>
+  <title>AI Innovation Hackathon 2026 | Women in AI Research, Innovation &amp; Entrepreneurship</title>
   <meta name="description" content="Official AI Innovation Hackathon 2026 details, rules, timeline, 5 challenge tracks, idea screening submission, final project submission, and judging information.">
   <link rel="icon" href="assets/logo.png">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/hackathon.css">
   <link rel="canonical" href="https://womeninairclub.github.io/women-in-ai-research-club/hackathon.html">
-  <meta property="og:title" content="AI Innovation Hackathon 2026 | Women in AI, Research, Innovation &amp; Entrepreneurship Club">
-  <meta property="og:description" content="Official international online hackathon organized by the Women in AI, Research, Innovation &amp; Entrepreneurship Club. Free international participation.">
+  <meta property="og:title" content="AI Innovation Hackathon 2026 | Women in AI Research, Innovation &amp; Entrepreneurship">
+  <meta property="og:description" content="Official international online hackathon organized by the Women in AI Research, Innovation &amp; Entrepreneurship. Free international participation.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://womeninairclub.github.io/women-in-ai-research-club/assets/logo.png">
 </head>
@@ -19,8 +19,8 @@
 <!-- SITE HEADER -->
 <header class="site-header">
   <div class="container nav-inner">
-    <a class="brand" href="index.html" aria-label="Women in AI, Research, Innovation &amp; Entrepreneurship Club Home">
-      <img src="assets/logo.png" alt="Women in AI, Research, Innovation &amp; Entrepreneurship Club logo">
+    <a class="brand" href="index.html" aria-label="Women in AI Research, Innovation &amp; Entrepreneurship Home">
+      <img src="assets/logo.png" alt="Women in AI Research, Innovation &amp; Entrepreneurship logo">
       <div class="brand-text">
         <span class="brand-title">Women in AI</span>
         <span class="brand-sub">Research • Innovation • Entrepreneurship</span>
@@ -58,7 +58,7 @@
       <div class="eyebrow">AI Innovation Hackathon 2026</div>
       <h1>Build. Solve. <span class="highlight">Innovate.</span></h1>
       <p class="lead">
-        The official online international hackathon organized by the <strong>Women in AI, Research, Innovation &amp; Entrepreneurship Club</strong>. An intensive platform designed for students, researchers, and innovators to tackle real-world challenges through artificial intelligence.
+        The official online international hackathon organized by the <strong>Women in AI Research, Innovation &amp; Entrepreneurship</strong>. An intensive platform designed for students, researchers, and innovators to tackle real-world challenges through artificial intelligence.
       </p>
 
       <div class="hero-actions" style="margin-top:28px">
@@ -115,14 +115,15 @@
           <span class="stage-tag">Stage 01</span>
           <h3>Idea Screening &amp; Shortlisting</h3>
           <p>
-            <strong>Date: 19 October 2026</strong><br>
-            Participants select one of the released problem statements from the five challenge tracks and submit their structured solution proposal.
+            <strong>Date: 19 October 2026 • Submission Deadline: 6:00 PM IST</strong><br>
+            Participants select one of the released problem statements from the five challenge tracks and submit their structured solution proposal. Strict cutoff at 6:00 PM IST allows jury review and shortlist announcements later that evening.
           </p>
           <ul class="stage-checklist">
             <li>Problem statement understanding &amp; definition</li>
             <li>Proposed AI/ML solution architecture</li>
             <li>Innovation, novelty &amp; technical feasibility</li>
             <li>Potential real-world impact &amp; ethics</li>
+            <li>Strict deadline: 19 October 2026 at 6:00 PM IST</li>
             <li>Screening submission via official online form</li>
           </ul>
           <div style="margin-top:auto;padding-top:14px">
@@ -173,11 +174,11 @@
           <span>Problem Statements Released (12:00 AM IST)</span>
         </div>
         <div class="timeline-item">
-          <strong>19 Oct 2026</strong>
-          <span>Stage 1 Idea Screening Submission</span>
+          <strong>19 Oct (6:00 PM IST)</strong>
+          <span>Stage 1 Idea Screening Submission Deadline</span>
         </div>
         <div class="timeline-item">
-          <strong>19 Oct 2026</strong>
+          <strong>19 Oct (9:00 PM IST)</strong>
           <span>Shortlisted Teams Announced</span>
         </div>
         <div class="timeline-item">
@@ -242,40 +243,65 @@
     <div class="container">
       <div class="section-head">
         <div>
-          <div class="eyebrow">Problem Statements</div>
-          <h2>Five Challenge Tracks</h2>
+          <div class="eyebrow">Official Problem Statements</div>
+          <h2>60 Challenges Across 5 Specialized Tracks</h2>
         </div>
         <p>
-          25 participant-facing challenges organized into five specialized tracks. Each track addresses critical frontiers in artificial intelligence.
+          60 approved, research-backed challenges spanning artificial intelligence, healthcare, model explainability, cybersecurity, and scholarly publication readiness.
         </p>
       </div>
 
-      <!-- Release lock box -->
+      <!-- Release Status / Countdown Container (Managed via JavaScript with Asia/Kolkata 18 Oct 2026 lock) -->
       <div class="release-box" id="problemReleaseNotice">
-        <div class="release-icon">🔒</div>
-        <div>
-          <strong>Problem Statements Release: 18 October 2026 (12:00 AM IST)</strong>
-          <p style="margin-top:4px">
-            The official problem-statement challenge PDFs will unlock on this website on 18 October 2026 at 12:00 AM IST. Registered participants can prepare their Stage 1 proposals immediately upon release.
+        <div class="release-icon" id="releaseLockIcon">🔒</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+            <strong style="font-size:18px;color:var(--text)" id="releaseNoticeHeading">Official Problem Statements Release</strong>
+            <span class="status-pill under-review" id="releaseStatusPill">Unlocks 18 October 2026 (12:00 AM IST)</span>
+          </div>
+          <p style="margin-top:8px;font-size:14px;color:var(--muted)" id="releaseNoticeMsg">
+            The 60 approved problem statements and official track challenge PDFs will unlock automatically on <strong>18 October 2026 at 12:00 AM IST</strong> (Asia/Kolkata). Until release, challenge specifics remain sealed to guarantee fair evaluation across all participating teams.
           </p>
-          <p id="problemReleaseStatus" class="small-note" style="margin-top:8px;color:var(--purple-light)"></p>
+          <!-- Dynamic Countdown Display -->
+          <div id="releaseCountdownWrapper" style="margin-top:14px">
+            <div class="countdown-grid">
+              <div class="countdown-unit">
+                <span class="countdown-num" id="cdDays">--</span>
+                <span class="countdown-lbl">Days</span>
+              </div>
+              <div class="countdown-unit">
+                <span class="countdown-num" id="cdHours">--</span>
+                <span class="countdown-lbl">Hours</span>
+              </div>
+              <div class="countdown-unit">
+                <span class="countdown-num" id="cdMins">--</span>
+                <span class="countdown-lbl">Mins</span>
+              </div>
+              <div class="countdown-unit">
+                <span class="countdown-num" id="cdSecs">--</span>
+                <span class="countdown-lbl">Secs</span>
+              </div>
+            </div>
+          </div>
+          <p id="problemReleaseStatus" class="small-note" style="margin-top:10px;color:var(--purple)"></p>
         </div>
       </div>
 
-      <div class="grid grid-3">
+      <!-- TRACK SUMMARY CARDS -->
+      <div class="grid grid-3" id="tracksOverviewGrid" style="margin-bottom:34px">
         <!-- TRACK 1 -->
         <div class="track-card">
           <div class="track-header">
             <span class="track-badge">Track 01</span>
-            <span class="status-pill under-review">5 Challenges</span>
+            <span class="status-pill selected">14 Challenges</span>
           </div>
-          <h3>AI / Machine Learning Methodology</h3>
+          <h3>AI / ML Methodology</h3>
           <p>
-            Forecasting, predictive algorithms, adaptive decision-making, and deep learning architectures for high-dimensional, complex datasets.
+            Multimodal forecasting, adaptive resource allocation, graph learning, spatial risk prediction, and deep neural architectures for complex high-dimensional datasets.
           </p>
           <div style="margin-top:auto;padding-top:14px">
-            <a class="btn secondary problem-lock sm" href="#challenges" aria-disabled="true" data-release-href="assets/docs/problem-statements/AI_Innovation_Hackathon_2026_AI_ML_Methodology.pdf" data-release-label="Download Track 1 PDF">
-              🔒 Opens 18 Oct
+            <a class="btn secondary problem-lock sm" href="#challenges" aria-disabled="true" data-track-id="aiml" data-release-label="Download Track 1 PDF (14 Challenges)">
+              🔒 Locked Until 18 Oct
             </a>
           </div>
         </div>
@@ -284,15 +310,15 @@
         <div class="track-card">
           <div class="track-header">
             <span class="track-badge">Track 02</span>
-            <span class="status-pill under-review">5 Challenges</span>
+            <span class="status-pill selected">12 Challenges</span>
           </div>
-          <h3>Biomedical AI / Image &amp; Signal Analysis</h3>
+          <h3>Biomedical AI — Image &amp; Signal Analysis</h3>
           <p>
-            Diagnostic imaging, physiological signal analysis (ECG/EEG), biomedical sensor data, and clinical AI assistive technologies.
+            Diagnostic imaging, ECG/EEG physiological signals, MRI tumor segmentation, histopathology analysis, and clinical assistive intelligence systems.
           </p>
           <div style="margin-top:auto;padding-top:14px">
-            <a class="btn secondary problem-lock sm" href="#challenges" aria-disabled="true" data-release-href="assets/docs/problem-statements/AI_Innovation_Hackathon_2026_Biomedical_AI.pdf" data-release-label="Download Track 2 PDF">
-              🔒 Opens 18 Oct
+            <a class="btn secondary problem-lock sm" href="#challenges" aria-disabled="true" data-track-id="biomedical" data-release-label="Download Track 2 PDF (12 Challenges)">
+              🔒 Locked Until 18 Oct
             </a>
           </div>
         </div>
@@ -301,15 +327,15 @@
         <div class="track-card">
           <div class="track-header">
             <span class="track-badge">Track 03</span>
-            <span class="status-pill under-review">6 Challenges</span>
+            <span class="status-pill selected">11 Challenges</span>
           </div>
           <h3>Explainable AI (XAI)</h3>
           <p>
-            Feature attribution, SHAP/LIME interpretations, surrogate models, counterfactual explanations, and model transparency in critical domains.
+            Feature attribution, SHAP/LIME interpretations, model transparency, counterfactual reasoning, and explainable decision support in sensitive domains.
           </p>
           <div style="margin-top:auto;padding-top:14px">
-            <a class="btn secondary problem-lock sm" href="#challenges" aria-disabled="true" data-release-href="assets/docs/problem-statements/AI_Innovation_Hackathon_2026_Explainable_AI.pdf" data-release-label="Download Track 3 PDF">
-              🔒 Opens 18 Oct
+            <a class="btn secondary problem-lock sm" href="#challenges" aria-disabled="true" data-track-id="xai" data-release-label="Download Track 3 PDF (11 Challenges)">
+              🔒 Locked Until 18 Oct
             </a>
           </div>
         </div>
@@ -318,15 +344,15 @@
         <div class="track-card">
           <div class="track-header">
             <span class="track-badge">Track 04</span>
-            <span class="status-pill under-review">4 Challenges</span>
+            <span class="status-pill selected">13 Challenges</span>
           </div>
-          <h3>Trustworthy AI</h3>
+          <h3>Trustworthy AI &amp; Cybersecurity</h3>
           <p>
-            Reliability, algorithmic fairness, uncertainty quantification, robustness against adversarial attacks, and safe deployment.
+            Threat intelligence, network intrusion investigation, log analysis, behavioral malware profiling, adversarial robustness, and audit compliance.
           </p>
           <div style="margin-top:auto;padding-top:14px">
-            <a class="btn secondary problem-lock sm" href="#challenges" aria-disabled="true" data-release-href="assets/docs/problem-statements/AI_Innovation_Hackathon_2026_Trustworthy_AI.pdf" data-release-label="Download Track 4 PDF">
-              🔒 Opens 18 Oct
+            <a class="btn secondary problem-lock sm" href="#challenges" aria-disabled="true" data-track-id="trustworthy" data-release-label="Download Track 4 PDF (13 Challenges)">
+              🔒 Locked Until 18 Oct
             </a>
           </div>
         </div>
@@ -335,17 +361,57 @@
         <div class="track-card">
           <div class="track-header">
             <span class="track-badge">Track 05</span>
-            <span class="status-pill under-review">5 Challenges</span>
+            <span class="status-pill selected">10 Challenges</span>
           </div>
-          <h3>Research &amp; Innovation</h3>
+          <h3>Research &amp; Publications</h3>
           <p>
-            Automated literature analysis, empirical evaluation benchmarks, reproducible research pipelines, and academic collaboration tools.
+            Computational reproducibility, benchmark ablation studies, distribution shift analysis, dataset bias quantification, and publication-ready research artifacts.
           </p>
           <div style="margin-top:auto;padding-top:14px">
-            <a class="btn secondary problem-lock sm" href="#challenges" aria-disabled="true" data-release-href="assets/docs/problem-statements/AI_Innovation_Hackathon_2026_Research_Publications.pdf" data-release-label="Download Track 5 PDF">
-              🔒 Opens 18 Oct
+            <a class="btn secondary problem-lock sm" href="#challenges" aria-disabled="true" data-track-id="research" data-release-label="Download Track 5 PDF (10 Challenges)">
+              🔒 Locked Until 18 Oct
             </a>
           </div>
+        </div>
+      </div>
+
+      <!-- DYNAMIC 60 CHALLENGES INTERFACE (POPULATED ONLY ONCE UNLOCKED) -->
+      <div id="unlockedChallengesContainer" hidden>
+        <div class="challenge-control-panel">
+          <div class="track-tabs-bar" role="tablist" aria-label="Filter challenges by track">
+            <button type="button" class="track-filter-btn active" data-track="all">
+              All Tracks <span class="count-badge">60</span>
+            </button>
+            <button type="button" class="track-filter-btn" data-track="aiml">
+              Track 1: AI/ML Methodology <span class="count-badge">14</span>
+            </button>
+            <button type="button" class="track-filter-btn" data-track="biomedical">
+              Track 2: Biomedical AI <span class="count-badge">12</span>
+            </button>
+            <button type="button" class="track-filter-btn" data-track="xai">
+              Track 3: Explainable AI <span class="count-badge">11</span>
+            </button>
+            <button type="button" class="track-filter-btn" data-track="trustworthy">
+              Track 4: Trustworthy AI &amp; Cyber <span class="count-badge">13</span>
+            </button>
+            <button type="button" class="track-filter-btn" data-track="research">
+              Track 5: Research &amp; Publications <span class="count-badge">10</span>
+            </button>
+          </div>
+
+          <div class="challenge-search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="challengeSearchInput" placeholder="Search 60 challenges by title, domain, or keyword..." aria-label="Search problem statements">
+          </div>
+        </div>
+
+        <!-- CHALLENGE CARDS CONTAINER -->
+        <div class="challenges-grid" id="challengesCardGrid">
+          <!-- Rendered dynamically by JavaScript when unlocked -->
+        </div>
+
+        <div id="challengesEmptyNotice" class="alert info" style="margin-top:20px;text-align:center" hidden>
+          No challenges matched your search keyword or selected track filter.
         </div>
       </div>
     </div>
@@ -385,7 +451,7 @@
         <!-- TAB CONTROLS -->
         <div class="form-tabs" style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap">
           <button type="button" class="btn form-tab-btn active" id="stage1Tab" data-target="stage1Panel">
-            Stage 1: Idea Screening Form (19 Oct)
+            Stage 1: Idea Screening Form (Deadline: 19 Oct, 6:00 PM IST)
           </button>
           <button type="button" class="btn form-tab-btn secondary" id="stage2Tab" data-target="stage2Panel">
             Stage 2: Final Project Submission (20 Oct)
@@ -396,16 +462,17 @@
         <div class="form-panel active" id="stage1Panel" role="tabpanel">
           <div class="form-card" id="stage1">
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px">
-              <div class="eyebrow" style="margin:0">Round 1 Proposal (19 Oct 2026)</div>
-              <span class="status-pill under-review">Stage 1 Idea Screening</span>
+              <div class="eyebrow" style="margin:0">Round 1 Proposal • Hard Cutoff: 19 Oct 2026, 6:00 PM IST</div>
+              <span class="status-pill under-review" id="stage1StatusPill">Stage 1 Idea Screening</span>
             </div>
             <h3>Stage 1: Idea Screening Proposal Form</h3>
             <p class="small-note" style="margin-bottom:20px;color:var(--muted)">
-              Submit your structured solution proposal for one of the released problem statements. Only teams shortlisted in Stage 1 become eligible for Stage 2.
+              Submit your structured solution proposal for one of the released problem statements. Round 1 submissions close strictly at <strong>6:00 PM IST on 19 October 2026</strong>. Only shortlisted teams become eligible for Stage 2.
             </p>
 
             <div id="stage1StatusAlert" hidden></div>
 
+            <fieldset id="stage1FormFieldset" style="border:none;padding:0;margin:0">
             <form id="stage1ScreeningForm">
               <div class="form-grid">
                 <div class="form-group">
@@ -440,17 +507,17 @@
                   <label for="s1Track">Hackathon Track <span class="required">*</span></label>
                   <select id="s1Track" class="form-control" required>
                     <option value="" disabled selected>Select assigned track</option>
-                    <option value="AI/ML Methodology">Track 1: AI/ML Methodology</option>
-                    <option value="Biomedical AI">Track 2: Biomedical AI</option>
-                    <option value="Explainable AI">Track 3: Explainable AI</option>
-                    <option value="Trustworthy AI">Track 4: Trustworthy AI</option>
-                    <option value="Research & Publications">Track 5: Research &amp; Innovation</option>
+                    <option value="AI/ML Methodology">Track 1: AI/ML Methodology (14 Challenges)</option>
+                    <option value="Biomedical AI — Image & Signal Analysis">Track 2: Biomedical AI — Image & Signal Analysis (12 Challenges)</option>
+                    <option value="Explainable AI (XAI)">Track 3: Explainable AI (11 Challenges)</option>
+                    <option value="Trustworthy AI & Cybersecurity">Track 4: Trustworthy AI & Cybersecurity (13 Challenges)</option>
+                    <option value="Research & Publications">Track 5: Research & Publications (10 Challenges)</option>
                   </select>
                 </div>
 
                 <div class="form-group full">
                   <label for="s1Statement">Problem Statement &amp; Title <span class="required">*</span></label>
-                  <input type="text" id="s1Statement" class="form-control" placeholder="Selected problem statement code and title" required>
+                  <input type="text" id="s1Statement" class="form-control" placeholder="e.g. CHALLENGE 01 — CrisisSense AI: Multimodal Disaster Impact Forecasting" required>
                 </div>
 
                 <div class="form-group full">
@@ -470,10 +537,11 @@
               </div>
 
               <div style="margin-top:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
-                <span class="small-note">Stage 1 Deadline: 19 October 2026. Organizers review submissions before Stage 2.</span>
-                <button type="submit" class="btn primary lg">Submit Stage 1 Proposal</button>
+                <span class="small-note" id="stage1DeadlineNote">Hard Cutoff: 6:00 PM IST on 19 October 2026. Submissions close promptly.</span>
+                <button type="submit" class="btn primary lg" id="s1SubmitBtn">Submit Stage 1 Proposal</button>
               </div>
             </form>
+            </fieldset>
           </div>
         </div>
 
@@ -663,13 +731,13 @@
         <div class="card">
           <div class="role">Lead Organizer</div>
           <h3>Dr. Ayesha Heena</h3>
-          <p>CEO &amp; Founder, Women in AI, Research, Innovation &amp; Entrepreneurship Club</p>
+          <p>CEO &amp; Founder, Women in AI Research, Innovation &amp; Entrepreneurship</p>
         </div>
 
         <div class="card">
           <div class="role">Event Director</div>
           <h3>Mohsina Banu</h3>
-          <p>President, Women in AI, Research, Innovation &amp; Entrepreneurship Club</p>
+          <p>President, Women in AI Research, Innovation &amp; Entrepreneurship</p>
         </div>
 
         <div class="card">
@@ -791,7 +859,7 @@
         </div>
       </a>
       <p>
-        Official website for the Women in AI, Research, Innovation &amp; Entrepreneurship Club. Fostering research, academic collaboration, and meaningful technological impact.
+        Official website for the Women in AI Research, Innovation &amp; Entrepreneurship. Fostering research, academic collaboration, and meaningful technological impact.
       </p>
     </div>
 
@@ -822,12 +890,105 @@
   </div>
 
   <div class="container footer-bottom">
-    <p>© <span data-year>2026</span> Women in AI, Research, Innovation &amp; Entrepreneurship Club. All rights reserved.</p>
+    <p>© <span data-year>2026</span> Women in AI Research, Innovation &amp; Entrepreneurship. All rights reserved.</p>
     <div>
       <a href="privacy.html">Privacy Policy</a>
     </div>
   </div>
 </footer>
+
+<!-- =========================================================
+     CHALLENGE DETAILS MODAL
+     ========================================================= -->
+<div class="challenge-modal-backdrop" id="challengeModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalChallengeTitle" hidden>
+  <div class="challenge-modal">
+    <div class="challenge-modal-header">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+          <span class="challenge-num-tag" id="modalChallengeNum">CHALLENGE 01</span>
+          <span class="difficulty-pill intermediate" id="modalChallengeDiff">Intermediate</span>
+        </div>
+        <h3 id="modalChallengeTitle">Challenge Name</h3>
+        <span class="challenge-track-lbl" id="modalChallengeTrack">Track Name</span>
+      </div>
+      <button type="button" class="modal-close-btn" id="closeChallengeModalBtn" aria-label="Close challenge details">✕</button>
+    </div>
+
+    <div class="challenge-modal-body" id="modalChallengeContent">
+      <!-- Populated dynamically with all structured PDF fields -->
+    </div>
+
+    <div class="challenge-modal-footer">
+      <a href="#challenges" class="btn sm secondary" id="modalPdfDownloadBtn">
+        📄 Download Official Track PDF
+      </a>
+      <a href="#stage1" class="btn sm primary" id="modalApplyProblemBtn">
+        Apply This Problem in Stage 1 Screening →
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- =========================================================
+     FLOATING FEEDBACK BUTTON & MODAL
+     ========================================================= -->
+<button type="button" class="floating-feedback-btn" id="openFeedbackModalBtn" aria-label="Open event feedback and support dialog">
+  <span class="badge-dot"></span>
+  💬 Feedback
+</button>
+
+<div class="feedback-modal-backdrop" id="feedbackModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="feedbackModalTitle" hidden>
+  <div class="feedback-modal">
+    <div class="feedback-modal-header">
+      <div>
+        <div class="eyebrow" style="margin:0">Participant Support &amp; Feedback</div>
+        <h3 id="feedbackModalTitle">Share Your Feedback</h3>
+      </div>
+      <button type="button" class="modal-close-btn" id="closeFeedbackModalBtn" aria-label="Close feedback dialog">✕</button>
+    </div>
+
+    <div class="feedback-modal-body">
+      <div id="feedbackAlert" hidden></div>
+
+      <form id="feedbackForm">
+        <div class="form-group">
+          <label for="fbName">Your Name <span class="required">*</span></label>
+          <input type="text" id="fbName" class="form-control" placeholder="Enter your full name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="fbEmail">Your Email <span class="required">*</span></label>
+          <input type="email" id="fbEmail" class="form-control" placeholder="your.email@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="fbCategory">Feedback Type <span class="required">*</span></label>
+          <select id="fbCategory" class="form-control" required>
+            <option value="Website Feedback" selected>Website Feedback &amp; Usability</option>
+            <option value="Hackathon Question">Hackathon Question &amp; Inquiries</option>
+            <option value="Technical Issue">Technical / Portal Issue</option>
+            <option value="Registration Issue">Registration Status / Team Inquiry</option>
+            <option value="Submission Issue">Round 1 / Round 2 Submission Issue</option>
+            <option value="Suggestion">Suggestions &amp; Ideas</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="fbMessage">Message <span class="required">*</span></label>
+          <textarea id="fbMessage" class="form-control" style="min-height:110px" placeholder="Share your suggestions, questions, or issues in detail..." required></textarea>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:6px">
+          <a href="https://forms.gle/9frUn7LVLGzMpMoH9" target="_blank" rel="noopener" class="small-note" style="text-decoration:underline;color:var(--muted)">
+            Or open official Google Form ↗
+          </a>
+          <button type="submit" class="btn primary" id="fbSubmitBtn">Submit Feedback</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
 <script src="js/main.js"></script>
 <script src="js/hackathon.js"></script>
