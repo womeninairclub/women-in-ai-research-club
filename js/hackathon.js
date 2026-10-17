@@ -14,16 +14,21 @@ const RELEASE_TIMESTAMP_MS = Date.parse("2026-10-18T00:00:00+05:30");
 // Hard Cutoff for Stage 1 Screening: 19 October 2026, 18:00:00 IST = 2026-10-19T12:30:00.000Z
 const SCREENING_DEADLINE_MS = Date.parse("2026-10-19T18:00:00+05:30");
 
-// Optional Simulation Helper for Testing & Verification:
-// ?simDate=2026-10-17T12:00:00+05:30  -> Before release
-// ?simDate=2026-10-18T10:00:00+05:30  -> Unlocked, before screening cutoff
-// ?simDate=2026-10-19T18:30:00+05:30  -> Unlocked, after screening cutoff
+// Development-only Simulation Helper:
+// STRICTLY disabled in production. Active ONLY on local development hosts (localhost / 127.0.0.1).
 function getEffectiveNow() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const sim = urlParams.get("simDate");
-  if (sim) {
-    const parsed = Date.parse(sim);
-    if (!isNaN(parsed)) return new Date(parsed);
+  const isLocalDev = window.location.hostname === "localhost" ||
+                     window.location.hostname === "127.0.0.1" ||
+                     window.location.protocol === "file:";
+  if (isLocalDev) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sim = urlParams.get("simDate");
+    if (sim) {
+      // Handle '+' encoded as space or raw in query params
+      const cleanSim = sim.includes(" ") ? sim.replace(" ", "+") : sim;
+      const parsed = Date.parse(cleanSim);
+      if (!isNaN(parsed)) return new Date(parsed);
+    }
   }
   return new Date();
 }
@@ -59,8 +64,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1A. CRYPTOGRAPHIC VAULT DECRYPTOR (AES-256-GCM)
   // ---------------------------------------------------------
   // All 60 problem statements and 5 authoritative track PDFs are sealed in
-  // encrypted vaults. The release key is released on 18 Oct 2026.
-  const FALLBACK_RELEASE_KEY = "AI_INNOVATION_HACKATHON_2026_OFFICIAL_RELEASE_18OCT2026_IST";
+  // encrypted vaults. The release key is supplied ONLY by the authoritative
+  // server endpoint upon release time (18 Oct 2026 00:00:00 IST).
   let activeCryptoKey = null;
   const decryptedPdfBlobs = {};
 
@@ -96,19 +101,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function getReleaseKey() {
     try {
-      const res = await fetch(`${HACKATHON_API}?action=getReleaseKey`);
-      if (res.ok) {
-        const json = await res.json();
-        if (json.unlocked && json.releaseKey) {
-          return json.releaseKey;
-        }
+      const res = await fetch(`${HACKATHON_API}?action=getReleaseKey&t=${Date.now()}`);
+      if (!res.ok) {
+        throw new Error(`Release key service responded with status ${res.status}`);
+      }
+      const json = await res.json();
+      if (json && json.unlocked === true && json.releaseKey) {
+        return json.releaseKey;
+      }
+      if (json && json.unlocked === false) {
+        console.info("Server release gate is locked:", json.message || "Sealed until 18 October 2026 12:00 AM IST");
+        return null;
       }
     } catch (e) {
-      console.warn("GAS getReleaseKey dispatch unavailable, evaluating time gate:", e);
-    }
-    const now = getEffectiveNow();
-    if (now.getTime() >= RELEASE_TIMESTAMP_MS) {
-      return FALLBACK_RELEASE_KEY;
+      console.error("Failed to retrieve authoritative release key from backend:", e);
     }
     return null;
   }

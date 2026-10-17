@@ -51,22 +51,10 @@ const CONFIG = {
 function doGet(e) {
   try {
     const params = e ? e.parameter : {};
-    const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
 
-    // ROUTE 1: PRIVATE FINAL JUDGE PANEL DASHBOARD
-    if (params.panel === "judge") {
-      if (params.key !== CONFIG.JUDGE_KEY) {
-        return HtmlService.createHtmlOutput(
-          "<div style='font-family:sans-serif;padding:40px;color:#ef4444;background:#0f172a;height:100vh;box-sizing:border-box;text-align:center;'>" +
-          "<h2 style='font-size:28px;margin-bottom:12px;'>🚫 Access Denied</h2>" +
-          "<p style='color:#94a3b8;font-size:16px;'>Invalid or missing Judge Key. The Judge Panel is private and restricted to authorized judges.</p></div>"
-        );
-      }
-      return renderJudgePanel();
-    }
-
-    // ROUTE 1B: SECURE PROBLEM STATEMENT RELEASE KEY DISPATCH
+    // ROUTE 0: SECURE PROBLEM STATEMENT RELEASE KEY DISPATCH
     // Hard server-side enforcement: releases encryption key ONLY on or after 18 October 2026 (00:00:00 IST).
+    // Handled first for maximum speed and zero dependency on spreadsheet lock or quota.
     if (params.action === "getReleaseKey") {
       const istNowStr = Utilities.formatDate(new Date(), "Asia/Kolkata", "yyyy-MM-dd'T'HH:mm:ssXXX");
       const releaseTimeMs = Date.parse("2026-10-18T00:00:00+05:30");
@@ -87,6 +75,20 @@ function doGet(e) {
       }, 200);
     }
 
+    const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+
+    // ROUTE 1: PRIVATE FINAL JUDGE PANEL DASHBOARD
+    if (params.panel === "judge") {
+      if (params.key !== CONFIG.JUDGE_KEY) {
+        return HtmlService.createHtmlOutput(
+          "<div style='font-family:sans-serif;padding:40px;color:#ef4444;background:#0f172a;height:100vh;box-sizing:border-box;text-align:center;'>" +
+          "<h2 style='font-size:28px;margin-bottom:12px;'>🚫 Access Denied</h2>" +
+          "<p style='color:#94a3b8;font-size:16px;'>Invalid or missing Judge Key. The Judge Panel is private and restricted to authorized judges.</p></div>"
+        );
+      }
+      return renderJudgePanel();
+    }
+
     // ROUTE 2: SECURE SINGLE PARTICIPANT / TEAM STATUS LOOKUP
     if (params.action === "checkStatus") {
       const q = String(params.query || "").trim().toLowerCase();
@@ -96,7 +98,7 @@ function doGet(e) {
 
       const regSheet = ss.getSheetByName(CONFIG.REGISTRATION_SHEET);
       const stage1Sheet = ss.getSheetByName(CONFIG.STAGE1_SHEET);
-      const stage2Sheet = ss.getSheetByName(CONFIG.STAGE2_SHEET);
+      const stage2Sheet = getStage2Sheet_(ss);
 
       let foundRecord = null;
 
@@ -308,8 +310,24 @@ function doPost(e) {
 
     const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
 
+    // DEADLINE CONSTANTS (IST = Asia/Kolkata, UTC+5:30)
+    // Round 1 Idea Screening: 19 October 2026, 6:00 PM IST (18:00:00)
+    const STAGE1_DEADLINE_MS = Date.parse("2026-10-19T18:00:00+05:30");
+    // Round 2 Final Submission: 20 October 2026, 6:00 PM IST (18:00:00)
+    const STAGE2_DEADLINE_MS = Date.parse("2026-10-20T18:00:00+05:30");
+
+    const currentServerTimeMs = new Date().getTime();
+
     // STAGE 1: IDEA SCREENING SUBMISSION (Round 1)
     if (body.type === "Stage1_Screening") {
+      // Server-side strict deadline enforcement
+      if (currentServerTimeMs > STAGE1_DEADLINE_MS) {
+        return jsonResponse_({
+          success: false,
+          error: "Round 1 Idea Screening deadline has passed (19 October 2026 at 6:00 PM IST). Submissions are now closed."
+        }, 403);
+      }
+
       const teamName = String(body.teamName || "").trim();
       const leaderName = String(body.leaderName || "").trim();
       const email = String(body.email || "").trim();
@@ -406,26 +424,45 @@ function doPost(e) {
       });
     }
 
-    // STAGE 2: ELIGIBILITY CHECK
-    // Final Submissions sheet is populated directly by the Google Form.
-    // This route only verifies Stage 1 shortlist eligibility before the participant
-    // proceeds to the external Google Form for final submission.
-    // It does NOT write to Final Submissions.
+    // STAGE 2: FINAL PROJECT SUBMISSION (Round 2)
+    // Enforces Stage 1 shortlist eligibility gate, validates GitHub repository link,
+    // checks server-side deadline, and writes submission directly to the Final Submissions sheet.
     if (body.type === "Stage2_Final") {
-      const teamName = String(body.teamName || "").trim();
-      const email    = String(body.email    || "").trim();
+      // Server-side strict deadline enforcement
+      if (currentServerTimeMs > STAGE2_DEADLINE_MS) {
+        return jsonResponse_({
+          success: false,
+          error: "Round 2 Final Project Submission deadline has passed (20 October 2026 at 6:00 PM IST). Submissions are now closed."
+        }, 403);
+      }
+
+      const teamName     = String(body.teamName || "").trim();
+      const email        = String(body.email || "").trim();
+      const track        = String(body.track || "").trim();
+      const projectTitle = String(body.projectTitle || "").trim();
+      const githubUrl    = String(body.githubUrl || "").trim();
+      const demoUrl      = String(body.demoUrl || "").trim();
+      const description  = String(body.description || "").trim();
 
       if (!teamName || !email) {
         return jsonResponse_({
           success: false,
-          error: "Missing required fields. Please provide Team Name and Email."
+          error: "Missing required fields. Please provide Team Name and Leader Email."
         }, 400);
       }
 
       if (!validateEmail_(email)) {
-        return jsonResponse_({ success: false, error: "Invalid team leader email address." }, 400);
+        return jsonResponse_({ success: false, error: "Invalid team leader email address format." }, 400);
       }
 
+      if (!githubUrl || !githubUrl.toLowerCase().includes("github.com")) {
+        return jsonResponse_({
+          success: false,
+          error: "A valid public GitHub repository URL is required for final submission."
+        }, 400);
+      }
+
+      // 1. Verify shortlist eligibility against Stage 1 records
       const eligibility = checkTeamEligibility_(ss, teamName, email);
       if (!eligibility.isEligible) {
         return jsonResponse_({
@@ -435,10 +472,101 @@ function doPost(e) {
         }, 403);
       }
 
+      // 2. Open or initialize Final Submissions sheet
+      const stage2Sheet = getStage2Sheet_(ss);
+      if (!stage2Sheet) {
+        return jsonResponse_({
+          success: false,
+          error: "Final Submissions sheet could not be accessed."
+        }, 500);
+      }
+
+      // 3. Duplicate protection: check if final project already submitted
+      const s2Data = stage2Sheet.getDataRange().getValues();
+      let isDuplicate = false;
+      let existingRef = null;
+
+      if (s2Data.length > 1) {
+        const rows2 = s2Data.slice(1);
+        const match = rows2.find(r => {
+          const exTeam = String(r[1] || "").toLowerCase().trim();
+          return exTeam === teamName.toLowerCase();
+        });
+        if (match) {
+          isDuplicate = true;
+          existingRef = "WAI-FIN-SAVED";
+        }
+      }
+
+      if (isDuplicate) {
+        return jsonResponse_({
+          success: false,
+          alreadySubmitted: true,
+          refId: existingRef,
+          message: `Final project submission has already been recorded for team "${teamName}".`,
+          status: "FINAL SUBMISSION RECEIVED"
+        }, 200);
+      }
+
+      // 4. Save to Final Submissions sheet matching the exact schema:
+      // Col 0: Timestamp (IST)
+      // Col 1: Participant / Team Name
+      // Col 2: Selected Problem Statement (Track + Project Title)
+      // Col 3: GitHub Repository URL
+      // Col 4: Final Project Demo Video (Demo / Presentation URL)
+      // Col 5: Live Demo / Deployment Link
+      // Col 6: Final Submission Declaration (Overview / Deliverables Verified)
+      // Col 7: Final Evaluation Status (Initial: PENDING EVALUATION)
+      // Col 8: Final Decision Email Sent (Initial: Not Sent)
+      const timestamp = Utilities.formatDate(new Date(), "Asia/Kolkata", "yyyy-MM-dd HH:mm:ss");
+      const refId = "WAI-FIN-" + Math.floor(100000 + Math.random() * 900000);
+      const statementField = (track ? `[${track}] ` : "") + (projectTitle || "Final Project Deliverable");
+      const declarationField = (description ? description.substring(0, 500) + " | " : "") + "Deliverables Verified: GitHub code & README provided.";
+
+      stage2Sheet.appendRow([
+        timestamp,
+        teamName,
+        statementField,
+        githubUrl,
+        demoUrl || "—",
+        demoUrl || "—",
+        declarationField,
+        "PENDING EVALUATION",
+        "Not Sent"
+      ]);
+      SpreadsheetApp.flush();
+
+      // 5. Send confirmation receipt email to team leader
+      let emailSent = false;
+      try {
+        MailApp.sendEmail({
+          to: email,
+          subject: `${CONFIG.EVENT_NAME} — Final Project Submission Receipt [${refId}]`,
+          htmlBody: `
+            <div style="font-family:Arial,sans-serif;line-height:1.6;color:#222;max-width:600px">
+              <h2 style="color:#059669">Final Project Submission Recorded</h2>
+              <p>Dear ${escapeHtml_(teamName)},</p>
+              <p>Your Stage 2 final project submission for <strong>${escapeHtml_(projectTitle || statementField)}</strong> has been successfully received and logged for jury evaluation.</p>
+              <p><strong>Official Final Reference Code:</strong> <span style="font-family:monospace;font-weight:bold;color:#059669">${refId}</span><br>
+              <strong>GitHub Repository:</strong> <a href="${escapeHtml_(githubUrl)}">${escapeHtml_(githubUrl)}</a><br>
+              <strong>Official Server Timestamp:</strong> ${timestamp} IST</p>
+              <p>Final round jury evaluation is conducted between 6:00 PM and 8:00 PM IST on 20 October 2026. Final results and award announcements will be published at 8:00 PM IST.</p>
+              <p>Official Hackathon Portal: <a href="${CONFIG.WEBSITE_URL}">${CONFIG.WEBSITE_URL}</a></p>
+              <p style="margin-top:24px">Warm regards,<br><strong>AI Innovation Hackathon Organizing Committee & Jury</strong><br>Women in AI, Research, Innovation & Entrepreneurship Club</p>
+            </div>
+          `
+        });
+        emailSent = true;
+      } catch (mailErr) {
+        Logger.log("Stage 2 MailApp receipt failed: " + mailErr.toString());
+      }
+
       return jsonResponse_({
         success: true,
-        message: "Team is eligible for final submission.",
-        currentStatus: eligibility.currentStatus
+        refId: refId,
+        timestamp: timestamp,
+        status: "FINAL SUBMISSION RECEIVED",
+        emailSent: emailSent
       });
     }
 
@@ -700,7 +828,7 @@ function renderJudgePanel() {
 function getJudgeData() {
   // Reads ONLY from Final Submissions. Never reads Stage 1 Submissions or Form Responses 1.
   const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
-  const sheet = ss.getSheetByName(CONFIG.STAGE2_SHEET);
+  const sheet = getStage2Sheet_(ss);
   if (!sheet) return [];
 
   const data = sheet.getDataRange().getValues();
@@ -777,8 +905,8 @@ function processJudgeDecision(teamName, decision) {
   // Updates ONLY Final Evaluation Status and Final Decision Email Sent in Final Submissions.
   // NEVER modifies Screening Status or Stage 1 Submissions.
   const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
-  const sheet = ss.getSheetByName(CONFIG.STAGE2_SHEET);
-  if (!sheet) return { success: false, savedInSheet: false, message: CONFIG.STAGE2_SHEET + " sheet not found." };
+  const sheet = getStage2Sheet_(ss);
+  if (!sheet) return { success: false, savedInSheet: false, message: "Final Submissions sheet not found." };
 
   const data = sheet.getDataRange().getValues();
   if (data.length <= 1) return { success: false, savedInSheet: false, message: "No final submissions data available." };
@@ -1209,6 +1337,12 @@ function findColumns_(headers) {
 function jsonResponse_(data, code = 200) {
   return ContentService.createTextOutput(JSON.stringify(data))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+function getStage2Sheet_(ss) {
+  return ss.getSheetByName(CONFIG.STAGE2_SHEET) ||
+         ss.getSheetByName("Final Submissions") ||
+         ss.getSheetByName("Form Responses 2");
 }
 
 function escapeHtml_(str) {
