@@ -104,6 +104,9 @@ p{color:var(--muted)}
 .btn.primary{background:var(--purple);border-color:var(--purple);color:#09070d}
 .btn.primary:hover{opacity:.9}
 .btn.secondary{background:transparent}
+.btn:disabled,.btn.disabled{cursor:not-allowed;pointer-events:none;transform:none !important;opacity:.65}
+.btn.btn-closed{background:rgba(239,68,68,.12);color:#fca5a5;border-color:rgba(239,68,68,.35)}
+.btn.btn-closed:hover{transform:none;opacity:.65;border-color:rgba(239,68,68,.35)}
 .button-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:23px}
 
 /* ROADMAP */

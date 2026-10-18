@@ -53,6 +53,7 @@
         <span class="hack-badge live-pulse">Official International Event</span>
         <span class="hack-badge">Online • Free Participation</span>
         <span class="hack-badge">20 October 2026</span>
+        <span class="hack-badge closed-badge">REGISTRATIONS CLOSED</span>
       </div>
 
       <div class="eyebrow">AI Innovation Hackathon 2026</div>
@@ -61,11 +62,24 @@
         The official online international hackathon organized by the <strong>Women in AI Research, Innovation &amp; Entrepreneurship</strong>. An intensive platform designed for students, researchers, and innovators to tackle real-world challenges through artificial intelligence.
       </p>
 
+      <!-- REGISTRATION CLOSED OFFICIAL ANNOUNCEMENT BANNER -->
+      <div class="reg-closed-announcement" role="region" aria-label="Registration Closure Announcement">
+        <div class="reg-closed-banner-inner">
+          <div class="reg-closed-header">
+            <span class="status-pill not-selected">REGISTRATIONS CLOSED</span>
+            <span class="reg-closed-meta">Official Notice • AI Innovation Hackathon 2026</span>
+          </div>
+          <p class="reg-closed-message">
+            Registrations for AI Innovation Hackathon 2026 are now officially closed. Thank you for the overwhelming response! Registered participants should follow the official website for problem statements, submission instructions, deadlines, and further announcements.
+          </p>
+        </div>
+      </div>
+
       <div class="hero-actions" style="margin-top:28px">
-        <a class="btn primary lg" href="https://forms.gle/tc3TrSSX1HFerk2j6" target="_blank" rel="noopener">
-          Register Now
-        </a>
-        <a class="btn outline-purple lg" href="#stage1" onclick="document.getElementById('stage1Tab')?.click()">
+        <button type="button" class="btn disabled lg btn-closed" disabled aria-disabled="true" title="Registrations are officially closed">
+          Registrations Closed
+        </button>
+        <a class="btn primary lg" href="#stage1" onclick="document.getElementById('stage1Tab')?.click()">
           Stage 1: Idea Screening Form
         </a>
         <a class="btn secondary lg" href="#stage2" onclick="document.getElementById('stage2Tab')?.click()">
