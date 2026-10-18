@@ -964,8 +964,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setButtonLoading(fbSubmitBtn, true, "Submitting...");
 
     try {
-      // Send feedback to backend with silent fallback
-      await fetch(HACKATHON_API, {
+      const res = await fetch(HACKATHON_API, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({
@@ -976,27 +975,27 @@ document.addEventListener("DOMContentLoaded", () => {
           message: message,
           timestamp: new Date().toISOString()
         })
-      }).catch(err => {
-        // Fallback logger; feedback remains valid
-        console.warn("Feedback logging note:", err);
       });
 
-      renderAlert(fbAlert, "success", `
-        <strong>Thank you, ${escapeHtml(name)}!</strong><br>
-        Your feedback has been received by the organizing team. We appreciate your insights to improve the hackathon experience!
-      `);
-      fbForm.reset();
-      setTimeout(() => {
-        closeFeedbackModal();
-        if (fbAlert) fbAlert.hidden = true;
-      }, 3500);
+      const data = await res.json().catch(() => null);
+
+      if (res.ok && data && data.success) {
+        renderAlert(fbAlert, "success", `
+          <strong>Thank you, ${escapeHtml(name)}!</strong><br>
+          ${escapeHtml(data.message || "Your feedback has been received by the organizing team. We appreciate your insights!")}
+        `);
+        fbForm.reset();
+        setTimeout(() => {
+          closeFeedbackModal();
+          if (fbAlert) fbAlert.hidden = true;
+        }, 3000);
+      } else {
+        const errorMsg = (data && data.error) ? data.error : "Failed to record feedback on server.";
+        renderAlert(fbAlert, "error", `<strong>Submission Error:</strong> ${escapeHtml(errorMsg)}`);
+      }
     } catch (err) {
       console.error("Feedback error:", err);
-      renderAlert(fbAlert, "success", `
-        <strong>Thank you, ${escapeHtml(name)}!</strong><br>
-        Your feedback has been logged successfully.
-      `);
-      fbForm.reset();
+      renderAlert(fbAlert, "error", "Network error occurred while submitting feedback. Please check your connection and try again.");
     } finally {
       setButtonLoading(fbSubmitBtn, false, "Submit Feedback");
     }

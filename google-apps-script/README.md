@@ -78,4 +78,4 @@ STATUS: UNDER EVALUATION → FINALIST → WINNER
 `Reference ID` | `Timestamp (IST)` | `Participation Type` | `Team Name` | `Team Leader` | `Email` | `Phone` | `Track` | `Problem Statement` | `Proposed Solution` | `AI Approach` | `Pitch Link` | `Status`
 
 ### 3. `Final Submissions`
-`Reference ID` | `Timestamp (IST)` | `Team Name` | `Leader Email` | `Track` | `Project Title` | `GitHub Repository` | `Demo URL` | `Description` | `Evaluation Status`
+`Timestamp` | `Participant / Team Name` | `Selected Problem Statement` | `GitHub Repository URL` | `Final Project Demo Video` | `Live Demo / Deployment Link` | `Final Submission Declaration` | `Final Evaluation Status` | `Final Decision Email Sent`

@@ -156,7 +156,7 @@ function initSiteWideFeedback() {
     }
 
     try {
-      await fetch(HACKATHON_API, {
+      const res = await fetch(HACKATHON_API, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({
@@ -167,27 +167,32 @@ function initSiteWideFeedback() {
           message: message,
           timestamp: new Date().toISOString()
         })
-      }).catch(err => {
-        console.warn("Feedback logger note:", err);
       });
 
-      if (alertEl) {
-        alertEl.hidden = false;
-        alertEl.className = "alert success";
-        alertEl.innerHTML = `<strong>Thank you, ${escapeHTML(name)}!</strong><br>Your feedback has been received.`;
+      const data = await res.json().catch(() => null);
+
+      if (res.ok && data && data.success) {
+        if (alertEl) {
+          alertEl.hidden = false;
+          alertEl.className = "alert success";
+          alertEl.innerHTML = `<strong>Thank you, ${escapeHTML(name)}!</strong><br>${escapeHTML(data.message || "Your feedback has been received.")}`;
+        }
+        form.reset();
+        setTimeout(() => {
+          closeModal();
+          if (alertEl) alertEl.hidden = true;
+        }, 3000);
+      } else {
+        const errorMsg = (data && data.error) ? data.error : "Failed to record feedback on server.";
+        throw new Error(errorMsg);
       }
-      form.reset();
-      setTimeout(() => {
-        closeModal();
-        if (alertEl) alertEl.hidden = true;
-      }, 3500);
     } catch (err) {
+      console.error("Feedback submission error:", err);
       if (alertEl) {
         alertEl.hidden = false;
-        alertEl.className = "alert success";
-        alertEl.innerHTML = `<strong>Thank you, ${escapeHTML(name)}!</strong><br>Your feedback has been received.`;
+        alertEl.className = "alert danger";
+        alertEl.textContent = err.message || "Could not submit feedback. Please check your connection and try again.";
       }
-      form.reset();
     } finally {
       if (submitBtn) {
         submitBtn.classList.remove("loading");

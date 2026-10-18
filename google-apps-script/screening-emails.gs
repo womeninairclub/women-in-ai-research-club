@@ -82,7 +82,7 @@ function buildScreeningModel_(sheet) {
   if (data.length < 2) return { headers: [], rows: [], groups: [] };
 
   const headers = data[0].map(h => String(h || "").trim());
-  const col = findColumns_(headers);
+  const col = findScreeningColumns_(headers);
   const rows = data.slice(1);
   const groups = new Map();
 
@@ -209,8 +209,8 @@ function processScreeningGroups_(sheet, model, previewOnly) {
 function buildEmail_(group, decision, recipientName) {
   const selected = decision === "SELECTED";
   const greeting = group.isTeam
-    ? `Dear ${escapeHtml_(group.name)},`
-    : `Dear ${escapeHtml_(recipientName || group.name)},`;
+    ? `Dear ${escapeScreeningHtml_(group.name)},`
+    : `Dear ${escapeScreeningHtml_(recipientName || group.name)},`;
 
   const title = selected
     ? "Congratulations — your team has been selected"
@@ -226,7 +226,7 @@ function buildEmail_(group, decision, recipientName) {
 
   const htmlBody = `
     <div style="font-family:Arial,sans-serif;line-height:1.65;color:#222;max-width:680px;margin:0 auto">
-      <h2 style="margin-bottom:18px;color:${selected ? '#0284c7' : '#333'}">${escapeHtml_(title)}</h2>
+      <h2 style="margin-bottom:18px;color:${selected ? '#0284c7' : '#333'}">${escapeScreeningHtml_(title)}</h2>
       <p>${greeting}</p>
       <p>${paragraph}</p>
       <p>${nextStep}</p>
@@ -245,34 +245,44 @@ function buildEmail_(group, decision, recipientName) {
   };
 }
 
-function findColumns_(headers) {
+function findScreeningColumns_(headers) {
   const sheet = getScreeningSheet_();
 
-  function getOrAdd(candidate) {
-    let index = headers.findIndex(header => header.toLowerCase().trim().startsWith(candidate.toLowerCase().trim()));
-    if (index !== -1) return index;
-    
+  function getOrAdd(candidate, aliases) {
+    const searchTerms = [candidate, ...(aliases || [])];
+    for (let i = 0; i < searchTerms.length; i++) {
+      const term = searchTerms[i].toLowerCase().trim();
+      const index = headers.findIndex(header => {
+        const h = String(header || "").toLowerCase().trim();
+        return h === term || h.startsWith(term);
+      });
+      if (index !== -1) return index;
+    }
+
     // Add missing column header to Google Sheet automatically
-    index = headers.length;
+    const index = headers.length;
     sheet.getRange(1, index + 1).setValue(candidate);
     headers.push(candidate);
     return index;
   }
 
   return {
-    fullName: getOrAdd("Full Name"),
-    email: getOrAdd("Email Address"),
-    participationType: getOrAdd("Participation Type"),
+    fullName: getOrAdd("Full Name", ["Team Leader / Primary Contact Name", "Participant / Team Name", "Participant Name", "Name"]),
+    email: getOrAdd("Email Address", ["Email", "Contact Email"]),
+    participationType: getOrAdd("Participation Type", ["Type"]),
     teamName: getOrAdd("Team Name"),
-    teamLeader: getOrAdd("Team Leader / Primary Contact Name"),
-    screeningStatus: getOrAdd("Screening Status"),
-    screeningEmailSent: getOrAdd("Screening Email Sent")
+    teamLeader: getOrAdd("Team Leader / Primary Contact Name", ["Team Leader", "Leader Name"]),
+    screeningStatus: getOrAdd("Screening Status", ["Status", "Screening"]),
+    screeningEmailSent: getOrAdd("Screening Email Sent", ["Email Sent"])
   };
 }
 
 function decisionType_(status) {
-  if (SCREENING_CONFIG.STATUS_SELECTED.some(s => status.includes(s))) return "SELECTED";
-  if (SCREENING_CONFIG.STATUS_NOT_SELECTED.some(s => status.includes(s))) return "NOT_SELECTED";
+  const norm = normalize_(status);
+  if (!norm) return "";
+  // Check negative or rejection states first to prevent "not selected" matching "selected"
+  if (SCREENING_CONFIG.STATUS_NOT_SELECTED.some(s => norm.includes(s))) return "NOT_SELECTED";
+  if (SCREENING_CONFIG.STATUS_SELECTED.some(s => norm.includes(s))) return "SELECTED";
   return "";
 }
 
@@ -284,7 +294,7 @@ function clean_(value) {
   return String(value ?? "").trim().replace(/\s+/g, " ");
 }
 
-function escapeHtml_(value) {
+function escapeScreeningHtml_(value) {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
