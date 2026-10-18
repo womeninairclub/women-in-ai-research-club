@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Registered Teams &amp; Participants | AI Innovation Hackathon 2026</title>
-  <meta name="description" content="Official live registered teams and participants directory for the AI Innovation Hackathon 2026.">
+  <title>Submitted Participants &amp; Proposals | AI Innovation Hackathon 2026</title>
+  <meta name="description" content="Official live directory of submitted participants and proposals for the AI Innovation Hackathon 2026.">
   <link rel="icon" href="assets/logo.png">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/hackathon.css">
@@ -46,12 +46,12 @@
   <section class="page-hero participants-hero">
     <div class="container">
       <div class="breadcrumb">
-        <a href="index.html">Home</a> / <a href="hackathon.html">Hackathon</a> / Participants
+        <a href="index.html">Home</a> / <a href="hackathon.html">Hackathon</a> / Submitted Participants
       </div>
       <div class="eyebrow">AI Innovation Hackathon 2026</div>
-      <h1>Registered Teams &amp; Participants</h1>
+      <h1>Submitted Participants &amp; Proposals</h1>
       <p class="lead">
-        Live public directory of international teams and individual innovators officially registered for the AI Innovation Hackathon 2026.
+        Live public directory of international teams and innovators who have officially submitted their hackathon proposals for evaluation.
       </p>
       <div class="reg-closed-announcement" role="status" aria-live="polite" style="margin-top:20px">
         <div class="reg-closed-title">Official Announcement: Registrations Closed</div>
@@ -79,11 +79,12 @@
 
   <!-- ROUND 1 IDEA SCREENING SUBMISSIONS & SHORTLIST -->
   <section class="section alt" id="round1-submissions">
+    <span id="participants" style="display:block;position:relative;top:-80px;visibility:hidden"></span>
     <div class="container">
       <div class="section-head">
         <div>
-          <div class="eyebrow">Round 1 Tracking</div>
-          <h2>Round 1 Idea Screening — Submissions</h2>
+          <div class="eyebrow">Round 1 Submissions</div>
+          <h2>Round 1 Submitted Proposals</h2>
         </div>
         <p>
           Live public status of verified Round 1 Idea Screening proposals submitted to the evaluation panel. Sensitive proposal materials, pitch decks, and internal notes are kept strictly confidential.
@@ -136,11 +137,12 @@
         <table class="participants-table">
           <thead>
             <tr>
-              <th scope="col" style="width:90px">Sl. No.</th>
-              <th scope="col" style="width:28%">Team Name</th>
-              <th scope="col" style="width:220px">Selected Track</th>
+              <th scope="col" style="width:70px">Sl. No.</th>
+              <th scope="col" style="width:24%">Team Name</th>
+              <th scope="col" style="width:140px">Participation Type</th>
+              <th scope="col" style="width:180px">Selected Track</th>
               <th scope="col">Selected Problem Statement</th>
-              <th scope="col" style="width:180px">Submission Status</th>
+              <th scope="col" style="width:170px">Submission Status</th>
             </tr>
           </thead>
           <tbody id="r1SubmissionsGrid"></tbody>
@@ -148,78 +150,11 @@
       </div>
 
       <div id="r1EmptyMsg" class="participant-empty" hidden>
-        No verified Round 1 submissions match your search or filter.
+        No submissions received yet.
       </div>
 
       <div id="r1ErrorMsg" class="participant-error" hidden>
         Round 1 submission records are currently synchronizing. Please refresh or check back shortly.
-      </div>
-    </div>
-  </section>
-
-  <!-- PARTICIPANTS DIRECTORY -->
-  <section class="section participants-section" id="participants">
-    <div class="container">
-      <div class="section-head">
-        <div>
-          <div class="eyebrow">Official Registration Records</div>
-          <h2>Live Participant Directory</h2>
-        </div>
-        <p>
-          Data synchronizes automatically from the official hackathon registration sheet. Sensitive contact details are shielded for participant privacy.
-        </p>
-      </div>
-
-      <!-- METRICS -->
-      <div class="participants-stats" aria-label="Registration summary">
-        <div class="participant-stat">
-          <span>Total Registered</span>
-          <strong id="participantCount">0</strong>
-        </div>
-        <div class="participant-stat">
-          <span>Competing Teams</span>
-          <strong id="teamCount">0</strong>
-        </div>
-        <div class="participant-stat">
-          <span>Individual Participants</span>
-          <strong id="individualCount">0</strong>
-        </div>
-      </div>
-
-      <!-- SEARCH & FILTER CONTROLS -->
-      <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
-        <input type="text" id="participantSearchInput" class="form-control" style="flex:1;min-width:240px" placeholder="Search by team name or member name...">
-        <div style="display:flex;gap:8px">
-          <button type="button" class="btn sm primary" id="filterAllBtn">All</button>
-          <button type="button" class="btn sm secondary" id="filterTeamsBtn">Teams Only</button>
-          <button type="button" class="btn sm secondary" id="filterIndividualsBtn">Individuals Only</button>
-        </div>
-      </div>
-
-      <div id="participantStatus" class="participant-status" role="status" aria-live="polite">
-        Connecting to registration records...
-      </div>
-
-      <!-- TABLE -->
-      <div class="participants-table-wrapper">
-        <table class="participants-table">
-          <thead>
-            <tr>
-              <th scope="col" style="width:110px">Sl. No.</th>
-              <th scope="col">Team Name</th>
-              <th scope="col" style="width:200px">Participation Type</th>
-            </tr>
-          </thead>
-          <tbody id="participantGrid"></tbody>
-        </table>
-      </div>
-
-      <div id="participantEmpty" class="participant-empty" hidden>
-        No registration records match your filter criteria.
-      </div>
-
-      <div id="participantError" class="participant-error" hidden>
-        Registration records are temporarily syncing. If this persists, please refresh or check back shortly.
       </div>
     </div>
   </section>
@@ -299,10 +234,6 @@
 const PARTICIPANT_API =
   "https://script.google.com/macros/s/AKfycbz-Q-6TjOviAVR-REG2Wcz-4KQBc_ptyrH4neA0o83FtX01t5EROzvOHfv0vuuFcRrF/exec";
 
-let allEntries = [];
-let currentFilter = "all"; // all, team, individual
-let currentSearch = "";
-
 function normalizeText(value) {
   return String(value ?? "").trim().replace(/\s+/g, " ");
 }
@@ -318,154 +249,6 @@ function escapeParticipantHTML(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
-}
-
-function getField(item, names) {
-  for (const name of names) {
-    if (item && Object.prototype.hasOwnProperty.call(item, name)) {
-      return item[name];
-    }
-  }
-  return "";
-}
-
-function splitMembers(value) {
-  return String(value ?? "")
-    .split(/[\n,;|]+/)
-    .map(item => item.trim().replace(/\s+/g, " "))
-    .filter(Boolean);
-}
-
-function prepareRegistrations(rawParticipants) {
-  const entries = [];
-  const teamsMap = new Map();
-  const indMap = new Map();
-
-  rawParticipants.forEach((item) => {
-    const rawType = normalizeKey(getField(item, ["participationType", "Participation Type", "type"]));
-    const isTeam = rawType.includes("team") || rawType === "team";
-    const teamName = normalizeText(getField(item, ["teamName", "Team Name", "name", "fullName"]));
-    const rawName = normalizeText(getField(item, ["name", "fullName", "Full Name", "teamLeader"]));
-
-    if (isTeam) {
-      const key = normalizeKey(teamName || rawName);
-      if (!key) return;
-      if (!teamsMap.has(key)) {
-        teamsMap.set(key, {
-          teamName: teamName || rawName || "Team",
-          type: "TEAM"
-        });
-      }
-      return;
-    }
-
-    const indKey = normalizeKey(rawName || teamName);
-    if (!indKey) return;
-    if (!indMap.has(indKey)) {
-      indMap.set(indKey, {
-        teamName: rawName || teamName || "Participant",
-        type: "INDIVIDUAL"
-      });
-    }
-  });
-
-  teamsMap.forEach(t => entries.push(t));
-  indMap.forEach(i => entries.push(i));
-
-  return entries;
-}
-
-function renderTable() {
-  const tableBody = document.getElementById("participantGrid");
-  const statusEl = document.getElementById("participantStatus");
-  const emptyEl = document.getElementById("participantEmpty");
-  const participantCount = document.getElementById("participantCount");
-  const teamCount = document.getElementById("teamCount");
-  const individualCount = document.getElementById("individualCount");
-
-  if (participantCount) participantCount.textContent = allEntries.length;
-  if (teamCount) teamCount.textContent = allEntries.filter(i => i.type === "TEAM").length;
-  if (individualCount) individualCount.textContent = allEntries.filter(i => i.type === "INDIVIDUAL").length;
-
-  let filtered = allEntries.filter(entry => {
-    if (currentFilter === "team" && entry.type !== "TEAM") return false;
-    if (currentFilter === "individual" && entry.type !== "INDIVIDUAL") return false;
-    if (currentSearch) {
-      return entry.teamName.toLowerCase().includes(currentSearch);
-    }
-    return true;
-  });
-
-  tableBody.innerHTML = "";
-
-  if (!filtered.length) {
-    statusEl.textContent = "";
-    emptyEl.hidden = false;
-    return;
-  }
-
-  emptyEl.hidden = true;
-  statusEl.textContent = `Showing ${filtered.length} of ${allEntries.length} registered participant entries.`;
-
-  filtered.forEach((entry, idx) => {
-    const row = document.createElement("tr");
-    const slNo = String(idx + 1).padStart(2, "0");
-
-    row.innerHTML = `
-      <td style="color:var(--purple);font-weight:700;font-size:13px">${slNo}</td>
-      <td style="font-weight:600;color:var(--text)">${escapeParticipantHTML(entry.teamName)}</td>
-      <td><span class="status-pill ${entry.type === "TEAM" ? "submitted" : "not-selected"}">${entry.type}</span></td>
-    `;
-    tableBody.appendChild(row);
-  });
-}
-
-async function loadParticipants() {
-  const statusEl = document.getElementById("participantStatus");
-  const errorEl = document.getElementById("participantError");
-
-  try {
-    const res = await fetch(`${PARTICIPANT_API}?t=${Date.now()}`, { cache: "no-store" });
-    if (!res.ok) throw new Error("API failed");
-    const raw = await res.json();
-    allEntries = prepareRegistrations(Array.isArray(raw) ? raw : []);
-    renderTable();
-    errorEl.hidden = true;
-  } catch (err) {
-    console.error("API error:", err);
-    statusEl.textContent = "";
-    errorEl.hidden = false;
-  }
-}
-
-// Search and filter listeners
-document.getElementById("participantSearchInput")?.addEventListener("input", e => {
-  currentSearch = e.target.value.trim().toLowerCase();
-  renderTable();
-});
-
-document.getElementById("filterAllBtn")?.addEventListener("click", () => {
-  currentFilter = "all";
-  updateFilterButtons();
-  renderTable();
-});
-
-document.getElementById("filterTeamsBtn")?.addEventListener("click", () => {
-  currentFilter = "team";
-  updateFilterButtons();
-  renderTable();
-});
-
-document.getElementById("filterIndividualsBtn")?.addEventListener("click", () => {
-  currentFilter = "individual";
-  updateFilterButtons();
-  renderTable();
-});
-
-function updateFilterButtons() {
-  document.getElementById("filterAllBtn").className = currentFilter === "all" ? "btn sm primary" : "btn sm secondary";
-  document.getElementById("filterTeamsBtn").className = currentFilter === "team" ? "btn sm primary" : "btn sm secondary";
-  document.getElementById("filterIndividualsBtn").className = currentFilter === "individual" ? "btn sm primary" : "btn sm secondary";
 }
 
 // =========================================================
@@ -539,7 +322,7 @@ function renderRound1Table() {
     if (emptyMsg) {
       emptyMsg.hidden = false;
       if (!r1AllSubmissions.length) {
-        emptyMsg.textContent = "No verified Round 1 submissions have been recorded yet.";
+        emptyMsg.textContent = "No submissions received yet.";
       } else {
         emptyMsg.textContent = "No verified Round 1 submissions match your search or filter.";
       }
@@ -574,9 +357,14 @@ function renderRound1Table() {
       pillLabel = "SUBMISSION RECEIVED";
     }
 
+    const pType = String(sub.participationType || "TEAM").toUpperCase();
+    const isIndiv = pType.includes("INDIV") || pType.includes("SOLO");
+    const pTypeLabel = isIndiv ? "INDIVIDUAL" : "TEAM";
+
     row.innerHTML = `
       <td style="color:var(--purple);font-weight:700;font-size:13px">${slNo}</td>
       <td style="font-weight:600;color:var(--text)">${escapeParticipantHTML(sub.teamName)}</td>
+      <td><span class="status-pill ${isIndiv ? "not-selected" : "submitted"}">${pTypeLabel}</span></td>
       <td style="color:var(--muted);font-size:13px">${escapeParticipantHTML(sub.track || "—")}</td>
       <td style="color:var(--text);font-size:13px">${escapeParticipantHTML(sub.problemStatement || "—")}</td>
       <td><span class="status-pill ${pillClass}">${pillLabel}</span></td>
@@ -600,17 +388,19 @@ async function loadRound1Submissions() {
       r1AllSubmissions = json.submissions.map((item, idx) => ({
         id: item.id || idx + 1,
         teamName: normalizeText(item.teamName || "Participant"),
+        participationType: normalizeText(item.participationType || item.type || "TEAM"),
         track: normalizeText(item.track || ""),
         problemStatement: normalizeText(item.problemStatement || ""),
         status: item.status || "SUBMISSION RECEIVED"
       }));
     } else if (Array.isArray(json)) {
       // If deployed backend currently returns array
-      const hasStage1Items = json.some(i => i.problemStatement || i.track);
+      const hasStage1Items = json.some(i => i.problemStatement || i.track || i.teamName);
       if (hasStage1Items) {
-        r1AllSubmissions = json.filter(i => i.problemStatement || i.track).map((item, idx) => ({
+        r1AllSubmissions = json.filter(i => i.problemStatement || i.track || i.teamName).map((item, idx) => ({
           id: item.id || idx + 1,
           teamName: normalizeText(item.teamName || "Participant"),
+          participationType: normalizeText(item.participationType || item.type || "TEAM"),
           track: normalizeText(item.track || ""),
           problemStatement: normalizeText(item.problemStatement || ""),
           status: item.status || "SUBMISSION RECEIVED"
@@ -661,7 +451,6 @@ function updateR1FilterButtons() {
   document.getElementById("r1FilterPendingBtn").className = r1CurrentFilter === "pending" ? "btn sm primary" : "btn sm secondary";
 }
 
-loadParticipants();
 loadRound1Submissions();
 </script>
 <script src="js/main.js"></script>

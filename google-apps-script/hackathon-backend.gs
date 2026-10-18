@@ -17,7 +17,7 @@
  * - doGet():
  *   - ?panel=judge&key=<CONFIGURED_JUDGE_KEY> -> Protected Final Round Judge Panel UI
  *   - ?action=checkStatus&query=...   -> Single team status lookup & Stage 2 gate verification
- *   - Default                         -> Public sanitized roster from 'Form Responses 1'
+ *   - Default / getRound1Submissions  -> Public submitted proposals directory from 'Stage 1 Submissions'
  * - doPost():
  *   - Stage1_Screening -> Logs proposal to 'Stage 1 Submissions'
  *   - Stage2_Final     -> Server-side Stage 1 shortlist gate & logs to 'Final Submissions'

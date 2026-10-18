@@ -197,9 +197,18 @@ function doGet(e) {
           publicStatus = rawStatus.includes("PENDING") ? "PENDING EVALUATION" : "SUBMISSION RECEIVED";
         }
 
+        const rawType = String(row[s1Cols.type] || "").trim().toUpperCase();
+        let participationType = "TEAM";
+        if (rawType.includes("INDIV") || rawType.includes("SOLO") || rawType.includes("SINGLE")) {
+          participationType = "INDIVIDUAL";
+        } else if (rawType.includes("TEAM") || rawType.includes("GROUP")) {
+          participationType = "TEAM";
+        }
+
         publicSubmissions.push({
           id: publicSubmissions.length + 1,
           teamName: teamName,
+          participationType: participationType,
           track: track,
           problemStatement: statement,
           status: publicStatus
@@ -342,76 +351,67 @@ function doGet(e) {
       });
     }
 
-    // ROUTE 3: DEFAULT SANITIZED PUBLIC PARTICIPANTS DIRECTORY
-    // Reads ONLY from 'Form Responses 1' (Official Registration Sheet)
-    // Public Participants API — exposes ONLY: id, teamName, participationType
-    // NO email, phone, screening status, or private data.
-    const regSheet = ss.getSheetByName(CONFIG.REGISTRATION_SHEET) || ss.getSheets()[0];
-    if (!regSheet) return jsonResponse_([]);
+    // ROUTE 3: DEFAULT SANITIZED PUBLIC SUBMISSIONS DIRECTORY
+    // Reads ONLY from 'Stage 1 Submissions' (NOT registration roster)
+    // Public Participants API — exposes ONLY: id, teamName, participationType, track, problemStatement, status
+    // NO email, phone, pitch link, notes, or internal private data.
+    const stage1Sheet = ss.getSheetByName(CONFIG.STAGE1_SHEET);
+    if (!stage1Sheet) return jsonResponse_([]);
 
-    const data = regSheet.getDataRange().getValues();
-    if (data.length < 2) return jsonResponse_([]);
+    const data1 = stage1Sheet.getDataRange().getValues();
+    if (data1.length < 2) return jsonResponse_([]);
 
-    const headers = data[0].map(h => String(h || "").trim());
-    const col = findColumns_(headers);
-    const rows = data.slice(1);
-
+    const s1Cols = findStage1Columns_(data1[0]);
+    const rows1 = data1.slice(1);
     const seenTeams = new Set();
     const publicList = [];
 
-    rows.forEach(row => {
-      const rawType = String(row[col.participationType] || "").trim().toLowerCase();
-      const rawTeamField = String(row[col.teamName] || "").trim();
-      const rawTeamLower = rawTeamField.toLowerCase();
-      const rawName = String(row[col.fullName] || row[col.teamLeader] || "").trim();
-      const rawNameLower = rawName.toLowerCase();
+    const scriptProps = PropertiesService.getScriptProperties();
+    const isPublished = (scriptProps.getProperty("ROUND1_SHORTLIST_PUBLISHED") === "true");
+    const showNotSelected = (scriptProps.getProperty("ROUND1_SHOW_NOT_SELECTED") === "true");
 
-      const isInvalidTeamName = !rawTeamField || 
-        rawTeamLower === "individual" || 
-        rawTeamLower === "n/a" || 
-        rawTeamLower === "none" || 
-        rawTeamLower === "na" || 
-        rawTeamLower === "-" ||
-        (rawNameLower && rawTeamLower === rawNameLower);
+    rows1.forEach(row => {
+      const teamName = String(row[s1Cols.teamName] || "").trim();
+      const track = String(row[s1Cols.track] || "").trim();
+      const statement = String(row[s1Cols.statement] || "").trim();
+      const rawType = String(row[s1Cols.type] || "").trim().toUpperCase();
+      const rawStatus = String(row[s1Cols.status] || "SUBMISSION RECEIVED").trim().toUpperCase();
 
-      let isTeam = false;
-      if (rawType.includes("indiv") || rawType.includes("solo") || rawType.includes("single")) {
-        isTeam = false;
-      } else if (rawType.includes("team") || rawType.includes("group")) {
-        isTeam = true;
-      } else {
-        // Fallback: If rawType wasn't explicit, check team name field
-        isTeam = !isInvalidTeamName;
+      if (!teamName || (!statement && !track)) return;
+
+      const normKey = teamName.toLowerCase();
+      if (seenTeams.has(normKey)) return;
+      seenTeams.add(normKey);
+
+      let participationType = "TEAM";
+      if (rawType.includes("INDIV") || rawType.includes("SOLO") || rawType.includes("SINGLE")) {
+        participationType = "INDIVIDUAL";
+      } else if (rawType.includes("TEAM") || rawType.includes("GROUP")) {
+        participationType = "TEAM";
       }
 
-      const typeLabel = isTeam ? "TEAM" : "INDIVIDUAL";
-
-      let displayName = "";
-      if (isTeam && !isInvalidTeamName) {
-        displayName = rawTeamField;
-      } else {
-        displayName = rawName || (rawTeamLower !== "individual" ? rawTeamField : "") || "Participant";
-        if (displayName.toLowerCase() === "individual") {
-          displayName = rawName || "Participant";
+      let publicStatus = "SUBMISSION RECEIVED";
+      if (isPublished) {
+        if (rawStatus.includes("NOT SELECTED") || rawStatus.includes("REJECTED")) {
+          publicStatus = showNotSelected ? "NOT SELECTED" : "SUBMISSION RECEIVED";
+        } else if (rawStatus.includes("SHORTLISTED") || rawStatus.includes("SELECTED")) {
+          publicStatus = "SHORTLISTED";
+        } else if (rawStatus.includes("PENDING")) {
+          publicStatus = "PENDING EVALUATION";
+        } else {
+          publicStatus = "SUBMISSION RECEIVED";
         }
-      }
-
-      if (!displayName) return;
-
-      const normKey = displayName.toLowerCase();
-
-      // Deduplicate teams so each team appears only once
-      if (isTeam && seenTeams.has(normKey)) {
-        return;
-      }
-      if (isTeam) {
-        seenTeams.add(normKey);
+      } else {
+        publicStatus = rawStatus.includes("PENDING") ? "PENDING EVALUATION" : "SUBMISSION RECEIVED";
       }
 
       publicList.push({
         id: publicList.length + 1,
-        teamName: displayName,
-        participationType: typeLabel
+        teamName: teamName,
+        participationType: participationType,
+        track: track,
+        problemStatement: statement,
+        status: publicStatus
       });
     });
 

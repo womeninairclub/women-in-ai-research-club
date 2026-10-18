@@ -11,7 +11,7 @@ This directory contains the production Google Apps Script backend that connects 
 - **`doGet(e)`**:
   - `?panel=judge&key=<CONFIGURED_JUDGE_KEY>`: Renders the private interactive Judge Panel HTML Dashboard for judges to review submissions, select/reject teams, and automatically trigger notification emails. The authorization key is managed server-side via Script Properties (`JUDGE_KEY`).
   - `?action=checkStatus&query=...`: Single-record status query returning ONLY the target team's status and Stage 2 eligibility flag. (Protects participant dataset privacy).
-  - Default: Returns public participant directory to `participants.html` with emails, phone numbers, WhatsApp contacts, and internal notes **completely stripped**.
+  - Default / `?action=getRound1Submissions`: Returns public submitted proposals directory (from `Stage 1 Submissions`) with emails, phone numbers, WhatsApp contacts, pitch decks, and internal notes **completely stripped**. Only teams who submitted a valid proposal appear.
 - **`doPost(e)`**:
   - `Stage1_Screening`: Validates fields & email syntax, checks for duplicates, appends row to `Stage 1 Submissions`, updates status to `ROUND 1 SUBMITTED`, generates server timestamp & `WAI-SCR-XXXXXX` reference code, and dispatches Round 1 receipt email.
   - `Stage2_Final`: Enforces **Server-Side Stage 2 Eligibility Gate** (verifies team status is `SHORTLISTED / SELECTED` or `FINAL SUBMISSION PENDING`), validates `github.com` repo URL, appends row to `Final Submissions`, updates status to `FINAL SUBMISSION RECEIVED`, generates server timestamp & `WAI-FIN-XXXXXX` reference code, and dispatches Round 2 confirmation email.
