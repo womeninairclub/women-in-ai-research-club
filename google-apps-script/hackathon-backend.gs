@@ -15,7 +15,7 @@
  * 
  * Summary of backend architecture in code.gs:
  * - doGet():
- *   - ?panel=judge&key=WAI_JUDGE_2026 -> Protected Final Round Judge Panel UI
+ *   - ?panel=judge&key=<CONFIGURED_JUDGE_KEY> -> Protected Final Round Judge Panel UI
  *   - ?action=checkStatus&query=...   -> Single team status lookup & Stage 2 gate verification
  *   - Default                         -> Public sanitized roster from 'Form Responses 1'
  * - doPost():

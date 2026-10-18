@@ -265,39 +265,18 @@
         </p>
       </div>
 
-      <!-- Release Status / Countdown Container (Managed via JavaScript with Asia/Kolkata 18 Oct 2026 lock) -->
+      <!-- Release Status / Container (Problem Statements officially unlocked on 18 Oct 2026) -->
       <div class="release-box" id="problemReleaseNotice">
-        <div class="release-icon" id="releaseLockIcon">🔒</div>
+        <div class="release-icon" id="releaseLockIcon">🔓</div>
         <div style="flex:1">
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-            <strong style="font-size:18px;color:var(--text)" id="releaseNoticeHeading">Official Problem Statements Release</strong>
-            <span class="status-pill under-review" id="releaseStatusPill">Unlocks 18 October 2026 (12:00 AM IST)</span>
+            <strong style="font-size:18px;color:var(--text)" id="releaseNoticeHeading">Official Problem Statements Released</strong>
+            <span class="status-pill selected" id="releaseStatusPill">Released 18 October 2026</span>
           </div>
           <p style="margin-top:8px;font-size:14px;color:var(--muted)" id="releaseNoticeMsg">
-            The 60 approved problem statements and official track challenge PDFs will unlock automatically on <strong>18 October 2026 at 12:00 AM IST</strong> (Asia/Kolkata). Until release, challenge specifics remain sealed to guarantee fair evaluation across all participating teams.
+            The 60 approved problem statements and official track challenge PDFs have been officially released. Participating teams can review problem statements below, download official track PDFs, and prepare their Round 1 Idea Screening submissions before the deadline on <strong>19 October 2026 at 6:00 PM IST</strong>.
           </p>
-          <!-- Dynamic Countdown Display -->
-          <div id="releaseCountdownWrapper" style="margin-top:14px">
-            <div class="countdown-grid">
-              <div class="countdown-unit">
-                <span class="countdown-num" id="cdDays">--</span>
-                <span class="countdown-lbl">Days</span>
-              </div>
-              <div class="countdown-unit">
-                <span class="countdown-num" id="cdHours">--</span>
-                <span class="countdown-lbl">Hours</span>
-              </div>
-              <div class="countdown-unit">
-                <span class="countdown-num" id="cdMins">--</span>
-                <span class="countdown-lbl">Mins</span>
-              </div>
-              <div class="countdown-unit">
-                <span class="countdown-num" id="cdSecs">--</span>
-                <span class="countdown-lbl">Secs</span>
-              </div>
-            </div>
-          </div>
-          <p id="problemReleaseStatus" class="small-note" style="margin-top:10px;color:var(--purple)"></p>
+          <p id="problemReleaseStatus" class="small-note" style="margin-top:10px;color:var(--purple)">Status: All 5 tracks and 60 problem statements are unlocked and accessible.</p>
         </div>
       </div>
 
@@ -314,9 +293,9 @@
             Multimodal forecasting, adaptive resource allocation, graph learning, spatial risk prediction, and deep neural architectures for complex high-dimensional datasets.
           </p>
           <div style="margin-top:auto;padding-top:14px">
-            <a class="btn secondary problem-lock sm" href="#challenges" aria-disabled="true" data-track-id="aiml" data-release-label="Download Track 1 PDF (14 Challenges)">
-              🔒 Locked Until 18 Oct
-            </a>
+            <button type="button" class="btn secondary problem-download-btn sm" data-track-id="aiml">
+              Download Track 1 PDF (14 Challenges)
+            </button>
           </div>
         </div>
 
@@ -331,9 +310,9 @@
             Diagnostic imaging, ECG/EEG physiological signals, MRI tumor segmentation, histopathology analysis, and clinical assistive intelligence systems.
           </p>
           <div style="margin-top:auto;padding-top:14px">
-            <a class="btn secondary problem-lock sm" href="#challenges" aria-disabled="true" data-track-id="biomedical" data-release-label="Download Track 2 PDF (12 Challenges)">
-              🔒 Locked Until 18 Oct
-            </a>
+            <button type="button" class="btn secondary problem-download-btn sm" data-track-id="biomedical">
+              Download Track 2 PDF (12 Challenges)
+            </button>
           </div>
         </div>
 
@@ -348,9 +327,9 @@
             Feature attribution, SHAP/LIME interpretations, model transparency, counterfactual reasoning, and explainable decision support in sensitive domains.
           </p>
           <div style="margin-top:auto;padding-top:14px">
-            <a class="btn secondary problem-lock sm" href="#challenges" aria-disabled="true" data-track-id="xai" data-release-label="Download Track 3 PDF (11 Challenges)">
-              🔒 Locked Until 18 Oct
-            </a>
+            <button type="button" class="btn secondary problem-download-btn sm" data-track-id="xai">
+              Download Track 3 PDF (11 Challenges)
+            </button>
           </div>
         </div>
 
@@ -365,9 +344,9 @@
             Threat intelligence, network intrusion investigation, log analysis, behavioral malware profiling, adversarial robustness, and audit compliance.
           </p>
           <div style="margin-top:auto;padding-top:14px">
-            <a class="btn secondary problem-lock sm" href="#challenges" aria-disabled="true" data-track-id="trustworthy" data-release-label="Download Track 4 PDF (13 Challenges)">
-              🔒 Locked Until 18 Oct
-            </a>
+            <button type="button" class="btn secondary problem-download-btn sm" data-track-id="trustworthy">
+              Download Track 4 PDF (13 Challenges)
+            </button>
           </div>
         </div>
 
@@ -382,15 +361,15 @@
             Computational reproducibility, benchmark ablation studies, distribution shift analysis, dataset bias quantification, and publication-ready research artifacts.
           </p>
           <div style="margin-top:auto;padding-top:14px">
-            <a class="btn secondary problem-lock sm" href="#challenges" aria-disabled="true" data-track-id="research" data-release-label="Download Track 5 PDF (10 Challenges)">
-              🔒 Locked Until 18 Oct
-            </a>
+            <button type="button" class="btn secondary problem-download-btn sm" data-track-id="research">
+              Download Track 5 PDF (10 Challenges)
+            </button>
           </div>
         </div>
       </div>
 
       <!-- DYNAMIC 60 CHALLENGES INTERFACE (POPULATED ONLY ONCE UNLOCKED) -->
-      <div id="unlockedChallengesContainer" hidden>
+      <div id="unlockedChallengesContainer">
         <div class="challenge-control-panel">
           <div class="track-tabs-bar" role="tablist" aria-label="Filter challenges by track">
             <button type="button" class="track-filter-btn active" data-track="all">
@@ -898,7 +877,7 @@
         <a href="mailto:womeninairclub@gmail.com">womeninairclub@gmail.com</a>
         <a href="https://chat.whatsapp.com/DsJeBSmTsD1FaE4n0elSIj" target="_blank" rel="noopener">WhatsApp Community</a>
         <a href="join.html">Membership Application</a>
-        <a href="https://forms.gle/tc3TrSSX1HFerk2j6" target="_blank" rel="noopener">Hackathon Registration</a>
+        <span class="footer-link-disabled" style="color:var(--muted-2);cursor:not-allowed;font-size:14px">Hackathon Registration (Closed)</span>
       </div>
     </div>
   </div>

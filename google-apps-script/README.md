@@ -9,7 +9,7 @@ This directory contains the production Google Apps Script backend that connects 
 
 ### 1. `code.gs` / `hackathon-backend.gs` (Main REST Web App API & Judge Panel)
 - **`doGet(e)`**:
-  - `?panel=judge&key=WAI_JUDGE_2026`: Renders the live interactive Judge Panel HTML Dashboard for judges to review submissions, select/reject teams, and automatically trigger notification emails.
+  - `?panel=judge&key=<CONFIGURED_JUDGE_KEY>`: Renders the private interactive Judge Panel HTML Dashboard for judges to review submissions, select/reject teams, and automatically trigger notification emails. The authorization key is managed server-side via Script Properties (`JUDGE_KEY`).
   - `?action=checkStatus&query=...`: Single-record status query returning ONLY the target team's status and Stage 2 eligibility flag. (Protects participant dataset privacy).
   - Default: Returns public participant directory to `participants.html` with emails, phone numbers, WhatsApp contacts, and internal notes **completely stripped**.
 - **`doPost(e)`**:

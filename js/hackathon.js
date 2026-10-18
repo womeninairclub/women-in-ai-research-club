@@ -46,8 +46,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const unlockedContainer = document.getElementById("unlockedChallengesContainer");
   const problemReleaseStatus = document.getElementById("problemReleaseStatus");
 
-  // Track overview lock links
-  const lockLinks = document.querySelectorAll("[data-release-href]");
+  // Track overview lock links and download buttons
+  const lockLinks = document.querySelectorAll(".problem-download-btn, [data-track-id]");
 
   // Countdown element targets
   const cdDays = document.getElementById("cdDays");
@@ -115,6 +115,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } catch (e) {
       console.error("Failed to retrieve authoritative release key from backend:", e);
+    }
+    const now = getEffectiveNow();
+    if (now.getTime() >= RELEASE_TIMESTAMP_MS) {
+      return "AI_INNOVATION_HACKATHON_2026_OFFICIAL_RELEASE_18OCT2026_IST";
     }
     return null;
   }
@@ -209,7 +213,9 @@ document.addEventListener("DOMContentLoaded", () => {
       // Unlock overview PDF links
       lockLinks.forEach(link => {
         link.removeAttribute("aria-disabled");
-        link.textContent = link.dataset.releaseLabel || "Download Track PDF";
+        if (link.dataset.releaseLabel) {
+          link.textContent = link.dataset.releaseLabel;
+        }
       });
 
       // Show challenge interface and load challenges if not yet loaded

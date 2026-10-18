@@ -243,3 +243,46 @@
     min-height: 82px;
   }
 }
+
+/* Shortlist status banner & Round 1 status pills */
+.shortlist-status-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 18px 22px;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: var(--radius);
+  background: rgba(245, 158, 11, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.shortlist-status-banner.is-published {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.shortlist-status-banner.is-published #shortlistBannerIcon {
+  color: #10b981;
+}
+
+.status-pill.shortlisted {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  font-weight: 700;
+}
+
+.status-pill.pending {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  font-weight: 700;
+}
+
+.status-pill.received {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  font-weight: 700;
+}

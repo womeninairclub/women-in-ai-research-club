@@ -53,6 +53,13 @@
       <p class="lead">
         Live public directory of international teams and individual innovators officially registered for the AI Innovation Hackathon 2026.
       </p>
+      <div class="reg-closed-announcement" role="status" aria-live="polite" style="margin-top:20px">
+        <div class="reg-closed-title">Official Announcement: Registrations Closed</div>
+        <p class="reg-closed-text">
+          Registrations for AI Innovation Hackathon 2026 are now officially closed. Thank you for the overwhelming response! Registered participants should follow the official website for problem statements, submission instructions, deadlines, and further announcements.
+        </p>
+      </div>
+
       <div class="button-row" style="margin-top:24px">
         <button type="button" class="btn disabled btn-closed" disabled aria-disabled="true" title="Registrations are officially closed">
           Registrations Closed
@@ -66,6 +73,86 @@
         <a class="btn" href="hackathon.html">
           Hackathon Hub
         </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROUND 1 IDEA SCREENING SUBMISSIONS & SHORTLIST -->
+  <section class="section alt" id="round1-submissions">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Round 1 Tracking</div>
+          <h2>Round 1 Idea Screening — Submissions</h2>
+        </div>
+        <p>
+          Live public status of verified Round 1 Idea Screening proposals submitted to the evaluation panel. Sensitive proposal materials, pitch decks, and internal notes are kept strictly confidential.
+        </p>
+      </div>
+
+      <!-- Shortlist Announcement Banner (Dynamic: published vs in progress) -->
+      <div id="shortlistBanner" class="shortlist-status-banner" style="margin-bottom:24px">
+        <div id="shortlistBannerIcon" style="font-size:24px">⏳</div>
+        <div style="flex:1">
+          <strong id="shortlistBannerHeading" style="font-size:16px;display:block;margin-bottom:4px">Round 1 Screening Status</strong>
+          <p id="shortlistBannerText" style="margin:0;font-size:14px;color:var(--muted)">
+            Round 1 screening is in progress. The official shortlist will be announced after evaluation is finalized.
+          </p>
+        </div>
+      </div>
+
+      <!-- METRICS / STATS -->
+      <div class="participants-stats" aria-label="Round 1 Submissions summary">
+        <div class="participant-stat">
+          <span>Recorded Submissions</span>
+          <strong id="r1TotalCount">0</strong>
+        </div>
+        <div class="participant-stat">
+          <span>Under Evaluation</span>
+          <strong id="r1PendingCount">0</strong>
+        </div>
+        <div class="participant-stat">
+          <span>Shortlisted Teams</span>
+          <strong id="r1ShortlistedCount">0</strong>
+        </div>
+      </div>
+
+      <!-- SEARCH & TRACK FILTER CONTROLS -->
+      <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+        <input type="text" id="r1SearchInput" class="form-control" style="flex:1;min-width:240px" placeholder="Search by team name or problem statement...">
+        <div style="display:flex;gap:8px;flex-wrap:wrap" id="r1StatusFilterGroup">
+          <button type="button" class="btn sm primary" id="r1FilterAllBtn">All Submissions</button>
+          <button type="button" class="btn sm secondary" id="r1FilterShortlistedBtn">Shortlisted Only</button>
+          <button type="button" class="btn sm secondary" id="r1FilterPendingBtn">Pending Only</button>
+        </div>
+      </div>
+
+      <div id="r1StatusMsg" class="participant-status" role="status" aria-live="polite">
+        Connecting to Round 1 submission records...
+      </div>
+
+      <!-- ROUND 1 SUBMISSIONS TABLE -->
+      <div class="participants-table-wrapper" id="r1TableWrapper">
+        <table class="participants-table">
+          <thead>
+            <tr>
+              <th scope="col" style="width:90px">Sl. No.</th>
+              <th scope="col" style="width:28%">Team Name</th>
+              <th scope="col" style="width:220px">Selected Track</th>
+              <th scope="col">Selected Problem Statement</th>
+              <th scope="col" style="width:180px">Submission Status</th>
+            </tr>
+          </thead>
+          <tbody id="r1SubmissionsGrid"></tbody>
+        </table>
+      </div>
+
+      <div id="r1EmptyMsg" class="participant-empty" hidden>
+        No verified Round 1 submissions match your search or filter.
+      </div>
+
+      <div id="r1ErrorMsg" class="participant-error" hidden>
+        Round 1 submission records are currently synchronizing. Please refresh or check back shortly.
       </div>
     </div>
   </section>
@@ -194,7 +281,7 @@
         <a href="mailto:womeninairclub@gmail.com">womeninairclub@gmail.com</a>
         <a href="https://chat.whatsapp.com/DsJeBSmTsD1FaE4n0elSIj" target="_blank" rel="noopener">WhatsApp Community</a>
         <a href="join.html">Club Membership</a>
-        <a href="https://forms.gle/tc3TrSSX1HFerk2j6" target="_blank" rel="noopener">Register for Hackathon</a>
+        <span class="footer-link-disabled" style="color:var(--muted-2);cursor:not-allowed;font-size:14px">Hackathon Registration (Closed)</span>
       </div>
     </div>
   </div>
@@ -381,7 +468,201 @@ function updateFilterButtons() {
   document.getElementById("filterIndividualsBtn").className = currentFilter === "individual" ? "btn sm primary" : "btn sm secondary";
 }
 
+// =========================================================
+// ROUND 1 IDEA SCREENING SUBMISSIONS & SHORTLIST TRACKING
+// =========================================================
+let r1AllSubmissions = [];
+let r1CurrentFilter = "all"; // all, shortlisted, pending
+let r1CurrentSearch = "";
+let r1IsPublished = false;
+
+function renderRound1Table() {
+  const tableBody = document.getElementById("r1SubmissionsGrid");
+  const statusMsg = document.getElementById("r1StatusMsg");
+  const emptyMsg = document.getElementById("r1EmptyMsg");
+  const totalCountEl = document.getElementById("r1TotalCount");
+  const pendingCountEl = document.getElementById("r1PendingCount");
+  const shortlistedCountEl = document.getElementById("r1ShortlistedCount");
+  const banner = document.getElementById("shortlistBanner");
+  const bannerIcon = document.getElementById("shortlistBannerIcon");
+  const bannerHeading = document.getElementById("shortlistBannerHeading");
+  const bannerText = document.getElementById("shortlistBannerText");
+
+  // Update Shortlist Banner State
+  if (r1IsPublished) {
+    if (banner) banner.className = "shortlist-status-banner is-published";
+    if (bannerIcon) bannerIcon.textContent = "🏆";
+    if (bannerHeading) bannerHeading.textContent = "Official Shortlist Published";
+    if (bannerText) {
+      bannerText.innerHTML = "Round 1 screening results have been officially published. Shortlisted teams are eligible to proceed to the Round 2 Final Submission. Congratulations to all shortlisted innovators!";
+    }
+  } else {
+    if (banner) banner.className = "shortlist-status-banner";
+    if (bannerIcon) bannerIcon.textContent = "⏳";
+    if (bannerHeading) bannerHeading.textContent = "Round 1 Screening in Progress";
+    if (bannerText) {
+      bannerText.innerHTML = "Round 1 screening is in progress. The official shortlist will be announced after evaluation is finalized.";
+    }
+  }
+
+  // Counts
+  const totalValid = r1AllSubmissions.length;
+  const shortlistedCount = r1AllSubmissions.filter(s => String(s.status).toUpperCase().includes("SHORTLISTED")).length;
+  const pendingCount = r1AllSubmissions.filter(s => {
+    const st = String(s.status).toUpperCase();
+    return st.includes("PENDING") || st.includes("RECEIVED") || st.includes("SUBMITTED");
+  }).length;
+
+  if (totalCountEl) totalCountEl.textContent = totalValid;
+  if (pendingCountEl) pendingCountEl.textContent = pendingCount;
+  if (shortlistedCountEl) shortlistedCountEl.textContent = shortlistedCount;
+
+  // Filter
+  let filtered = r1AllSubmissions.filter(sub => {
+    const st = String(sub.status).toUpperCase();
+    if (r1CurrentFilter === "shortlisted" && !st.includes("SHORTLISTED")) return false;
+    if (r1CurrentFilter === "pending" && !st.includes("PENDING") && !st.includes("RECEIVED") && !st.includes("SUBMITTED")) return false;
+    if (r1CurrentSearch) {
+      const q = r1CurrentSearch;
+      const t = String(sub.teamName || "").toLowerCase();
+      const p = String(sub.problemStatement || "").toLowerCase();
+      const tr = String(sub.track || "").toLowerCase();
+      return t.includes(q) || p.includes(q) || tr.includes(q);
+    }
+    return true;
+  });
+
+  tableBody.innerHTML = "";
+
+  if (!filtered.length) {
+    if (statusMsg) statusMsg.textContent = "";
+    if (emptyMsg) {
+      emptyMsg.hidden = false;
+      if (!r1AllSubmissions.length) {
+        emptyMsg.textContent = "No verified Round 1 submissions have been recorded yet.";
+      } else {
+        emptyMsg.textContent = "No verified Round 1 submissions match your search or filter.";
+      }
+    }
+    return;
+  }
+
+  if (emptyMsg) emptyMsg.hidden = true;
+  if (statusMsg) {
+    statusMsg.textContent = `Displaying ${filtered.length} of ${totalValid} successfully recorded Round 1 submissions.`;
+  }
+
+  filtered.forEach((sub, idx) => {
+    const row = document.createElement("tr");
+    const slNo = String(idx + 1).padStart(2, "0");
+    const st = String(sub.status || "SUBMISSION RECEIVED").toUpperCase();
+
+    let pillClass = "received";
+    let pillLabel = "SUBMISSION RECEIVED";
+
+    if (st.includes("SHORTLISTED") || st.includes("SELECTED")) {
+      pillClass = "shortlisted";
+      pillLabel = "SHORTLISTED";
+    } else if (st.includes("NOT SELECTED") || st.includes("REJECTED")) {
+      pillClass = "not-selected";
+      pillLabel = "NOT SELECTED";
+    } else if (st.includes("PENDING")) {
+      pillClass = "pending";
+      pillLabel = "PENDING EVALUATION";
+    } else {
+      pillClass = "received";
+      pillLabel = "SUBMISSION RECEIVED";
+    }
+
+    row.innerHTML = `
+      <td style="color:var(--purple);font-weight:700;font-size:13px">${slNo}</td>
+      <td style="font-weight:600;color:var(--text)">${escapeParticipantHTML(sub.teamName)}</td>
+      <td style="color:var(--muted);font-size:13px">${escapeParticipantHTML(sub.track || "—")}</td>
+      <td style="color:var(--text);font-size:13px">${escapeParticipantHTML(sub.problemStatement || "—")}</td>
+      <td><span class="status-pill ${pillClass}">${pillLabel}</span></td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+async function loadRound1Submissions() {
+  const statusMsg = document.getElementById("r1StatusMsg");
+  const errorMsg = document.getElementById("r1ErrorMsg");
+  const emptyMsg = document.getElementById("r1EmptyMsg");
+
+  try {
+    const res = await fetch(`${PARTICIPANT_API}?action=getRound1Submissions&t=${Date.now()}`, { cache: "no-store" });
+    if (!res.ok) throw new Error("Round 1 API error: " + res.status);
+    const json = await res.json();
+
+    if (json && json.submissions && Array.isArray(json.submissions)) {
+      r1IsPublished = !!json.isPublished;
+      r1AllSubmissions = json.submissions.map((item, idx) => ({
+        id: item.id || idx + 1,
+        teamName: normalizeText(item.teamName || "Participant"),
+        track: normalizeText(item.track || ""),
+        problemStatement: normalizeText(item.problemStatement || ""),
+        status: item.status || "SUBMISSION RECEIVED"
+      }));
+    } else if (Array.isArray(json)) {
+      // If deployed backend currently returns array
+      const hasStage1Items = json.some(i => i.problemStatement || i.track);
+      if (hasStage1Items) {
+        r1AllSubmissions = json.filter(i => i.problemStatement || i.track).map((item, idx) => ({
+          id: item.id || idx + 1,
+          teamName: normalizeText(item.teamName || "Participant"),
+          track: normalizeText(item.track || ""),
+          problemStatement: normalizeText(item.problemStatement || ""),
+          status: item.status || "SUBMISSION RECEIVED"
+        }));
+      } else {
+        r1AllSubmissions = [];
+      }
+    } else {
+      r1AllSubmissions = [];
+    }
+
+    renderRound1Table();
+    if (errorMsg) errorMsg.hidden = true;
+  } catch (err) {
+    console.error("Failed to load Round 1 submissions:", err);
+    if (statusMsg) statusMsg.textContent = "";
+    if (errorMsg) errorMsg.hidden = false;
+  }
+}
+
+// Filter listeners for Round 1
+document.getElementById("r1SearchInput")?.addEventListener("input", e => {
+  r1CurrentSearch = e.target.value.trim().toLowerCase();
+  renderRound1Table();
+});
+
+document.getElementById("r1FilterAllBtn")?.addEventListener("click", () => {
+  r1CurrentFilter = "all";
+  updateR1FilterButtons();
+  renderRound1Table();
+});
+
+document.getElementById("r1FilterShortlistedBtn")?.addEventListener("click", () => {
+  r1CurrentFilter = "shortlisted";
+  updateR1FilterButtons();
+  renderRound1Table();
+});
+
+document.getElementById("r1FilterPendingBtn")?.addEventListener("click", () => {
+  r1CurrentFilter = "pending";
+  updateR1FilterButtons();
+  renderRound1Table();
+});
+
+function updateR1FilterButtons() {
+  document.getElementById("r1FilterAllBtn").className = r1CurrentFilter === "all" ? "btn sm primary" : "btn sm secondary";
+  document.getElementById("r1FilterShortlistedBtn").className = r1CurrentFilter === "shortlisted" ? "btn sm primary" : "btn sm secondary";
+  document.getElementById("r1FilterPendingBtn").className = r1CurrentFilter === "pending" ? "btn sm primary" : "btn sm secondary";
+}
+
 loadParticipants();
+loadRound1Submissions();
 </script>
 <script src="js/main.js"></script>
 </body>

@@ -4,7 +4,7 @@
  *
  * Features:
  * 1. doGet:
- *    - ?panel=judge&key=WAI_JUDGE_2026 -> Renders protected Final Round Judge Panel HTML Dashboard.
+ *    - ?panel=judge&key=<CONFIGURED_JUDGE_KEY> -> Renders protected Final Round Judge Panel HTML Dashboard.
  *    - ?action=checkStatus&query=... -> Returns single participant/team status & Stage 2 eligibility flag.
  *    - Default (Public Participants Roster) -> Reads ONLY from 'Form Responses 1', deduplicates teams,
  *      returns ONLY: Sl. No (id), Team Name, Participation Type. ZERO private data exposed.
@@ -12,7 +12,7 @@
  *    - Stage1_Screening -> Logs proposal to 'Stage 1 Submissions', dispatches receipt email.
  *    - Stage2_Final     -> Gated by Stage 1 shortlist status; checks eligibility only
  *      (Final Submissions is populated directly by Google Form; this route only verifies gate).
- * 3. Final Round Judge Panel (ONE AND ONLY judge panel — route: ?panel=judge&key=WAI_JUDGE_2026):
+ * 3. Final Round Judge Panel (ONE AND ONLY judge panel — route: ?panel=judge&key=<CONFIGURED_JUDGE_KEY>):
  *    - Reads ONLY from 'Final Submissions' sheet.
  *    - Evaluates final projects with decisions: WINNER, FINALIST, NOT SELECTED.
  *    - Stores decision in 'Final Evaluation Status' & 'Final Decision Email Sent'.
@@ -39,11 +39,51 @@ const CONFIG = {
   REGISTRATION_SHEET: "Form Responses 1",
   STAGE1_SHEET: "Stage 1 Submissions",
   STAGE2_SHEET: "Form Responses 2",
-  JUDGE_KEY: "WAI_JUDGE_2026",
+  DEFAULT_JUDGE_KEY: "WAI_JUDGE_2026", // Fallback only if JUDGE_KEY is not set in Script Properties
   EVENT_NAME: "AI Innovation Hackathon 2026",
   ORGANIZER_EMAIL: "womeninairclub@gmail.com",
   WEBSITE_URL: "https://womeninairclub.github.io/women-in-ai-research-club/hackathon.html"
 };
+
+/**
+ * Retrieves the Judge Authorization Secret Key.
+ * Priority:
+ * 1. Script Properties ('JUDGE_KEY') — configured securely by organizer in Apps Script settings.
+ * 2. Fallback to CONFIG.DEFAULT_JUDGE_KEY if Script Property has not been set yet.
+ */
+function getJudgeKey_() {
+  const scriptProps = PropertiesService.getScriptProperties();
+  const configured = scriptProps.getProperty("JUDGE_KEY");
+  if (configured && configured.trim()) {
+    return configured.trim();
+  }
+  return String(CONFIG.DEFAULT_JUDGE_KEY || "").trim();
+}
+
+/**
+ * Validates a judge authentication key provided by a client or user.
+ * Performs strict non-empty, type, and string matching.
+ */
+function validateJudgeKey_(providedKey) {
+  if (!providedKey || typeof providedKey !== "string") return false;
+  const expected = getJudgeKey_();
+  if (!expected) return false;
+  return providedKey.trim() === expected;
+}
+
+/**
+ * Administrative helper for organizers to set or rotate the Judge Secret Key.
+ * Run directly from the Apps Script editor:
+ * Run -> setJudgeKeyInProperties("your_new_secret_key")
+ */
+function setJudgeKeyInProperties(newKey) {
+  if (!newKey || typeof newKey !== "string" || !newKey.trim()) {
+    throw new Error("Invalid key: Key must be a non-empty string.");
+  }
+  PropertiesService.getScriptProperties().setProperty("JUDGE_KEY", newKey.trim());
+  Logger.log("JUDGE_KEY has been successfully updated in Script Properties.");
+  return true;
+}
 
 // =========================================================
 // 1. HTTP GET ENDPOINT (Judge Panel, Status Lookup & Roster)
@@ -79,14 +119,101 @@ function doGet(e) {
 
     // ROUTE 1: PRIVATE FINAL JUDGE PANEL DASHBOARD
     if (params.panel === "judge") {
-      if (params.key !== CONFIG.JUDGE_KEY) {
+      if (!validateJudgeKey_(params.key)) {
         return HtmlService.createHtmlOutput(
           "<div style='font-family:sans-serif;padding:40px;color:#ef4444;background:#0f172a;height:100vh;box-sizing:border-box;text-align:center;'>" +
           "<h2 style='font-size:28px;margin-bottom:12px;'>🚫 Access Denied</h2>" +
           "<p style='color:#94a3b8;font-size:16px;'>Invalid or missing Judge Key. The Judge Panel is private and restricted to authorized judges.</p></div>"
         );
       }
-      return renderJudgePanel();
+      return renderJudgePanel(params.key);
+    }
+
+    // ROUTE 1B: PUBLIC ROUND 1 IDEA SCREENING SUBMISSIONS & SHORTLIST
+    // Exposes ONLY: id, teamName, track, problemStatement, status.
+    // ZERO private data exposed (no email, phone, pitch link, proposal text, notes).
+    if (params.action === "getRound1Submissions") {
+      const stage1Sheet = ss.getSheetByName(CONFIG.STAGE1_SHEET);
+      if (!stage1Sheet) {
+        return jsonResponse_({
+          success: true,
+          isPublished: false,
+          totalCount: 0,
+          shortlistedCount: 0,
+          pendingCount: 0,
+          submissions: []
+        });
+      }
+
+      const scriptProps = PropertiesService.getScriptProperties();
+      const isPublished = (scriptProps.getProperty("ROUND1_SHORTLIST_PUBLISHED") === "true");
+      const showNotSelected = (scriptProps.getProperty("ROUND1_SHOW_NOT_SELECTED") === "true");
+
+      const data1 = stage1Sheet.getDataRange().getValues();
+      if (data1.length < 2) {
+        return jsonResponse_({
+          success: true,
+          isPublished: isPublished,
+          totalCount: 0,
+          shortlistedCount: 0,
+          pendingCount: 0,
+          submissions: []
+        });
+      }
+
+      const s1Cols = findStage1Columns_(data1[0]);
+      const rows1 = data1.slice(1);
+      const seenTeams = new Set();
+      const publicSubmissions = [];
+
+      rows1.forEach(row => {
+        const teamName = String(row[s1Cols.teamName] || "").trim();
+        const track = String(row[s1Cols.track] || "").trim();
+        const statement = String(row[s1Cols.statement] || "").trim();
+        const rawStatus = String(row[s1Cols.status] || "SUBMISSION RECEIVED").trim().toUpperCase();
+
+        if (!teamName || (!statement && !track)) return;
+
+        const normKey = teamName.toLowerCase();
+        if (seenTeams.has(normKey)) return;
+        seenTeams.add(normKey);
+
+        let publicStatus = "SUBMISSION RECEIVED";
+        if (isPublished) {
+          if (rawStatus.includes("NOT SELECTED") || rawStatus.includes("REJECTED")) {
+            publicStatus = showNotSelected ? "NOT SELECTED" : "SUBMISSION RECEIVED";
+          } else if (rawStatus.includes("SHORTLISTED") || rawStatus.includes("SELECTED")) {
+            publicStatus = "SHORTLISTED";
+          } else if (rawStatus.includes("PENDING")) {
+            publicStatus = "PENDING EVALUATION";
+          } else {
+            publicStatus = "SUBMISSION RECEIVED";
+          }
+        } else {
+          // Keep decisions private until officially published by organizer
+          publicStatus = rawStatus.includes("PENDING") ? "PENDING EVALUATION" : "SUBMISSION RECEIVED";
+        }
+
+        publicSubmissions.push({
+          id: publicSubmissions.length + 1,
+          teamName: teamName,
+          track: track,
+          problemStatement: statement,
+          status: publicStatus
+        });
+      });
+
+      const shortlistedCount = publicSubmissions.filter(s => s.status === "SHORTLISTED").length;
+      const pendingCount = publicSubmissions.filter(s => s.status.includes("PENDING") || s.status.includes("RECEIVED")).length;
+
+      return jsonResponse_({
+        success: true,
+        isPublished: isPublished,
+        totalCount: publicSubmissions.length,
+        shortlistedCount: shortlistedCount,
+        pendingCount: pendingCount,
+        submissions: publicSubmissions
+      });
     }
 
     // ROUTE 2: SECURE SINGLE PARTICIPANT / TEAM STATUS LOOKUP
@@ -130,21 +257,22 @@ function doGet(e) {
       if (stage1Sheet) {
         const data1 = stage1Sheet.getDataRange().getValues();
         if (data1.length > 1) {
+          const s1Cols = findStage1Columns_(data1[0]);
           const rows1 = data1.slice(1);
           const match1 = rows1.find(r => {
-            const ref = String(r[0] || "").toLowerCase();
-            const team = String(r[3] || "").toLowerCase();
-            const email = String(r[5] || "").toLowerCase();
-            return ref === q || team === q || email === q;
+            const ref = String(r[s1Cols.refId] || "").toLowerCase();
+            const team = String(r[s1Cols.teamName] || "").toLowerCase();
+            const email = String(r[s1Cols.email] || "").toLowerCase();
+            return q && (ref === q || team === q || email === q);
           });
 
           if (match1) {
-            const refId = match1[0];
-            const s1Status = match1[12] || "ROUND 1 SUBMITTED";
+            const refId = match1[s1Cols.refId];
+            const s1Status = match1[s1Cols.status] || "ROUND 1 SUBMITTED";
             if (!foundRecord) {
               foundRecord = {
-                teamName: match1[3] || "Participant",
-                type: match1[2] || "Team",
+                teamName: match1[s1Cols.teamName] || "Participant",
+                type: match1[s1Cols.type] || "Team",
                 status: s1Status,
                 referenceId: refId
               };
@@ -197,10 +325,9 @@ function doGet(e) {
         normStatus.includes("SELECTED") ||
         normStatus.includes("FINAL SUBMISSION PENDING") ||
         normStatus.includes("FINAL SUBMISSION RECEIVED") ||
-        normStatus.includes("UNDER EVALUATION") ||
         normStatus.includes("FINALIST") ||
         normStatus.includes("WINNER")
-      );
+      ) && !normStatus.includes("NOT SELECTED") && !normStatus.includes("REJECTED") && !normStatus.includes("PENDING");
 
       return jsonResponse_({
         found: true,
@@ -360,18 +487,19 @@ function doPost(e) {
       } else {
         const s1Data = stage1Sheet.getDataRange().getValues();
         if (s1Data.length > 1) {
+          const s1Cols = findStage1Columns_(s1Data[0]);
           const rows1 = s1Data.slice(1);
           const duplicate = rows1.find(r => {
-            const exTeam = String(r[3] || "").toLowerCase().trim();
-            const exEmail = String(r[5] || "").toLowerCase().trim();
-            return exTeam === teamName.toLowerCase() || exEmail === email.toLowerCase();
+            const exTeam = String(r[s1Cols.teamName] || "").toLowerCase().trim();
+            const exEmail = String(r[s1Cols.email] || "").toLowerCase().trim();
+            return (teamName && exTeam === teamName.toLowerCase()) || (email && exEmail === email.toLowerCase());
           });
 
           if (duplicate) {
             return jsonResponse_({
               success: false,
               alreadySubmitted: true,
-              refId: duplicate[0],
+              refId: duplicate[s1Cols.refId],
               message: "Stage 1 proposal has already been submitted for this team/email.",
               status: "ROUND 1 SUBMITTED"
             }, 200);
@@ -580,7 +708,7 @@ function doPost(e) {
 // =========================================================
 // 3. FINAL ROUND JUDGE PANEL INTERFACE & SERVER FUNCTIONS
 // =========================================================
-function renderJudgePanel() {
+function renderJudgePanel(authorizedKey) {
   var html = `
     <!DOCTYPE html>
     <html lang="en">
@@ -588,7 +716,7 @@ function renderJudgePanel() {
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <base target="_top">
-      <title>AI Innovation Hackathon 2026 — Final Round Judge Panel</title>
+      <title>AI Innovation Hackathon 2026 — Official Judge &amp; Screening Panel</title>
       <style>
         :root {
           --bg: #0f172a;
@@ -603,76 +731,465 @@ function renderJudgePanel() {
           --warning: #f59e0b;
         }
         body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 24px; margin: 0; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; background: var(--panel); padding: 20px 24px; border-radius: 12px; border: 1px solid var(--border); flex-wrap: wrap; gap: 16px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: var(--panel); padding: 20px 24px; border-radius: 12px; border: 1px solid var(--border); flex-wrap: wrap; gap: 16px; }
         h1 { color: var(--primary); font-size: 22px; margin: 0; display: flex; align-items: center; gap: 10px; }
-        .stats-bar { display: flex; gap: 12px; flex-wrap: wrap; }
-        .stat-badge { background: #0f172a; border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; font-size: 13px; color: var(--muted); font-weight: 600; }
-        .stat-badge span { color: var(--text); font-weight: 700; margin-left: 4px; }
-        .table-container { background: var(--panel); border-radius: 12px; overflow-x: auto; border: 1px solid var(--border); }
+        .nav-tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 12px; flex-wrap: wrap; }
+        .tab-btn { background: #0f172a; border: 1px solid var(--border); color: var(--muted); padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13.5px; transition: all 0.2s; }
+        .tab-btn.active { background: var(--primary); color: #0f172a; border-color: var(--primary); font-weight: 700; }
+        .stats-bar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+        .stat-badge { background: var(--panel); border: 1px solid var(--border); padding: 8px 16px; border-radius: 20px; font-size: 13px; color: var(--muted); font-weight: 600; }
+        .stat-badge span { color: var(--text); font-weight: 700; margin-left: 6px; }
+        .controls-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+        .search-box { background: var(--panel); border: 1px solid var(--border); color: var(--text); padding: 8px 14px; border-radius: 6px; font-size: 13px; min-width: 260px; }
+        .filter-group { display: flex; gap: 6px; }
+        .filter-pill { background: #0f172a; border: 1px solid var(--border); color: var(--muted); padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 600; }
+        .filter-pill.active { background: rgba(56,189,248,0.2); border-color: var(--primary); color: var(--primary); }
+        .table-container { background: var(--panel); border-radius: 12px; overflow-x: auto; border: 1px solid var(--border); margin-bottom: 24px; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
-        th, td { padding: 14px 18px; border-bottom: 1px solid var(--border); font-size: 13.5px; vertical-align: middle; }
-        th { background: #0f172a; color: var(--muted); text-transform: uppercase; font-size: 11.5px; letter-spacing: 0.5px; font-weight: 700; }
+        th, td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+        th { background: #0f172a; color: var(--muted); text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; font-weight: 700; }
         tr:hover { background: #26334d; }
-        .btn { padding: 7px 14px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12.5px; margin-right: 6px; margin-bottom: 4px; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; margin-right: 4px; margin-bottom: 4px; transition: all 0.2s; display: inline-flex; align-items: center; gap: 5px; }
         .btn-winner { background: #10b981; color: #fff; }
         .btn-winner:hover { background: #059669; }
         .btn-finalist { background: #a855f7; color: #fff; }
         .btn-finalist:hover { background: #9333ea; }
         .btn-reject { background: #ef4444; color: #fff; }
         .btn-reject:hover { background: #dc2626; }
-        .badge { padding: 5px 11px; border-radius: 6px; font-size: 11.5px; font-weight: 700; display: inline-block; letter-spacing: 0.3px; }
+        .btn-secondary { background: #334155; color: #f8fafc; }
+        .btn-secondary:hover { background: #475569; }
+        .badge { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; display: inline-block; letter-spacing: 0.3px; white-space: nowrap; }
         .badge-pending { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
         .badge-winner { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
         .badge-finalist { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
         .badge-rejected { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-shortlisted { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
         .link { color: var(--primary); text-decoration: none; font-weight: 600; }
         .link:hover { text-decoration: underline; }
-        .desc-text { color: var(--muted); font-size: 12.5px; line-height: 1.4; max-width: 260px; word-break: break-word; }
+        .notes-input { width: 100%; min-width: 140px; background: #0f172a; border: 1px solid var(--border); color: var(--text); padding: 6px 8px; border-radius: 4px; font-size: 12px; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+        .modal-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; max-width: 650px; width: 100%; max-height: 85vh; overflow-y: auto; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .pub-box { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 24px; max-width: 750px; }
       </style>
     </head>
     <body>
       <div class="header">
         <div>
-          <h1>🏆 AI Innovation Hackathon 2026 — Final Round Judge Panel</h1>
-          <p style="margin:4px 0 0;font-size:13px;color:var(--muted)">Evaluating Stage 2 Final Projects • Final Round Decisions &amp; Result Dispatches</p>
+          <h1>⚖️ AI Innovation Hackathon 2026 — Official Judge &amp; Screening Panel</h1>
+          <p style="margin:4px 0 0;font-size:13px;color:var(--muted)">Authoritative evaluation portal for Stage 1 Idea Screening &amp; Stage 2 Final Projects</p>
         </div>
-        <div class="stats-bar" id="statsBar">
+        <div style="font-size:12px;color:var(--muted);background:#0f172a;padding:8px 14px;border-radius:8px;border:1px solid var(--border)">
+          Session: <strong style="color:var(--primary)">Authorized Evaluator</strong>
+        </div>
+      </div>
+
+      <!-- NAVIGATION TABS -->
+      <div class="nav-tabs">
+        <button type="button" class="tab-btn active" id="tabBtnStage1" onclick="switchTab('stage1')">📋 Round 1: Idea Screening (Stage 1)</button>
+        <button type="button" class="tab-btn" id="tabBtnStage2" onclick="switchTab('stage2')">🏆 Round 2: Final Projects (Stage 2)</button>
+        <button type="button" class="tab-btn" id="tabBtnPublish" onclick="switchTab('publish')">📢 Shortlist Publication Management</button>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- TAB 1: ROUND 1 IDEA SCREENING               -->
+      <!-- ========================================== -->
+      <div id="tabContentStage1">
+        <div class="stats-bar">
+          <div class="stat-badge">Total Round 1 Submissions:<span id="s1CntTotal">0</span></div>
+          <div class="stat-badge">Pending Evaluation:<span id="s1CntPending" style="color:#fbbf24">0</span></div>
+          <div class="stat-badge">Shortlisted:<span id="s1CntShortlisted" style="color:#34d399">0</span></div>
+          <div class="stat-badge">Not Selected:<span id="s1CntNotSelected" style="color:#f87171">0</span></div>
+        </div>
+
+        <div class="controls-bar">
+          <input type="text" id="s1SearchInput" class="search-box" placeholder="Search by team, track, problem, email..." oninput="onS1SearchChange()">
+          <div class="filter-group">
+            <button type="button" class="filter-pill active" id="s1FilterAll" onclick="setS1Filter('all')">All</button>
+            <button type="button" class="filter-pill" id="s1FilterPending" onclick="setS1Filter('pending')">Pending Only</button>
+            <button type="button" class="filter-pill" id="s1FilterShortlisted" onclick="setS1Filter('shortlisted')">Shortlisted Only</button>
+            <button type="button" class="filter-pill" id="s1FilterNotSelected" onclick="setS1Filter('not_selected')">Not Selected</button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:50px">Sl.</th>
+                <th>Ref ID &amp; Team Name</th>
+                <th>Primary Contact / Email</th>
+                <th>Track &amp; Problem Statement</th>
+                <th>Proposal Details</th>
+                <th>Pitch Deck</th>
+                <th style="width:140px">Private Notes</th>
+                <th>Screening Status</th>
+                <th style="width:170px">Screening Action</th>
+              </tr>
+            </thead>
+            <tbody id="s1TableBody">
+              <tr><td colspan="9" style="text-align:center;padding:40px;color:var(--muted)">Loading Round 1 submissions from Stage 1 Submissions sheet...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- TAB 2: ROUND 2 FINAL PROJECTS               -->
+      <!-- ========================================== -->
+      <div id="tabContentStage2" style="display:none">
+        <div class="stats-bar">
           <div class="stat-badge">Total Final Submissions:<span id="cntTotal">0</span></div>
           <div class="stat-badge">Pending:<span id="cntPending" style="color:#fbbf24">0</span></div>
           <div class="stat-badge">Winners:<span id="cntWinners" style="color:#34d399">0</span></div>
           <div class="stat-badge">Finalists:<span id="cntFinalists" style="color:#c084fc">0</span></div>
           <div class="stat-badge">Not Selected:<span id="cntNotSelected" style="color:#f87171">0</span></div>
         </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Sl. No.</th>
+                <th>Participant / Team Name</th>
+                <th>Selected Problem Statement</th>
+                <th>GitHub Repository</th>
+                <th>Demo Video</th>
+                <th>Live Demo / Deployment</th>
+                <th>Declaration</th>
+                <th>Current Final Status</th>
+                <th>Final Decision Action</th>
+              </tr>
+            </thead>
+            <tbody id="table-body">
+              <tr><td colspan="9" style="text-align:center;padding:40px;color:var(--muted)">Loading final project submissions from sheet...</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Sl. No.</th>
-              <th>Participant / Team Name</th>
-              <th>Selected Problem Statement</th>
-              <th>GitHub Repository</th>
-              <th>Demo Video</th>
-              <th>Live Demo / Deployment</th>
-              <th>Declaration</th>
-              <th>Current Final Status</th>
-              <th>Final Decision Action</th>
-            </tr>
-          </thead>
-          <tbody id="table-body">
-            <tr><td colspan="9" style="text-align:center;padding:40px;color:var(--muted)">Loading final project submissions from sheet...</td></tr>
-          </tbody>
-        </table>
+      <!-- ========================================== -->
+      <!-- TAB 3: SHORTLIST PUBLICATION MANAGEMENT     -->
+      <!-- ========================================== -->
+      <div id="tabContentPublish" style="display:none">
+        <div class="pub-box">
+          <h2 style="margin-top:0;font-size:18px;color:var(--primary)">📢 Official Shortlist Publication Controls</h2>
+          <p style="color:var(--muted);font-size:13.5px;line-height:1.5">
+            Manage public visibility of Round 1 screening outcomes. Decisions made by judges remain confidential until an organizer explicitly publishes the finalized shortlist.
+          </p>
+
+          <div style="background:#0f172a;border:1px solid var(--border);border-radius:8px;padding:16px;margin:20px 0">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+              <div>
+                <strong style="font-size:15px;display:block">Current Shortlist Publication Status:</strong>
+                <span id="pubStatusBadge" class="badge badge-pending" style="margin-top:6px;font-size:13px;padding:6px 14px">Checking...</span>
+              </div>
+              <div>
+                <button type="button" id="btnTogglePublish" class="btn btn-winner" style="font-size:13.5px;padding:9px 18px" onclick="onTogglePublishClick()">
+                  Publish Shortlist to Website
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:20px">
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13.5px;color:var(--text)">
+              <input type="checkbox" id="chkShowNotSelected" onchange="onShowNotSelectedChange()" style="width:18px;height:18px;cursor:pointer">
+              <span>Display individual <strong>"NOT SELECTED"</strong> statuses publicly on the website</span>
+            </label>
+            <p style="margin:6px 0 0 28px;font-size:12px;color:var(--muted)">
+              If unchecked (default recommended), non-shortlisted teams will simply see "SUBMISSION RECEIVED" on the public tracking table while shortlisted teams are highlighted.
+            </p>
+          </div>
+
+          <div style="background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.25);border-radius:8px;padding:14px;font-size:12.5px;color:var(--muted);line-height:1.5">
+            <strong style="color:var(--primary)">Public Website Behavior:</strong><br>
+            • <strong>Unpublished (Draft):</strong> The public website shows <em>"Round 1 screening is in progress. The official shortlist will be announced after evaluation is finalized."</em> All valid submissions show status "SUBMISSION RECEIVED".<br>
+            • <strong>Published:</strong> The public website displays the official Shortlist Announcement banner and reveals "SHORTLISTED" status for qualifying teams.
+          </div>
+        </div>
+      </div>
+
+      <!-- PROPOSAL DETAILS MODAL -->
+      <div id="proposalModal" class="modal-overlay" onclick="closeProposalModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:10px">
+            <h3 id="modalTeamName" style="margin:0;color:var(--primary);font-size:17px">Proposal Details</h3>
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('proposalModal').style.display='none'">✕ Close</button>
+          </div>
+          <div style="margin-bottom:14px">
+            <strong style="color:var(--muted);font-size:12px;text-transform:uppercase">Problem Statement:</strong>
+            <p id="modalProblem" style="margin:4px 0 0;font-size:13.5px;color:var(--text);line-height:1.4"></p>
+          </div>
+          <div style="margin-bottom:14px">
+            <strong style="color:var(--muted);font-size:12px;text-transform:uppercase">Proposed Solution:</strong>
+            <div id="modalSolution" style="margin:4px 0 0;font-size:13px;color:var(--text);line-height:1.5;background:#0f172a;padding:12px;border-radius:6px;border:1px solid var(--border);white-space:pre-wrap"></div>
+          </div>
+          <div style="margin-bottom:14px">
+            <strong style="color:var(--muted);font-size:12px;text-transform:uppercase">AI / Technical Methodology:</strong>
+            <div id="modalApproach" style="margin:4px 0 0;font-size:13px;color:var(--text);line-height:1.5;background:#0f172a;padding:12px;border-radius:6px;border:1px solid var(--border);white-space:pre-wrap"></div>
+          </div>
+        </div>
       </div>
 
       <script>
+        var JUDGE_KEY = ${JSON.stringify(authorizedKey || "")};
+        var s1RawData = [];
+        var s1CurrentFilter = "all";
+        var s1Search = "";
+        var isShortlistPublished = false;
+        var showNotSelectedPublicly = false;
+
+        function switchTab(tab) {
+          document.getElementById('tabBtnStage1').className = tab === 'stage1' ? 'tab-btn active' : 'tab-btn';
+          document.getElementById('tabBtnStage2').className = tab === 'stage2' ? 'tab-btn active' : 'tab-btn';
+          document.getElementById('tabBtnPublish').className = tab === 'publish' ? 'tab-btn active' : 'tab-btn';
+
+          document.getElementById('tabContentStage1').style.display = tab === 'stage1' ? 'block' : 'none';
+          document.getElementById('tabContentStage2').style.display = tab === 'stage2' ? 'block' : 'none';
+          document.getElementById('tabContentPublish').style.display = tab === 'publish' ? 'block' : 'none';
+
+          if (tab === 'stage1' && s1RawData.length === 0) loadStage1Data();
+          if (tab === 'publish') loadPublishStatus();
+        }
+
+        // -------------------------------------------------------------
+        // STAGE 1 LOGIC
+        // -------------------------------------------------------------
+        function loadStage1Data() {
+          google.script.run
+            .withSuccessHandler(renderS1Rows)
+            .withFailureHandler(function(err) {
+              document.getElementById('s1TableBody').innerHTML = '<tr><td colspan="9" style="color:#ef4444;padding:30px;text-align:center;">Error loading Stage 1 submissions: ' + err.message + '</td></tr>';
+            })
+            .getStage1JudgeData(JUDGE_KEY);
+        }
+
+        function renderS1Rows(data) {
+          s1RawData = data || [];
+          var tbody = document.getElementById('s1TableBody');
+          tbody.innerHTML = '';
+
+          var total = s1RawData.length, pending = 0, shortlisted = 0, notSelected = 0;
+
+          s1RawData.forEach(function(row) {
+            var st = (row.status || '').toUpperCase();
+            if (st.indexOf('SHORTLISTED') !== -1 || st.indexOf('SELECTED') !== -1) shortlisted++;
+            else if (st.indexOf('NOT SELECTED') !== -1 || st.indexOf('REJECTED') !== -1) notSelected++;
+            else pending++;
+          });
+
+          document.getElementById('s1CntTotal').innerText = total;
+          document.getElementById('s1CntPending').innerText = pending;
+          document.getElementById('s1CntShortlisted').innerText = shortlisted;
+          document.getElementById('s1CntNotSelected').innerText = notSelected;
+
+          var filtered = s1RawData.filter(function(row) {
+            var st = (row.status || '').toUpperCase();
+            if (s1CurrentFilter === 'shortlisted' && st.indexOf('SHORTLISTED') === -1 && st.indexOf('SELECTED') === -1) return false;
+            if (s1CurrentFilter === 'not_selected' && st.indexOf('NOT SELECTED') === -1 && st.indexOf('REJECTED') === -1) return false;
+            if (s1CurrentFilter === 'pending' && (st.indexOf('SHORTLISTED') !== -1 || st.indexOf('SELECTED') !== -1 || st.indexOf('NOT SELECTED') !== -1 || st.indexOf('REJECTED') !== -1)) return false;
+            if (s1Search) {
+              var q = s1Search.toLowerCase();
+              var match = (row.teamName && row.teamName.toLowerCase().indexOf(q) !== -1) ||
+                          (row.leaderName && row.leaderName.toLowerCase().indexOf(q) !== -1) ||
+                          (row.email && row.email.toLowerCase().indexOf(q) !== -1) ||
+                          (row.track && row.track.toLowerCase().indexOf(q) !== -1) ||
+                          (row.problemStatement && row.problemStatement.toLowerCase().indexOf(q) !== -1);
+              if (!match) return false;
+            }
+            return true;
+          });
+
+          if (!filtered.length) {
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--muted)">No Stage 1 submissions match your search or filter.</td></tr>';
+            return;
+          }
+
+          filtered.forEach(function(row, idx) {
+            var tr = document.createElement('tr');
+            var st = (row.status || '').toUpperCase();
+            var badgeHtml = '';
+
+            if (st.indexOf('SHORTLISTED') !== -1 || st.indexOf('SELECTED') !== -1) {
+              badgeHtml = '<span class="badge badge-shortlisted">★ SHORTLISTED</span>';
+            } else if (st.indexOf('NOT SELECTED') !== -1 || st.indexOf('REJECTED') !== -1) {
+              badgeHtml = '<span class="badge badge-rejected">NOT SELECTED</span>';
+            } else {
+              badgeHtml = '<span class="badge badge-pending">PENDING EVALUATION</span>';
+            }
+
+            var pitchHtml = row.pitchLink ? '<a href="' + escapeHtml(row.pitchLink) + '" target="_blank" rel="noopener" class="link">Deck ↗</a>' : '<span style="color:var(--muted)">—</span>';
+            var tnAttr = escapeHtml(row.teamName || '');
+            var stmtTrunc = escapeHtml(row.problemStatement || '—');
+            if (stmtTrunc.length > 70) stmtTrunc = stmtTrunc.substring(0, 70) + '...';
+
+            tr.innerHTML =
+              '<td style="font-weight:700;color:var(--muted)">' + (idx + 1 < 10 ? '0' : '') + (idx + 1) + '</td>' +
+              '<td><strong>' + escapeHtml(row.teamName || '') + '</strong><br><small style="color:var(--muted)">' + escapeHtml(row.refId || '') + '</small></td>' +
+              '<td>' + escapeHtml(row.leaderName || '—') + '<br><small style="color:var(--primary)">' + escapeHtml(row.email || '') + '</small></td>' +
+              '<td><span style="color:var(--muted);font-size:11px">' + escapeHtml(row.track || '') + '</span><br>' + stmtTrunc + '</td>' +
+              '<td><button type="button" class="btn btn-secondary" onclick="viewProposalDetails(' + idx + ')">👁️ View Proposal</button></td>' +
+              '<td>' + pitchHtml + '</td>' +
+              '<td><input type="text" class="notes-input" id="s1notes-' + idx + '" value="' + escapeHtml(row.notes || '') + '" placeholder="Private reviewer notes..."></td>' +
+              '<td id="s1status-' + idx + '">' + badgeHtml + '<br><small style="color:var(--muted);font-size:10.5px">Email: ' + escapeHtml(row.emailSent || 'No') + '</small></td>' +
+              '<td id="s1action-' + idx + '">' +
+                '<button type="button" class="btn btn-winner" onclick="makeStage1Decision(\'' + tnAttr + '\',\'SHORTLISTED\',' + idx + ')">★ Shortlist</button>' +
+                '<button type="button" class="btn btn-reject" onclick="makeStage1Decision(\'' + tnAttr + '\',\'NOT SELECTED\',' + idx + ')">❌ Reject</button>' +
+                '<button type="button" class="btn btn-secondary" onclick="makeStage1Decision(\'' + tnAttr + '\',\'PENDING EVALUATION\',' + idx + ')">⏳ Pending</button>' +
+              '</td>';
+            tbody.appendChild(tr);
+          });
+        }
+
+        function setS1Filter(f) {
+          s1CurrentFilter = f;
+          document.getElementById('s1FilterAll').className = f === 'all' ? 'filter-pill active' : 'filter-pill';
+          document.getElementById('s1FilterPending').className = f === 'pending' ? 'filter-pill active' : 'filter-pill';
+          document.getElementById('s1FilterShortlisted').className = f === 'shortlisted' ? 'filter-pill active' : 'filter-pill';
+          document.getElementById('s1FilterNotSelected').className = f === 'not_selected' ? 'filter-pill active' : 'filter-pill';
+          renderS1Rows(s1RawData);
+        }
+
+        function onS1SearchChange() {
+          s1Search = document.getElementById('s1SearchInput').value.trim();
+          renderS1Rows(s1RawData);
+        }
+
+        function viewProposalDetails(idx) {
+          var item = s1RawData[idx];
+          if (!item) return;
+          document.getElementById('modalTeamName').innerText = (item.teamName || 'Team') + ' — ' + (item.track || 'Track');
+          document.getElementById('modalProblem').innerText = item.problemStatement || '—';
+          document.getElementById('modalSolution').innerText = item.solution || 'No solution abstract provided.';
+          document.getElementById('modalApproach').innerText = item.approach || 'No AI approach details provided.';
+          document.getElementById('proposalModal').style.display = 'flex';
+        }
+
+        function closeProposalModal(e) {
+          if (e.target.id === 'proposalModal') {
+            document.getElementById('proposalModal').style.display = 'none';
+          }
+        }
+
+        function makeStage1Decision(teamName, decision, idx) {
+          var notesInput = document.getElementById('s1notes-' + idx);
+          var notes = notesInput ? notesInput.value.trim() : '';
+
+          var confirmMsg = 'Set screening decision for "' + teamName + '" to ' + decision + '?';
+          if (decision === 'SHORTLISTED' || decision === 'NOT SELECTED') {
+            confirmMsg += '\\n\\nIf not previously sent, a formal result email will be dispatched to the team leader.';
+          }
+          if (!confirm(confirmMsg)) return;
+
+          var actionTd = document.getElementById('s1action-' + idx);
+          var statusTd = document.getElementById('s1status-' + idx);
+          actionTd.innerHTML = '<em style="color:var(--muted);font-size:12px">Saving screening decision...</em>';
+
+          google.script.run
+            .withSuccessHandler(function(res) {
+              if (res.savedInSheet) {
+                // Update local model
+                var item = s1RawData.find(function(r) { return r.teamName === teamName; });
+                if (item) {
+                  item.status = decision;
+                  item.notes = notes;
+                  if (res.emailSent) item.emailSent = 'Sent (' + new Date().toLocaleDateString() + ')';
+                }
+                renderS1Rows(s1RawData);
+              } else {
+                alert('Error saving screening decision: ' + res.message);
+                loadStage1Data();
+              }
+            })
+            .withFailureHandler(function(err) {
+              alert('Server error: ' + err.message);
+              loadStage1Data();
+            })
+            .processStage1JudgeDecision(teamName, decision, notes, JUDGE_KEY);
+        }
+
+        // -------------------------------------------------------------
+        // SHORTLIST PUBLICATION MANAGEMENT
+        // -------------------------------------------------------------
+        function loadPublishStatus() {
+          google.script.run
+            .withSuccessHandler(function(res) {
+              isShortlistPublished = !!res.isPublished;
+              showNotSelectedPublicly = !!res.showNotSelected;
+              updatePublishUI();
+            })
+            .withFailureHandler(function(err) {
+              alert('Failed to retrieve publish status: ' + err.message);
+            })
+            .getShortlistPublishStatus(JUDGE_KEY);
+        }
+
+        function updatePublishUI() {
+          var badge = document.getElementById('pubStatusBadge');
+          var btn = document.getElementById('btnTogglePublish');
+          var chk = document.getElementById('chkShowNotSelected');
+
+          chk.checked = showNotSelectedPublicly;
+
+          if (isShortlistPublished) {
+            badge.className = 'badge badge-shortlisted';
+            badge.innerText = '✅ PUBLISHED TO WEBSITE';
+            btn.className = 'btn btn-reject';
+            btn.innerText = '🔒 Unpublish Shortlist (Revert to Draft)';
+          } else {
+            badge.className = 'badge badge-pending';
+            badge.innerText = '⏳ DRAFT / SCREENING IN PROGRESS';
+            btn.className = 'btn btn-winner';
+            btn.innerText = '🚀 Publish Finalized Shortlist';
+          }
+        }
+
+        function onTogglePublishClick() {
+          var targetPublish = !isShortlistPublished;
+          var confirmMsg = targetPublish
+            ? 'Publish the finalized Round 1 Shortlist to the official website?\\nShortlisted teams will become publicly visible.'
+            : 'Unpublish the Shortlist?\\nThe public website will revert to showing "Round 1 screening is in progress".';
+
+          if (!confirm(confirmMsg)) return;
+
+          google.script.run
+            .withSuccessHandler(function(res) {
+              isShortlistPublished = res.isPublished;
+              showNotSelectedPublicly = res.showNotSelected;
+              updatePublishUI();
+              alert(targetPublish ? 'Shortlist has been officially published!' : 'Shortlist unpublished. Public status reverted to in-progress.');
+            })
+            .withFailureHandler(function(err) {
+              alert('Error updating publication status: ' + err.message);
+            })
+            .toggleShortlistPublish(targetPublish, showNotSelectedPublicly, JUDGE_KEY);
+        }
+
+        function onShowNotSelectedChange() {
+          var chk = document.getElementById('chkShowNotSelected');
+          showNotSelectedPublicly = chk.checked;
+          google.script.run
+            .withSuccessHandler(function(res) {
+              showNotSelectedPublicly = res.showNotSelected;
+            })
+            .withFailureHandler(function(err) {
+              alert('Error updating option: ' + err.message);
+            })
+            .toggleShortlistPublish(isShortlistPublished, showNotSelectedPublicly, JUDGE_KEY);
+        }
+
+        // -------------------------------------------------------------
+        // STAGE 2 LOGIC (FINAL PROJECTS)
+        // -------------------------------------------------------------
         google.script.run
           .withSuccessHandler(renderRows)
           .withFailureHandler(function(err) {
             document.getElementById('table-body').innerHTML = '<tr><td colspan="9" style="color:#ef4444;padding:30px;text-align:center;">Error loading final submissions: ' + err.message + '</td></tr>';
           })
-          .getJudgeData();
+          .getJudgeData(JUDGE_KEY);
+
+        // Also pre-fetch Stage 1 data
+        loadStage1Data();
 
         function renderRows(data) {
           var tbody = document.getElementById('table-body');
@@ -751,7 +1268,6 @@ function renderJudgePanel() {
           makeDecision(teamName, decision, idx);
         }
 
-        // Passes teamName (not email); email is resolved server-side by processJudgeDecision
         function makeDecision(teamName, decision, idx) {
           var labelMap = { 'winner': 'WINNER', 'finalist': 'FINALIST', 'not_selected': 'NOT SELECTED' };
           var targetLabel = labelMap[decision] || decision.toUpperCase();
@@ -761,7 +1277,7 @@ function renderJudgePanel() {
           }
 
           var actionTd = document.getElementById('action-' + idx);
-          var statusTd  = document.getElementById('status-' + idx);
+          var statusTd = document.getElementById('status-' + idx);
           actionTd.innerHTML = '<em style="color:var(--muted);font-size:12px">Saving Decision &amp; Dispatching Email...</em>';
 
           google.script.run
@@ -788,7 +1304,7 @@ function renderJudgePanel() {
               alert('Server Error: ' + err.message);
               restoreActionButtons(teamName, idx, actionTd);
             })
-            .processJudgeDecision(teamName, decision);
+            .processJudgeDecision(teamName, decision, JUDGE_KEY);
         }
 
         function restoreActionButtons(teamName, idx, actionTd) {
@@ -810,6 +1326,298 @@ function renderJudgePanel() {
   return HtmlService.createHtmlOutput(html).setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
+// =========================================================
+// 3A. STAGE 1 SCREENING JUDGE BACKEND & SHORTLIST PUBLISHING
+// =========================================================
+
+/**
+ * getStage1JudgeData(judgeKey)
+ * Retrieves all Stage 1 Idea Screening submissions for authorized judges.
+ * Strictly verifies judge authorization key server-side.
+ */
+function getStage1JudgeData(judgeKey) {
+  if (!validateJudgeKey_(judgeKey)) {
+    throw new Error("Unauthorized access: Invalid or missing Judge Key.");
+  }
+
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(CONFIG.STAGE1_SHEET);
+  if (!sheet) return [];
+
+  const data = sheet.getDataRange().getValues();
+  if (data.length <= 1) return [];
+
+  const hdrs = data[0].map(h => String(h || "").trim());
+  const cols = findStage1Columns_(hdrs);
+  
+  // Ensure Reviewer Notes column exists
+  let notesIdx = cols.notes;
+  if (!cols.hasNotesHeader) {
+    notesIdx = hdrs.length;
+    sheet.getRange(1, notesIdx + 1).setValue("Reviewer Notes");
+    hdrs.push("Reviewer Notes");
+    SpreadsheetApp.flush();
+  }
+
+  const submissions = [];
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    const teamName = String(row[cols.teamName] || "").trim();
+    if (!teamName) continue;
+
+    submissions.push({
+      refId: String(row[cols.refId] || ""),
+      timestamp: String(row[cols.timestamp] || ""),
+      participationType: String(row[cols.type] || "Team"),
+      teamName: teamName,
+      leaderName: String(row[cols.leaderName] || ""),
+      email: String(row[cols.email] || ""),
+      phone: String(row[cols.phone] || ""),
+      track: String(row[cols.track] || ""),
+      problemStatement: String(row[cols.statement] || ""),
+      solution: String(row[cols.solution] || ""),
+      approach: String(row[cols.approach] || ""),
+      pitchLink: String(row[cols.pitchLink] || ""),
+      status: String(row[cols.status] || "PENDING EVALUATION"),
+      emailSent: String(row[cols.emailSent] || "No"),
+      notes: notesIdx < row.length ? String(row[notesIdx] || "") : ""
+    });
+  }
+
+  return submissions;
+}
+
+/**
+ * processStage1JudgeDecision(teamName, decision, notes, judgeKey)
+ * Records screening outcome: PENDING EVALUATION, SHORTLISTED, or NOT SELECTED.
+ * Strictly verifies judge authorization key server-side via Script Properties.
+ * Saves private reviewer notes.
+ * Automatically dispatches screening result email to primary contact if not already sent.
+ * Prevents duplicate emails when a decision is saved repeatedly.
+ */
+function processStage1JudgeDecision(teamName, decision, notes, judgeKey) {
+  if (!validateJudgeKey_(judgeKey)) {
+    return { success: false, savedInSheet: false, message: "Unauthorized: Invalid or missing Judge Key." };
+  }
+
+  const allowedStatuses = ["SHORTLISTED", "NOT SELECTED", "PENDING EVALUATION"];
+  const targetStatus = String(decision || "").trim().toUpperCase();
+  if (!allowedStatuses.includes(targetStatus)) {
+    return { success: false, savedInSheet: false, message: "Invalid screening decision: " + decision };
+  }
+
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(CONFIG.STAGE1_SHEET);
+  if (!sheet) {
+    return { success: false, savedInSheet: false, message: "Stage 1 Submissions sheet not found." };
+  }
+
+  const data = sheet.getDataRange().getValues();
+  if (data.length <= 1) {
+    return { success: false, savedInSheet: false, message: "No Stage 1 submissions data found." };
+  }
+
+  const hdrs = data[0].map(h => String(h || "").trim());
+  const cols = findStage1Columns_(hdrs);
+
+  let statusCol = cols.status;
+  if (!cols.hasStatusHeader) {
+    statusCol = hdrs.length;
+    sheet.getRange(1, statusCol + 1).setValue("Screening Status");
+    hdrs.push("Screening Status");
+  }
+
+  let emailSentCol = cols.emailSent;
+  if (!cols.hasEmailSentHeader) {
+    emailSentCol = hdrs.length;
+    sheet.getRange(1, emailSentCol + 1).setValue("Screening Email Sent");
+    hdrs.push("Screening Email Sent");
+  }
+
+  let notesCol = cols.notes;
+  if (!cols.hasNotesHeader) {
+    notesCol = hdrs.length;
+    sheet.getRange(1, notesCol + 1).setValue("Reviewer Notes");
+    hdrs.push("Reviewer Notes");
+  }
+
+  const cleanTeam = String(teamName || "").trim().toLowerCase();
+  let matchedRowIndex = -1;
+  let leaderEmail = "";
+  let leaderName = "";
+  let existingEmailSent = "";
+
+  for (let i = 1; i < data.length; i++) {
+    const rowTeam = String(data[i][cols.teamName] || "").trim().toLowerCase();
+    const rowRef = String(data[i][cols.refId] || "").trim().toLowerCase();
+    if (rowTeam === cleanTeam || rowRef === cleanTeam) {
+      matchedRowIndex = i + 1; // 1-based sheet row
+      leaderName = String(data[i][cols.leaderName] || data[i][cols.teamName] || "Participant").trim();
+      leaderEmail = String(data[i][cols.email] || "").trim();
+      existingEmailSent = String(data[i][emailSentCol] || "").trim();
+      break;
+    }
+  }
+
+  if (matchedRowIndex === -1) {
+    return { success: false, savedInSheet: false, message: "Submission for team '" + teamName + "' not found." };
+  }
+
+  // 1. Update Screening Status at exact dynamic column index (1-based)
+  sheet.getRange(matchedRowIndex, statusCol + 1).setValue(targetStatus);
+
+  // 2. Update Reviewer Notes at exact dynamic column index (1-based)
+  if (typeof notes === "string") {
+    sheet.getRange(matchedRowIndex, notesCol + 1).setValue(notes);
+  }
+  SpreadsheetApp.flush();
+
+  // 3. Email dispatch (only for SHORTLISTED or NOT SELECTED, and only if not already sent)
+  let emailDispatched = false;
+  let emailMsg = "";
+
+  const isAlreadySent = existingEmailSent && (
+    existingEmailSent.toLowerCase().startsWith("sent") ||
+    existingEmailSent.toLowerCase() === "yes"
+  );
+
+  if ((targetStatus === "SHORTLISTED" || targetStatus === "NOT SELECTED") && !isAlreadySent) {
+    if (leaderEmail && leaderEmail.includes("@")) {
+      try {
+        const mailRes = sendScreeningResultEmailForTeam_(leaderEmail, teamName, leaderName, targetStatus);
+        if (mailRes.success) {
+          emailDispatched = true;
+          const sentTag = "Sent (" + Utilities.formatDate(new Date(), "Asia/Kolkata", "yyyy-MM-dd HH:mm") + ")";
+          sheet.getRange(matchedRowIndex, emailSentCol + 1).setValue(sentTag);
+          SpreadsheetApp.flush();
+          emailMsg = "Result email dispatched to " + leaderEmail;
+        } else {
+          emailMsg = "Email error: " + mailRes.error;
+        }
+      } catch (err) {
+        emailMsg = "Mail delivery exception: " + err.toString();
+      }
+    } else {
+      emailMsg = "No valid leader email recorded to send notification.";
+    }
+  } else if (isAlreadySent) {
+    emailMsg = "Decision saved. Result email was previously sent (duplicate prevented).";
+  } else {
+    emailMsg = "Status updated to " + targetStatus + ".";
+  }
+
+  return {
+    success: true,
+    savedInSheet: true,
+    emailSent: emailDispatched,
+    message: emailMsg
+  };
+}
+
+/**
+ * toggleShortlistPublish(publish, showNotSelected, judgeKey)
+ * Enables or disables public display of finalized Stage 1 Shortlist.
+ * Strictly verifies judge authorization key server-side.
+ */
+function toggleShortlistPublish(publish, showNotSelected, judgeKey) {
+  if (!validateJudgeKey_(judgeKey)) {
+    return { success: false, message: "Unauthorized: Invalid or missing Judge Key." };
+  }
+
+  const props = PropertiesService.getScriptProperties();
+  props.setProperties({
+    "ROUND1_SHORTLIST_PUBLISHED": String(!!publish),
+    "ROUND1_SHOW_NOT_SELECTED": String(!!showNotSelected)
+  });
+
+  return {
+    success: true,
+    isPublished: !!publish,
+    showNotSelected: !!showNotSelected
+  };
+}
+
+/**
+ * getShortlistPublishStatus(judgeKey)
+ * Checks current shortlist publication state.
+ * Strictly verifies judge authorization key server-side.
+ */
+function getShortlistPublishStatus(judgeKey) {
+  if (!validateJudgeKey_(judgeKey)) {
+    return { isPublished: false, showNotSelected: false };
+  }
+
+  const props = PropertiesService.getScriptProperties();
+  return {
+    isPublished: (props.getProperty("ROUND1_SHORTLIST_PUBLISHED") === "true"),
+    showNotSelected: (props.getProperty("ROUND1_SHOW_NOT_SELECTED") === "true")
+  };
+}
+
+/**
+ * sendScreeningResultEmailForTeam_(email, teamName, leaderName, decision)
+ * Builds and dispatches official screening result emails.
+ */
+function sendScreeningResultEmailForTeam_(email, teamName, leaderName, decision) {
+  if (!email || !email.includes("@")) {
+    return { success: false, error: "Invalid email" };
+  }
+
+  const isShortlisted = (decision === "SHORTLISTED" || decision === "SELECTED");
+  const subject = `AI Innovation Hackathon 2026 — Round 1 Screening Result: ${isShortlisted ? "Shortlisted" : "Not Selected"}`;
+
+  const greeting = `Dear ${escapeHtml_(leaderName || teamName)},`;
+  const heading = isShortlisted
+    ? "Congratulations — Your Team Has Been Shortlisted!"
+    : "AI Innovation Hackathon 2026 — Screening Outcome";
+
+  const paragraph = isShortlisted
+    ? `We are pleased to inform you that your proposal for <strong>${escapeHtml_(teamName)}</strong> has cleared the Stage 1 Idea Screening for the AI Innovation Hackathon 2026. Your team is officially invited to proceed to the Stage 2 Main Hackathon on <strong>20 October 2026</strong>.`
+    : `Thank you for participating in the AI Innovation Hackathon 2026 and submitting your Stage 1 Idea Screening proposal for <strong>${escapeHtml_(teamName)}</strong>. After careful evaluation by our technical screening panel, your submission has not been selected to proceed to the Stage 2 Main Hackathon. We sincerely appreciate your innovation and effort.`;
+
+  const nextSteps = isShortlisted
+    ? `<strong>Next Instructions for Round 2:</strong><br>
+       • Main Hackathon Development: 20 October 2026, 10:30 AM – 6:00 PM IST<br>
+       • Final Project Submission Deadline: <strong>20 October 2026 at 6:00 PM IST</strong><br>
+       • Access the Round 2 Final Submission form via the official hackathon portal.<br>
+       • Ensure your GitHub repository, demo video, and deployment links are ready before the final deadline.`
+    : `We encourage you to continue developing your ideas and look forward to your participation in future symposiums, reading groups, and hackathons hosted by the Women in AI Research, Innovation & Entrepreneurship Club.`;
+
+  const htmlBody = `
+    <div style="font-family:'Segoe UI',Arial,sans-serif;line-height:1.65;color:#1e293b;max-width:650px;margin:0 auto;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden">
+      <div style="background:${isShortlisted ? '#0284c7' : '#334155'};padding:24px;color:#fff">
+        <h2 style="margin:0;font-size:20px;color:#fff">${escapeHtml_(heading)}</h2>
+        <p style="margin:6px 0 0;font-size:13px;opacity:0.9">Women in AI, Research, Innovation &amp; Entrepreneurship Club</p>
+      </div>
+      <div style="padding:28px 24px">
+        <p style="font-size:15px;margin-top:0">${greeting}</p>
+        <p style="font-size:14.5px;line-height:1.6">${paragraph}</p>
+        <div style="background:#f8fafc;border-left:4px solid ${isShortlisted ? '#0284c7' : '#94a3b8'};padding:14px 16px;margin:20px 0;border-radius:0 8px 8px 0;font-size:13.5px">
+          ${nextSteps}
+        </div>
+        <p style="font-size:14px">Official Hackathon Portal: <a href="${CONFIG.WEBSITE_URL}" style="color:#0284c7;font-weight:600">${CONFIG.WEBSITE_URL}</a></p>
+        <p style="margin-top:28px;font-size:13.5px;color:#475569">
+          Warm regards,<br>
+          <strong>AI Innovation Hackathon Organizing Committee</strong><br>
+          Women in AI, Research, Innovation &amp; Entrepreneurship Club
+        </p>
+      </div>
+      <div style="background:#f1f5f9;padding:12px 24px;font-size:11.5px;color:#64748b;text-align:center">
+        Official communication • <a href="mailto:${CONFIG.ORGANIZER_EMAIL}" style="color:#64748b">${CONFIG.ORGANIZER_EMAIL}</a>
+      </div>
+    </div>
+  `;
+
+  MailApp.sendEmail({
+    to: email,
+    subject: subject,
+    htmlBody: htmlBody,
+    name: "AI Innovation Hackathon 2026"
+  });
+
+  return { success: true };
+}
+
 /**
  * getJudgeData() — Reads ONLY from 'Final Submissions' sheet.
  * Real headers (confirmed by user):
@@ -825,7 +1633,10 @@ function renderJudgePanel() {
  *
  * Email is NOT stored in Final Submissions — resolved server-side via cross-reference.
  */
-function getJudgeData() {
+function getJudgeData(judgeKey) {
+  if (!validateJudgeKey_(judgeKey)) {
+    throw new Error("Unauthorized access: Invalid or missing Judge Key.");
+  }
   // Reads ONLY from Final Submissions. Never reads Stage 1 Submissions or Form Responses 1.
   const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
   const sheet = getStage2Sheet_(ss);
@@ -890,7 +1701,7 @@ function getJudgeData() {
 }
 
 /**
- * processJudgeDecision(teamName, decision)
+ * processJudgeDecision(teamName, decision, judgeKey)
  *
  * Called from the Judge Panel UI with the TEAM NAME (not email), because
  * 'Final Submissions' does NOT contain an email column.
@@ -901,7 +1712,10 @@ function getJudgeData() {
  *      team name to retrieve the registered leader email.
  *   3. Send the Final Round Result Email to the resolved address.
  */
-function processJudgeDecision(teamName, decision) {
+function processJudgeDecision(teamName, decision, judgeKey) {
+  if (!validateJudgeKey_(judgeKey)) {
+    return { success: false, savedInSheet: false, message: "Unauthorized: Invalid or missing Judge Key." };
+  }
   // Updates ONLY Final Evaluation Status and Final Decision Email Sent in Final Submissions.
   // NEVER modifies Screening Status or Stage 1 Submissions.
   const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
@@ -962,6 +1776,17 @@ function processJudgeDecision(teamName, decision) {
   });
   SpreadsheetApp.flush();
 
+  // Check if final decision email was already sent for this team (idempotency protection)
+  let isAlreadySent = false;
+  for (let i = 0; i < matchedRowIndices.length; i++) {
+    const rowData = data[matchedRowIndices[i] - 1];
+    const existingVal = emailSentIdx < rowData.length ? String(rowData[emailSentIdx] || "").trim().toLowerCase() : "";
+    if (existingVal.startsWith("sent") || existingVal === "yes") {
+      isAlreadySent = true;
+      break;
+    }
+  }
+
   // -------------------------------------------------------
   // SERVER-SIDE EMAIL RESOLUTION
   // Final Submissions has no email column → cross-reference
@@ -970,9 +1795,11 @@ function processJudgeDecision(teamName, decision) {
   // -------------------------------------------------------
   const resolvedEmail = resolveEmailByTeamName_(ss, cleanTeam);
 
-  // Send Final Round Result Email
+  // Send Final Round Result Email (only if not already sent)
   let emailResult = { success: false, error: "No matching email found for team" };
-  if (resolvedEmail) {
+  if (isAlreadySent) {
+    emailResult = { success: true, duplicatePrevented: true };
+  } else if (resolvedEmail) {
     try {
       emailResult = sendFinalResultEmail_(resolvedEmail, resolvedTeamName || "Participant", decision);
     } catch (err) {
@@ -982,13 +1809,17 @@ function processJudgeDecision(teamName, decision) {
     Logger.log("processJudgeDecision: Could not resolve email for team '" + teamName + "'");
   }
 
-  const emailStatusText = emailResult.success ? "Sent" : ("Failed" + (resolvedEmail ? "" : " (email not found)"));
+  const emailStatusText = isAlreadySent
+    ? "Sent (previously dispatched)"
+    : (emailResult.success ? ("Sent (" + Utilities.formatDate(new Date(), "Asia/Kolkata", "yyyy-MM-dd HH:mm") + ")") : ("Failed" + (resolvedEmail ? "" : " (email not found)")));
   matchedRowIndices.forEach(rowNum => {
     sheet.getRange(rowNum, emailSentIdx + 1).setValue(emailStatusText);
   });
   SpreadsheetApp.flush();
 
-  if (emailResult.success) {
+  if (isAlreadySent) {
+    return { success: true, savedInSheet: true, message: "Decision updated. Final decision email was already sent previously (duplicate prevented)." };
+  } else if (emailResult.success) {
     return { success: true, savedInSheet: true, message: "Final decision saved and email sent successfully!" };
   } else {
     return {
@@ -1193,25 +2024,26 @@ function checkTeamEligibility_(ss, teamName, email) {
   if (s1Sheet) {
     const s1Data = s1Sheet.getDataRange().getValues();
     if (s1Data.length > 1) {
+      const hdrs1 = s1Data[0].map(h => String(h || "").trim());
+      const cols1 = findStage1Columns_(hdrs1);
       const rows1 = s1Data.slice(1);
       const match = rows1.find(r => {
-        const t = String(r[3] || "").toLowerCase().trim();
-        const e = String(r[5] || "").toLowerCase().trim();
-        return t === normTeam || e === normEmail;
+        const t = String(r[cols1.teamName] || "").toLowerCase().trim();
+        const e = String(r[cols1.email] || "").toLowerCase().trim();
+        return (normTeam && t === normTeam) || (normEmail && e === normEmail);
       });
 
       if (match) {
-        // Col 12 = Screening Status in Stage 1 Submissions
-        const status = normalizeStatusName_(match[12] || "ROUND 1 SUBMITTED").toUpperCase();
+        const rawStatus = match[cols1.status] || "ROUND 1 SUBMITTED";
+        const status = normalizeStatusName_(rawStatus).toUpperCase();
         const isEligible = (
           status.includes("SHORTLISTED") ||
           status.includes("SELECTED") ||
-          status.includes("FINAL SUBMISSION PENDING") ||
-          status.includes("FINAL SUBMISSION RECEIVED") ||
-          status.includes("UNDER EVALUATION") ||
           status.includes("FINALIST") ||
-          status.includes("WINNER")
-        );
+          status.includes("WINNER") ||
+          status.includes("FINAL SUBMISSION PENDING") ||
+          status.includes("FINAL SUBMISSION RECEIVED")
+        ) && !status.includes("NOT SELECTED") && !status.includes("REJECTED") && !status.includes("PENDING");
 
         if (!isEligible) {
           if (status.includes("NOT SELECTED") || status.includes("REJECTED")) {
@@ -1224,7 +2056,7 @@ function checkTeamEligibility_(ss, teamName, email) {
           return {
             isEligible:    false,
             currentStatus: status,
-            reason: `Current status is ${status}. Round 2 submission is permitted only after Stage 1 shortlisting.`
+            reason: `Current status is ${status}. Round 2 submission is restricted strictly to verified shortlisted teams.`
           };
         }
         return { isEligible: true, currentStatus: status };
@@ -1244,7 +2076,7 @@ function checkTeamEligibility_(ss, teamName, email) {
         const t = String(r[col.teamName]   || "").toLowerCase().trim();
         const e = String(r[col.email]      || "").toLowerCase().trim();
         const l = String(r[col.teamLeader] || "").toLowerCase().trim();
-        return t === normTeam || e === normEmail || l === normTeam;
+        return (normTeam && (t === normTeam || l === normTeam)) || (normEmail && e === normEmail);
       });
 
       if (match) {
@@ -1254,7 +2086,7 @@ function checkTeamEligibility_(ss, teamName, email) {
           status.includes("SELECTED") ||
           status.includes("FINALIST") ||
           status.includes("WINNER")
-        );
+        ) && !status.includes("NOT SELECTED") && !status.includes("REJECTED") && !status.includes("PENDING");
         if (!isEligible) {
           return {
             isEligible:    false,
@@ -1283,15 +2115,15 @@ function updateStage1Status_(ss, teamName, email, newStatus) {
   const data = s1Sheet.getDataRange().getValues();
   if (data.length < 2) return;
 
+  const cols = findStage1Columns_(data[0].map(h => String(h || "").trim()));
   const normTeam  = String(teamName || "").toLowerCase().trim();
   const normEmail = String(email    || "").toLowerCase().trim();
 
   for (let i = 1; i < data.length; i++) {
-    // Stage 1 fixed cols: 3=Team Name, 5=Email Address, 12=Screening Status
-    const t = String(data[i][3] || "").toLowerCase().trim();
-    const e = String(data[i][5] || "").toLowerCase().trim();
-    if (t === normTeam || e === normEmail) {
-      s1Sheet.getRange(i + 1, 13).setValue(newStatus); // Col 13 = Screening Status (1-based)
+    const t = String(data[i][cols.teamName] || "").toLowerCase().trim();
+    const e = String(data[i][cols.email] || "").toLowerCase().trim();
+    if ((normTeam && t === normTeam) || (normEmail && e === normEmail)) {
+      s1Sheet.getRange(i + 1, cols.status + 1).setValue(newStatus);
       break;
     }
   }
@@ -1304,8 +2136,8 @@ function normalizeStatusName_(rawStatus) {
   if (st.includes("UNDER EVALUATION")) return "UNDER EVALUATION";
   if (st.includes("FINAL SUBMISSION RECEIVED")) return "FINAL SUBMISSION RECEIVED";
   if (st.includes("FINAL SUBMISSION PENDING")) return "FINAL SUBMISSION PENDING";
-  if (st.includes("SHORTLISTED") || st.includes("SELECTED")) return "SHORTLISTED / SELECTED";
   if (st.includes("NOT SELECTED") || st.includes("REJECTED")) return "NOT SELECTED";
+  if (st.includes("SHORTLISTED") || st.includes("SELECTED")) return "SHORTLISTED / SELECTED";
   if (st.includes("ROUND 1 SUBMITTED") || st.includes("STAGE 1 SUBMITTED")) return "ROUND 1 SUBMITTED";
   if (st.includes("UNDER REVIEW")) return "UNDER REVIEW";
   return "REGISTERED";
@@ -1314,6 +2146,39 @@ function normalizeStatusName_(rawStatus) {
 function validateEmail_(email) {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return re.test(String(email).toLowerCase());
+}
+
+function findStage1Columns_(headers) {
+  const norm = str => String(str || "").toLowerCase().trim();
+  const getCol = (possibleNames, defaultIndex) => {
+    const idx = headers.findIndex(h => possibleNames.some(p => norm(h).includes(norm(p))));
+    return idx !== -1 ? idx : defaultIndex;
+  };
+
+  const statusIdx = headers.findIndex(h => norm(h).includes("status"));
+  const emailSentIdx = headers.findIndex(h => norm(h).includes("email") && (norm(h).includes("sent") || norm(h).includes("dispatch")));
+  const notesIdx = headers.findIndex(h => norm(h).includes("note") || norm(h).includes("remark") || norm(h).includes("comment"));
+
+  return {
+    refId: getCol(["reference id", "ref id", "reference", "id"], 0),
+    timestamp: getCol(["timestamp", "date", "time"], 1),
+    type: getCol(["participation type", "type", "mode"], 2),
+    teamName: getCol(["team name", "team", "participant name"], 3),
+    leaderName: getCol(["leader", "primary contact", "full name", "contact name"], 4),
+    email: getCol(["email address", "leader email", "email"], 5),
+    phone: getCol(["phone", "mobile", "whatsapp", "contact"], 6),
+    track: getCol(["track", "domain", "category"], 7),
+    statement: getCol(["problem statement", "problem", "challenge", "statement"], 8),
+    solution: getCol(["proposed solution", "solution", "abstract"], 9),
+    approach: getCol(["ai approach", "approach", "methodology", "architecture"], 10),
+    pitchLink: getCol(["pitch link", "pitch", "deck", "slide", "presentation"], 11),
+    status: statusIdx !== -1 ? statusIdx : 12,
+    emailSent: emailSentIdx !== -1 ? emailSentIdx : 13,
+    notes: notesIdx !== -1 ? notesIdx : 14,
+    hasStatusHeader: statusIdx !== -1,
+    hasEmailSentHeader: emailSentIdx !== -1,
+    hasNotesHeader: notesIdx !== -1
+  };
 }
 
 function findColumns_(headers) {
