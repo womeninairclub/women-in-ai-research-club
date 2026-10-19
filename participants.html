@@ -398,51 +398,90 @@ function renderRound1Table() {
   });
 }
 
+function isValidRound1Entry(item) {
+  const team = normalizeText(item.teamName || "");
+  if (!team || team.toLowerCase() === "test") return false;
+  const stmt = normalizeText(item.problemStatement || "");
+  const normStmt = stmt.toLowerCase();
+  
+  const invalidStates = [
+    "tamil nadu", "tamil nadu", "karnataka", "maharashtra", "kuala lumpur",
+    "andhra pradesh", "uttar pradesh", "telangana", "kerala", "delhi",
+    "gujarat", "rajasthan", "madhya pradesh", "bihar", "west bengal",
+    "punjab", "haryana", "odisha", "assam", "jharkhand"
+  ];
+  if (!stmt || invalidStates.includes(normStmt)) return false;
+  if (stmt.length < 10 && !/^challenge\s*\d+/i.test(stmt)) return false;
+  return true;
+}
+
 async function loadRound1Submissions() {
   const statusMsg = document.getElementById("r1StatusMsg");
   const errorMsg = document.getElementById("r1ErrorMsg");
   const emptyMsg = document.getElementById("r1EmptyMsg");
 
+  if (statusMsg) {
+    statusMsg.hidden = false;
+    statusMsg.textContent = "Connecting to Round 1 submission records...";
+  }
+  if (errorMsg) errorMsg.hidden = true;
+  if (emptyMsg) emptyMsg.hidden = true;
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 20000);
+
   try {
-    const res = await fetch(`${PARTICIPANT_API}?action=getRound1Submissions&t=${Date.now()}`, { cache: "no-store" });
-    if (!res.ok) throw new Error("Round 1 API error: " + res.status);
+    const res = await fetch(`${PARTICIPANT_API}?action=getRound1Submissions&t=${Date.now()}`, {
+      cache: "no-store",
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+
+    if (!res.ok) throw new Error("Round 1 API HTTP error: " + res.status);
     const json = await res.json();
 
-    if (json && json.submissions && Array.isArray(json.submissions)) {
-      r1IsPublished = !!json.isPublished;
-      r1AllSubmissions = json.submissions.map((item, idx) => ({
-        id: item.id || idx + 1,
-        teamName: normalizeText(item.teamName || "Participant"),
-        participationType: normalizeText(item.participationType || item.type || "TEAM"),
-        track: normalizeText(item.track || ""),
-        problemStatement: normalizeText(item.problemStatement || ""),
-        status: item.status || "SUBMISSION RECEIVED"
-      }));
-    } else if (Array.isArray(json)) {
-      // If deployed backend currently returns array
-      const hasStage1Items = json.some(i => i.problemStatement || i.track || i.teamName);
-      if (hasStage1Items) {
-        r1AllSubmissions = json.filter(i => i.problemStatement || i.track || i.teamName).map((item, idx) => ({
-          id: item.id || idx + 1,
-          teamName: normalizeText(item.teamName || "Participant"),
-          participationType: normalizeText(item.participationType || item.type || "TEAM"),
-          track: normalizeText(item.track || ""),
-          problemStatement: normalizeText(item.problemStatement || ""),
-          status: item.status || "SUBMISSION RECEIVED"
-        }));
-      } else {
-        r1AllSubmissions = [];
-      }
-    } else {
-      r1AllSubmissions = [];
+    if (json && json.error) {
+      throw new Error(json.error);
+    }
+    if (json && json.success === false) {
+      throw new Error(json.message || "Failed to retrieve submissions from backend.");
     }
 
-    renderRound1Table();
+    let rawList = [];
+    if (json && json.submissions && Array.isArray(json.submissions)) {
+      r1IsPublished = !!json.isPublished;
+      rawList = json.submissions;
+    } else if (Array.isArray(json)) {
+      rawList = json;
+    }
+
+    // Filter to ensure ONLY valid Round 1 idea screening submissions appear
+    const validList = rawList.filter(isValidRound1Entry);
+
+    r1AllSubmissions = validList.map((item, idx) => ({
+      id: idx + 1,
+      teamName: normalizeText(item.teamName || "Participant"),
+      participationType: normalizeText(item.participationType || item.type || "TEAM"),
+      track: normalizeText(item.track || ""),
+      problemStatement: normalizeText(item.problemStatement || ""),
+      status: item.status || "SUBMISSION RECEIVED"
+    }));
+
+    if (statusMsg) statusMsg.textContent = "";
     if (errorMsg) errorMsg.hidden = true;
+    renderRound1Table();
   } catch (err) {
+    clearTimeout(timeoutId);
     console.error("Failed to load Round 1 submissions:", err);
     if (statusMsg) statusMsg.textContent = "";
-    if (errorMsg) errorMsg.hidden = false;
+    if (errorMsg) {
+      errorMsg.hidden = false;
+      const isTimeout = err.name === "AbortError";
+      const errDetails = isTimeout
+        ? "Connection timed out while fetching Round 1 submissions. Please refresh or verify network connection."
+        : `Unable to load submission records: ${err.message || "Server temporarily unavailable"}. Please refresh or check back shortly.`;
+      errorMsg.textContent = errDetails;
+    }
   }
 }
 

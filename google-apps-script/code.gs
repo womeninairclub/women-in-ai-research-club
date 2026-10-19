@@ -454,8 +454,8 @@ function doPost(e) {
     const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
 
     // DEADLINE CONSTANTS (IST = Asia/Kolkata, UTC+5:30)
-    // Round 1 Idea Screening: 19 October 2026, 6:00 PM IST (18:00:00)
-    const STAGE1_DEADLINE_MS = Date.parse("2026-10-19T18:00:00+05:30");
+    // Round 1 Idea Screening: 19 October 2026, 7:30 PM IST (19:30:00)
+    const STAGE1_DEADLINE_MS = Date.parse("2026-10-19T19:30:00+05:30");
     // Round 2 Final Submission: 20 October 2026, 6:00 PM IST (18:00:00)
     const STAGE2_DEADLINE_MS = Date.parse("2026-10-20T18:00:00+05:30");
 
@@ -467,7 +467,7 @@ function doPost(e) {
       if (currentServerTimeMs > STAGE1_DEADLINE_MS) {
         return jsonResponse_({
           success: false,
-          error: "Round 1 Idea Screening deadline has passed (19 October 2026 at 6:00 PM IST). Submissions are now closed."
+          error: "Round 1 Idea Screening deadline has passed (19 October 2026 at 7:30 PM IST). Submissions are now closed."
         }, 403);
       }
 

@@ -11,8 +11,8 @@ const HACKATHON_API =
 // Release Timestamp: 18 October 2026, 00:00:00 IST = 2026-10-17T18:30:00.000Z
 const RELEASE_TIMESTAMP_MS = Date.parse("2026-10-18T00:00:00+05:30");
 
-// Hard Cutoff for Stage 1 Screening: 19 October 2026, 18:00:00 IST = 2026-10-19T12:30:00.000Z
-const SCREENING_DEADLINE_MS = Date.parse("2026-10-19T18:00:00+05:30");
+// Hard Cutoff for Stage 1 Screening: 19 October 2026, 19:30:00 IST = 2026-10-19T14:00:00.000Z
+const SCREENING_DEADLINE_MS = Date.parse("2026-10-19T19:30:00+05:30");
 
 // Development-only Simulation Helper:
 // STRICTLY disabled in production. Active ONLY on local development hosts (localhost / 127.0.0.1).
@@ -203,7 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
         noticeHeading.textContent = "Problem Statements Officially Released";
       }
       if (noticeMsg) {
-        noticeMsg.innerHTML = "All <strong>60 approved challenges</strong> across 5 specialized tracks are now unlocked below. Review your preferred track, inspect technical specifications, download the official PDFs, and submit your Round 1 proposal before the <strong>19 October 2026, 6:00 PM IST</strong> deadline.";
+        noticeMsg.innerHTML = "All <strong>60 approved challenges</strong> across 5 specialized tracks are now unlocked below. Review your preferred track, inspect technical specifications, download the official PDFs, and submit your Round 1 proposal before the <strong>19 October 2026, 7:30 PM IST</strong> deadline.";
       }
       if (countdownWrapper) countdownWrapper.style.display = "none";
       if (problemReleaseStatus) {
@@ -542,7 +542,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ---------------------------------------------------------
-  // 1D. ROUND 1 SCREENING HARD CUTOFF ENFORCEMENT (19 Oct 2026, 6:00 PM IST)
+  // 1D. ROUND 1 SCREENING HARD CUTOFF ENFORCEMENT (19 Oct 2026, 7:30 PM IST)
   // ---------------------------------------------------------
   const stage1Fieldset = document.getElementById("stage1FormFieldset");
   const stage1DeadlineNote = document.getElementById("stage1DeadlineNote");
@@ -570,13 +570,13 @@ document.addEventListener("DOMContentLoaded", () => {
         stage1StatusPill.textContent = "ROUND 1 SUBMISSION CLOSED";
       }
       if (stage1DeadlineNote) {
-        stage1DeadlineNote.innerHTML = "<strong style='color:#ef4444'>SCREENING SUBMISSION DEADLINE PASSED:</strong> Round 1 closed at 6:00 PM IST on 19 October 2026. Evaluation in progress.";
+        stage1DeadlineNote.innerHTML = "<strong style='color:#ef4444'>SCREENING SUBMISSION DEADLINE PASSED:</strong> Round 1 closed at 7:30 PM IST on 19 October 2026. Evaluation in progress.";
       }
       if (stage1Alert && stage1Alert.hidden) {
         stage1Alert.hidden = false;
         renderAlert(stage1Alert, "warning", `
           <strong>🔒 Round 1 Idea Screening is Closed:</strong><br>
-          The submission deadline of <strong>19 October 2026 at 6:00 PM IST</strong> has passed. Late submissions cannot be accepted. The jury is currently reviewing proposals. Shortlisted teams will be announced later this evening.
+          The submission deadline of <strong>19 October 2026 at 7:30 PM IST</strong> has passed. Late submissions cannot be accepted. The jury is currently reviewing proposals. Shortlisted teams will be announced later this evening.
         `);
       }
     }
@@ -622,7 +622,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const now = getEffectiveNow();
     if (now.getTime() >= SCREENING_DEADLINE_MS) {
-      alert("🔒 Round 1 idea screening closed at 6:00 PM IST on 19 October 2026. Submissions can no longer be accepted.");
+      alert("🔒 Round 1 idea screening closed at 7:30 PM IST on 19 October 2026. Submissions can no longer be accepted.");
       return;
     }
 
