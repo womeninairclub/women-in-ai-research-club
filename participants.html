@@ -105,15 +105,15 @@
       <!-- METRICS / STATS -->
       <div class="participants-stats" aria-label="Round 1 Submissions summary">
         <div class="participant-stat">
-          <span>Recorded Submissions</span>
+          <span id="r1TotalLabel">Recorded Submissions</span>
           <strong id="r1TotalCount">0</strong>
         </div>
         <div class="participant-stat">
-          <span>Under Evaluation</span>
+          <span id="r1PendingLabel">Under Evaluation</span>
           <strong id="r1PendingCount">0</strong>
         </div>
         <div class="participant-stat">
-          <span>Shortlisted Teams</span>
+          <span id="r1ShortlistedLabel">Shortlisted Teams</span>
           <strong id="r1ShortlistedCount">0</strong>
         </div>
       </div>
@@ -271,14 +271,25 @@ function renderRound1Table() {
   const bannerHeading = document.getElementById("shortlistBannerHeading");
   const bannerText = document.getElementById("shortlistBannerText");
 
-  // Update Shortlist Banner State
+  // Update Shortlist Banner State & Stat Labels
+  const totalLabelEl = document.getElementById("r1TotalLabel");
+  const pendingLabelEl = document.getElementById("r1PendingLabel");
+  const shortlistedLabelEl = document.getElementById("r1ShortlistedLabel");
+  const filterAllBtn = document.getElementById("r1FilterAllBtn");
+  const filterPendingBtn = document.getElementById("r1FilterPendingBtn");
+
   if (r1IsPublished) {
     if (banner) banner.className = "shortlist-status-banner is-published";
     if (bannerIcon) bannerIcon.textContent = "🏆";
-    if (bannerHeading) bannerHeading.textContent = "Official Shortlist Published";
+    if (bannerHeading) bannerHeading.textContent = "Official Round 1 Results Published";
     if (bannerText) {
-      bannerText.innerHTML = "Round 1 screening results have been officially published. Shortlisted teams are eligible to proceed to the Round 2 Final Submission. Congratulations to all shortlisted innovators!";
+      bannerText.innerHTML = "Round 1 screening results have been officially published. Shortlisted teams are eligible to proceed to the Round 2 Final Submission. Congratulations to all innovators!";
     }
+    if (totalLabelEl) totalLabelEl.textContent = "Finalized Results";
+    if (pendingLabelEl) pendingLabelEl.textContent = "Not Selected";
+    if (shortlistedLabelEl) shortlistedLabelEl.textContent = "Shortlisted Teams";
+    if (filterAllBtn) filterAllBtn.textContent = "All Finalized Results";
+    if (filterPendingBtn) filterPendingBtn.textContent = "Not Selected Only";
   } else {
     if (banner) banner.className = "shortlist-status-banner";
     if (bannerIcon) bannerIcon.textContent = "⏳";
@@ -286,12 +297,18 @@ function renderRound1Table() {
     if (bannerText) {
       bannerText.innerHTML = "Round 1 screening is in progress. The official shortlist will be announced after evaluation is finalized.";
     }
+    if (totalLabelEl) totalLabelEl.textContent = "Recorded Submissions";
+    if (pendingLabelEl) pendingLabelEl.textContent = "Under Evaluation";
+    if (shortlistedLabelEl) shortlistedLabelEl.textContent = "Shortlisted Teams";
+    if (filterAllBtn) filterAllBtn.textContent = "All Submissions";
+    if (filterPendingBtn) filterPendingBtn.textContent = "Pending Only";
   }
 
   // Counts
   const totalValid = r1AllSubmissions.length;
   const shortlistedCount = r1AllSubmissions.filter(s => String(s.status).toUpperCase().includes("SHORTLISTED")).length;
-  const pendingCount = r1AllSubmissions.filter(s => {
+  const notSelectedCount = r1AllSubmissions.filter(s => String(s.status).toUpperCase().includes("NOT SELECTED")).length;
+  const pendingCount = r1IsPublished ? notSelectedCount : r1AllSubmissions.filter(s => {
     const st = String(s.status).toUpperCase();
     return st.includes("PENDING") || st.includes("RECEIVED") || st.includes("SUBMITTED");
   }).length;
@@ -304,7 +321,13 @@ function renderRound1Table() {
   let filtered = r1AllSubmissions.filter(sub => {
     const st = String(sub.status).toUpperCase();
     if (r1CurrentFilter === "shortlisted" && !st.includes("SHORTLISTED")) return false;
-    if (r1CurrentFilter === "pending" && !st.includes("PENDING") && !st.includes("RECEIVED") && !st.includes("SUBMITTED")) return false;
+    if (r1CurrentFilter === "pending") {
+      if (r1IsPublished) {
+        if (!st.includes("NOT SELECTED")) return false;
+      } else {
+        if (!st.includes("PENDING") && !st.includes("RECEIVED") && !st.includes("SUBMITTED")) return false;
+      }
+    }
     if (r1CurrentSearch) {
       const q = r1CurrentSearch;
       const t = String(sub.teamName || "").toLowerCase();
@@ -322,9 +345,9 @@ function renderRound1Table() {
     if (emptyMsg) {
       emptyMsg.hidden = false;
       if (!r1AllSubmissions.length) {
-        emptyMsg.textContent = "No submissions received yet.";
+        emptyMsg.textContent = r1IsPublished ? "No finalized results published yet." : "No submissions received yet.";
       } else {
-        emptyMsg.textContent = "No verified Round 1 submissions match your search or filter.";
+        emptyMsg.textContent = "No verified Round 1 records match your search or filter.";
       }
     }
     return;
@@ -332,7 +355,9 @@ function renderRound1Table() {
 
   if (emptyMsg) emptyMsg.hidden = true;
   if (statusMsg) {
-    statusMsg.textContent = `Displaying ${filtered.length} of ${totalValid} successfully recorded Round 1 submissions.`;
+    statusMsg.textContent = r1IsPublished
+      ? `Displaying ${filtered.length} of ${totalValid} finalized Round 1 results.`
+      : `Displaying ${filtered.length} of ${totalValid} successfully recorded Round 1 submissions.`;
   }
 
   filtered.forEach((sub, idx) => {
