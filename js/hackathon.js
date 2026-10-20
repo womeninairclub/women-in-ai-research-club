@@ -14,6 +14,9 @@ const RELEASE_TIMESTAMP_MS = Date.parse("2026-10-18T00:00:00+05:30");
 // Hard Cutoff for Stage 1 Screening: 19 October 2026, 19:30:00 IST = 2026-10-19T14:00:00.000Z
 const SCREENING_DEADLINE_MS = Date.parse("2026-10-19T19:30:00+05:30");
 
+// Hard Cutoff for Stage 2 Final Submissions: 20 October 2026, 18:00:00 IST = 2026-10-20T12:30:00.000Z
+const STAGE2_DEADLINE_MS = Date.parse("2026-10-20T18:00:00+05:30");
+
 // Development-only Simulation Helper:
 // STRICTLY disabled in production. Active ONLY on local development hosts (localhost / 127.0.0.1).
 function getEffectiveNow() {
@@ -831,13 +834,56 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ---------------------------------------------------------
-  // 4. STAGE 2 FINAL PROJECT SUBMISSION FORM
+  // 4. STAGE 2 FINAL PROJECT SUBMISSION FORM & DEADLINE ENFORCEMENT
   // ---------------------------------------------------------
   const stage2Form = document.getElementById("stage2FinalForm");
   const stage2Alert = document.getElementById("stage2StatusAlert");
+  const stage2DeadlineNote = document.getElementById("stage2DeadlineNote");
+
+  const enforceStage2Deadline = () => {
+    const now = getEffectiveNow();
+    const isPastDeadline = now.getTime() >= STAGE2_DEADLINE_MS;
+
+    if (isPastDeadline) {
+      if (stage2Fieldset) {
+        stage2Fieldset.setAttribute("disabled", "true");
+        stage2Fieldset.style.opacity = "0.65";
+      }
+      const submitBtn = stage2Form?.querySelector("button[type='submit']");
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Final Submission Closed";
+        submitBtn.classList.add("secondary");
+        submitBtn.classList.remove("primary");
+      }
+      if (stage2DeadlineNote) {
+        stage2DeadlineNote.innerHTML = "<strong style='color:#ef4444'>SUBMISSION DEADLINE PASSED:</strong> Stage 2 closed at 6:00 PM IST on 20 October 2026. Evaluation in progress.";
+      }
+      if (stage2Alert && stage2Alert.hidden) {
+        stage2Alert.hidden = false;
+        renderAlert(stage2Alert, "warning", `
+          <strong>🔒 Stage 2 Final Submission is Closed:</strong><br>
+          The final project submission deadline of <strong>20 October 2026 at 6:00 PM IST</strong> has passed. Late submissions cannot be accepted. The jury evaluation is currently underway until 8:00 PM IST.
+        `);
+      }
+    }
+  };
+
+  enforceStage2Deadline();
+  window.setInterval(enforceStage2Deadline, 15_000);
 
   stage2Form?.addEventListener("submit", async e => {
     e.preventDefault();
+
+    const now = getEffectiveNow();
+    if (now.getTime() >= STAGE2_DEADLINE_MS) {
+      alert("🔒 Stage 2 Final Submissions closed at 6:00 PM IST on 20 October 2026. Submissions can no longer be accepted.");
+      if (stage2Alert) {
+        stage2Alert.hidden = false;
+        renderAlert(stage2Alert, "warning", `<strong>🔒 Stage 2 Submissions Closed:</strong> The final project submission deadline of 20 October 2026 at 6:00 PM IST has passed.`);
+      }
+      return;
+    }
 
     const submitBtn = stage2Form.querySelector("button[type='submit']");
     const githubUrl = document.getElementById("finGithub")?.value.trim();
