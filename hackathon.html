@@ -27,6 +27,38 @@
     .site-footer-simple { padding:24px 0; border-top:1px solid #e7eaf2; background:#fff; color:#737b8e; font-size:.88rem; }
     .site-footer-simple .container { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
     @media(max-width:760px) { .winners-grid { grid-template-columns:1fr; } .winners-hero { padding-top:54px; } .winner-card { min-height:0; } }
+
+    /* Winners page polish: balanced spacing, no clipping, and responsive cards */
+    html { scroll-behavior: smooth; }
+    body { min-width: 320px; overflow-x: hidden; }
+    .winners-hero { padding: clamp(48px, 6vw, 76px) 20px 40px; }
+    .winners-hero .container, .winners-section .container { width: min(100% - 40px, 1180px); margin-inline: auto; }
+    .winners-hero h1 { font-size: clamp(2rem, 4.5vw, 3.5rem); line-height: 1.08; text-wrap: balance; }
+    .winners-hero .lead { line-height: 1.7; }
+    .winners-section { padding: clamp(32px, 5vw, 52px) 0 64px; }
+    .winners-grid { align-items: stretch; gap: clamp(14px, 1.8vw, 22px); margin-top: 16px; }
+    .winner-card { min-width: 0; min-height: 190px; padding: clamp(22px, 3vw, 30px) 18px; overflow-wrap: anywhere; }
+    .winner-card h2 { line-height: 1.35; font-size: clamp(1.05rem, 1.5vw, 1.28rem); }
+    .winner-card p { line-height: 1.6; }
+    .closing-note { padding-inline: 12px; }
+    /* The finished winners page does not need a floating feedback widget. */
+    .feedback-fab, #feedback-fab, .floating-feedback, .feedback-button,
+    #floating-feedback-button, [data-feedback-widget], .feedback-widget,
+    .feedback-trigger, .floating-feedback-button { display: none !important; }
+    @media (max-width: 900px) {
+      .winners-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .winner-card:first-child { grid-column: 1 / -1; }
+    }
+    @media (max-width: 600px) {
+      .winners-hero { padding: 42px 16px 30px; }
+      .winners-hero .container, .winners-section .container { width: min(100% - 28px, 1180px); }
+      .winners-kicker { max-width: 100%; font-size: .68rem; letter-spacing: .05em; }
+      .winners-hero h1 { margin-top: 16px; }
+      .winners-grid { grid-template-columns: 1fr; gap: 14px; }
+      .winner-card:first-child { grid-column: auto; }
+      .winner-card { min-height: auto; padding: 24px 18px; }
+      .site-footer-simple .container { justify-content: center; text-align: center; }
+    }
   </style>
 </head>
 <body>
